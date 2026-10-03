@@ -1,0 +1,149 @@
+{
+  "id": "case-accord",
+  "title": "2023 Honda Accord \u00b7 rear bumper and trunk",
+  "vehicle": {
+    "year": 2023,
+    "make": "Honda",
+    "model": "Accord EX"
+  },
+  "defaultMode": "self_pay",
+  "zip": "92583",
+  "neededBy": "Friday",
+  "photos": [],
+  "photoNote": "Photos withheld for privacy in this demo.",
+  "reviewNote": "Proposed scope is the visible damage, reviewed by a person. Each shop may amend it. Final details are confirmed at inspection.",
+  "source": "Anonymized from a real Drive Auto Body self-pay photo estimate (Jun 2025). Customer details removed.",
+  "realEstimateTotal": 2867.73,
+  "baseline": [
+    {
+      "id": "trunk-lid",
+      "label": "Trunk lid: repair and refinish",
+      "operation": "repair",
+      "bodyHours": 1.0,
+      "refinishHours": 2.4
+    },
+    {
+      "id": "rear-bumper-cover",
+      "label": "Rear bumper cover: replace and refinish",
+      "operation": "replace",
+      "bodyHours": 2.1,
+      "refinishHours": 4.2,
+      "part": "rear-bumper-cover"
+    },
+    {
+      "id": "adas-scans",
+      "label": "Blind-spot radar aim + pre/post-repair scans",
+      "operation": "r&i",
+      "bodyHours": 0,
+      "refinishHours": 0,
+      "mechHours": 1.5,
+      "requiredReason": "Required procedure after replacing the rear bumper on this car."
+    },
+    {
+      "id": "lock-trim",
+      "label": "Trunk lock + trim remove and install",
+      "operation": "replace",
+      "bodyHours": 0.6,
+      "refinishHours": 0,
+      "part": "trunk-lock"
+    }
+  ],
+  "amendments": {
+    "drive": [
+      {
+        "action": "add",
+        "item": {
+          "id": "impact-bar",
+          "label": "Rear impact bar (behind the bumper)",
+          "operation": "replace",
+          "bodyHours": 0.4,
+          "refinishHours": 0,
+          "part": "impact-bar"
+        },
+        "reason": "This kind of rear hit usually bends the impact bar behind the cover."
+      },
+      {
+        "action": "add",
+        "item": {
+          "id": "materials-extra",
+          "label": "Color match, flex additive, cover car, hazardous waste",
+          "operation": "r&i",
+          "bodyHours": 0,
+          "refinishHours": 0.9,
+          "fixedCharge": 20
+        },
+        "reason": "Standard for a plastic bumper refinish and color match."
+      }
+    ]
+  },
+  "parts": {
+    "rear-bumper-cover": {
+      "drive": {
+        "type": "OEM",
+        "price": 492.9
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 492.9,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 289.0,
+        "simulated": true
+      }
+    },
+    "impact-bar": {
+      "drive": {
+        "type": "OEM",
+        "price": 281.63
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 281.63,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 168.0,
+        "simulated": true
+      }
+    },
+    "trunk-lock": {
+      "drive": {
+        "type": "OEM",
+        "price": 34.23
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 34.23,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 22.0,
+        "simulated": true
+      }
+    }
+  },
+  "demoAsk": {
+    "note": "Example structure: initial offer > autonomous limit > driver's ask; owner counter between ask and limit. Real numbers come from the engine at runtime."
+  },
+  "clarify": {
+    "shop-b": {
+      "add": [
+        "impact-bar"
+      ],
+      "dispute": [
+        "materials-extra"
+      ]
+    },
+    "shop-c": {
+      "add": [],
+      "dispute": [
+        "impact-bar",
+        "materials-extra"
+      ]
+    }
+  }
+}

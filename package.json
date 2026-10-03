@@ -1,0 +1,16 @@
+{
+  "name": "quote-room",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "node --experimental-strip-types src/server.ts",
+    "check": "node --experimental-strip-types scripts/check-engines.ts"
+  },
+  "engines": {
+    "node": ">=22.20"
+  },
+  "dependencies": {
+    "@zoowork-ai/sdk": "0.10.2"
+  }
+}

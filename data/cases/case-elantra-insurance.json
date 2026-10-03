@@ -1,0 +1,271 @@
+{
+  "id": "case-elantra",
+  "title": "2018 Hyundai Elantra Sport \u00b7 front-end collision",
+  "vehicle": {
+    "year": 2018,
+    "make": "Hyundai",
+    "model": "Elantra Sport"
+  },
+  "defaultMode": "insurance",
+  "zip": "92583",
+  "neededBy": "Next week",
+  "photos": [],
+  "photoNote": "Exterior photos from the shop's intake set (no VIN, plate or people shown).",
+  "reviewNote": "Proposed scope is the damage visible from outside, reviewed by a person. Each shop may amend it. Final details are confirmed at teardown.",
+  "source": "Anonymized from a real Drive Auto Body preliminary estimate (Sep 2026). Customer and claim details removed.",
+  "realEstimateTotal": 14230.74,
+  "baseline": [
+    {
+      "id": "front-bumper",
+      "label": "Front bumper cover: replace and refinish",
+      "operation": "replace",
+      "bodyHours": 3.4,
+      "refinishHours": 4.2,
+      "part": "front-bumper-cover"
+    },
+    {
+      "id": "grille",
+      "label": "Grille + lower grille: replace",
+      "operation": "replace",
+      "bodyHours": 0,
+      "refinishHours": 0,
+      "part": "grille"
+    },
+    {
+      "id": "hood",
+      "label": "Hood: replace and refinish",
+      "operation": "replace",
+      "bodyHours": 1.8,
+      "refinishHours": 5.6,
+      "part": "hood"
+    },
+    {
+      "id": "lt-headlamp",
+      "label": "Left headlamp: replace and aim",
+      "operation": "replace",
+      "bodyHours": 0.8,
+      "refinishHours": 0,
+      "part": "lt-headlamp"
+    },
+    {
+      "id": "lt-fender",
+      "label": "Left fender: repair and refinish",
+      "operation": "repair",
+      "bodyHours": 3.0,
+      "refinishHours": 2.6
+    },
+    {
+      "id": "rt-fender-blend",
+      "label": "Right fender: blend",
+      "operation": "blend",
+      "bodyHours": 0,
+      "refinishHours": 2.2
+    }
+  ],
+  "amendments": {
+    "drive": [
+      {
+        "action": "add",
+        "item": {
+          "id": "impact-bar",
+          "label": "Front impact bar + absorber (behind the bumper)",
+          "operation": "replace",
+          "bodyHours": 0,
+          "refinishHours": 0,
+          "part": "impact-bar-absorber"
+        },
+        "reason": "A hit hard enough to take out the bumper and hood almost always damages these."
+      },
+      {
+        "action": "add",
+        "item": {
+          "id": "radiator-support",
+          "label": "Radiator support",
+          "operation": "replace",
+          "bodyHours": 2.4,
+          "refinishHours": 0,
+          "part": "radiator-support"
+        },
+        "reason": "Front structure behind the grille takes this impact."
+      },
+      {
+        "action": "add",
+        "item": {
+          "id": "cooling-ac",
+          "label": "Radiator + A/C evacuate and recharge",
+          "operation": "replace",
+          "bodyHours": 0,
+          "refinishHours": 0,
+          "mechHours": 6.1,
+          "part": "radiator"
+        },
+        "reason": "Radiator sits right behind the support; A/C has to be recovered to replace it."
+      },
+      {
+        "action": "add",
+        "item": {
+          "id": "adas-scans",
+          "label": "Front impact sensor + system scans",
+          "operation": "replace",
+          "bodyHours": 0,
+          "refinishHours": 0,
+          "mechHours": 1.0,
+          "part": "impact-sensor"
+        },
+        "reason": "Sensor is mounted in the crush zone; scans confirm the safety systems."
+      }
+    ]
+  },
+  "parts": {
+    "front-bumper-cover": {
+      "drive": {
+        "type": "CAPA",
+        "price": 383.0
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 612.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 340.0,
+        "simulated": true
+      }
+    },
+    "grille": {
+      "drive": {
+        "type": "A/M",
+        "price": 961.0
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 1140.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 905.0,
+        "simulated": true
+      }
+    },
+    "hood": {
+      "drive": {
+        "type": "CAPA",
+        "price": 815.76
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 1185.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 760.0,
+        "simulated": true
+      }
+    },
+    "lt-headlamp": {
+      "drive": {
+        "type": "LKQ",
+        "price": 1055.63
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 1380.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "LKQ",
+        "price": 990.0,
+        "simulated": true
+      }
+    },
+    "impact-bar-absorber": {
+      "drive": {
+        "type": "CAPA",
+        "price": 346.03
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 498.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 300.0,
+        "simulated": true
+      }
+    },
+    "radiator-support": {
+      "drive": {
+        "type": "CAPA",
+        "price": 680.0
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 930.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 610.0,
+        "simulated": true
+      }
+    },
+    "radiator": {
+      "drive": {
+        "type": "A/M",
+        "price": 206.0
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 420.0,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "A/M",
+        "price": 190.0,
+        "simulated": true
+      }
+    },
+    "impact-sensor": {
+      "drive": {
+        "type": "OEM",
+        "price": 200.31
+      },
+      "shop-b": {
+        "type": "OEM",
+        "price": 200.31,
+        "simulated": true
+      },
+      "shop-c": {
+        "type": "OEM",
+        "price": 200.31,
+        "simulated": true
+      }
+    }
+  },
+  "clarify": {
+    "shop-b": {
+      "add": [
+        "impact-bar",
+        "radiator-support"
+      ],
+      "dispute": [
+        "cooling-ac",
+        "adas-scans"
+      ]
+    },
+    "shop-c": {
+      "add": [
+        "impact-bar"
+      ],
+      "dispute": [
+        "radiator-support",
+        "cooling-ac",
+        "adas-scans"
+      ]
+    }
+  }
+}

@@ -1,0 +1,287 @@
+{
+  "_note": "Drive Auto Body rates come from Gio's own estimates (self-pay median across 21 self-pay estimates; insurance from the Elantra job) and must be confirmed by Gio. Shop B and Shop C are SIMULATED, derived from Drive's rates, and labeled simulated everywhere. Incentive tiers are ILLUSTRATIVE demo policy until Gio confirms.",
+  "shops": [
+    {
+      "id": "drive",
+      "name": "Drive Auto Body",
+      "isSimulated": false,
+      "exceptionMode": "owner",
+      "rateCards": {
+        "self_pay": {
+          "body": 90,
+          "refinish": 90,
+          "paintMaterialsPerRefinishHour": 65,
+          "mechanical": 220,
+          "frame": 150,
+          "taxRateOnPartsAndMaterials": 0.0875
+        },
+        "insurance": {
+          "body": 100,
+          "refinish": 100,
+          "paintMaterialsPerRefinishHour": 75,
+          "mechanical": 220,
+          "frame": 150,
+          "taxRateOnPartsAndMaterials": 0.0875
+        }
+      },
+      "partsPolicy": {
+        "allow": [
+          "OEM",
+          "A/M",
+          "CAPA",
+          "LKQ"
+        ],
+        "prefer": "as_written"
+      },
+      "selfPayAuthority": {
+        "autonomousDiscountPct": 0.04,
+        "hardMinimumPct": 0.88
+      },
+      "incentivePolicy": {
+        "status": "demo policy (illustrative until Gio confirms)",
+        "tiers": [
+          {
+            "minJob": 0,
+            "maxJob": 1500,
+            "autonomous": [
+              {
+                "kind": "detail",
+                "value": 40,
+                "label": "Free detail"
+              }
+            ],
+            "maxDeductibleAssist": 0
+          },
+          {
+            "minJob": 1500,
+            "maxJob": 4000,
+            "autonomous": [
+              {
+                "kind": "deductible_assist",
+                "value": 250,
+                "label": "$250 toward your deductible"
+              },
+              {
+                "kind": "pickup",
+                "value": 25,
+                "label": "Free pickup"
+              }
+            ],
+            "maxDeductibleAssist": 250
+          },
+          {
+            "minJob": 4000,
+            "maxJob": null,
+            "autonomous": [
+              {
+                "kind": "deductible_assist",
+                "value": 500,
+                "label": "$500 toward your deductible"
+              },
+              {
+                "kind": "rental_coordination",
+                "value": 0,
+                "label": "Rental car coordination"
+              }
+            ],
+            "maxDeductibleAssist": 500
+          }
+        ]
+      },
+      "turnaroundDays": {
+        "value": 5,
+        "confirmed": false
+      },
+      "warranty": {
+        "label": "Workmanship warranty (confirm terms with Gio)",
+        "score": 0.8,
+        "confirmed": false
+      },
+      "nextSlots": [
+        "Thu 9:00 AM",
+        "Fri 8:30 AM"
+      ],
+      "profile": {
+        "rating": null,
+        "reviewCount": null,
+        "themes": [],
+        "certifications": [],
+        "distanceMiles": null,
+        "source": null,
+        "simulated": false,
+        "status": "pending Tavily fetch"
+      }
+    },
+    {
+      "id": "shop-b",
+      "name": "Bayline Collision",
+      "isSimulated": true,
+      "exceptionMode": "rule",
+      "rateCards": {
+        "self_pay": {
+          "body": 101,
+          "refinish": 101,
+          "paintMaterialsPerRefinishHour": 73,
+          "mechanical": 246,
+          "frame": 168,
+          "taxRateOnPartsAndMaterials": 0.0875
+        },
+        "insurance": {
+          "body": 112,
+          "refinish": 112,
+          "paintMaterialsPerRefinishHour": 84,
+          "mechanical": 246,
+          "frame": 168,
+          "taxRateOnPartsAndMaterials": 0.0875
+        }
+      },
+      "partsPolicy": {
+        "allow": [
+          "OEM"
+        ],
+        "prefer": "OEM"
+      },
+      "selfPayAuthority": {
+        "autonomousDiscountPct": 0.05,
+        "hardMinimumPct": 0.95
+      },
+      "incentivePolicy": {
+        "status": "simulated",
+        "tiers": [
+          {
+            "minJob": 0,
+            "maxJob": 1500,
+            "autonomous": [],
+            "maxDeductibleAssist": 0
+          },
+          {
+            "minJob": 1500,
+            "maxJob": null,
+            "autonomous": [
+              {
+                "kind": "gift_card",
+                "value": 100,
+                "label": "$100 gift card"
+              }
+            ],
+            "maxDeductibleAssist": 0
+          }
+        ]
+      },
+      "scopeBehavior": "accept_baseline",
+      "turnaroundDays": {
+        "value": 6,
+        "confirmed": true
+      },
+      "warranty": {
+        "label": "Lifetime paint warranty (simulated)",
+        "score": 1.0,
+        "confirmed": true
+      },
+      "nextSlots": [
+        "Mon 10:00 AM"
+      ],
+      "profile": {
+        "rating": 4.4,
+        "reviewCount": 212,
+        "themes": [
+          "OEM parts",
+          "slower turnaround"
+        ],
+        "certifications": [
+          "OEM-only (simulated)"
+        ],
+        "distanceMiles": 6.2,
+        "source": null,
+        "simulated": true,
+        "status": "simulated profile"
+      }
+    },
+    {
+      "id": "shop-c",
+      "name": "QuickFix Auto Body",
+      "isSimulated": true,
+      "exceptionMode": "rule",
+      "enabled": false,
+      "rateCards": {
+        "self_pay": {
+          "body": 83,
+          "refinish": 83,
+          "paintMaterialsPerRefinishHour": 60,
+          "mechanical": 202,
+          "frame": 138,
+          "taxRateOnPartsAndMaterials": 0.0875
+        },
+        "insurance": {
+          "body": 92,
+          "refinish": 92,
+          "paintMaterialsPerRefinishHour": 69,
+          "mechanical": 202,
+          "frame": 138,
+          "taxRateOnPartsAndMaterials": 0.0875
+        }
+      },
+      "partsPolicy": {
+        "allow": [
+          "A/M",
+          "CAPA",
+          "LKQ"
+        ],
+        "prefer": "A/M"
+      },
+      "selfPayAuthority": {
+        "autonomousDiscountPct": 0.07,
+        "hardMinimumPct": 0.93
+      },
+      "incentivePolicy": {
+        "status": "simulated",
+        "tiers": [
+          {
+            "minJob": 0,
+            "maxJob": 2000,
+            "autonomous": [],
+            "maxDeductibleAssist": 0
+          },
+          {
+            "minJob": 2000,
+            "maxJob": null,
+            "autonomous": [
+              {
+                "kind": "deductible_assist",
+                "value": 150,
+                "label": "$150 toward your deductible"
+              }
+            ],
+            "maxDeductibleAssist": 150
+          }
+        ]
+      },
+      "scopeBehavior": "accept_baseline",
+      "turnaroundDays": {
+        "value": 3,
+        "confirmed": true
+      },
+      "warranty": {
+        "label": "12-month warranty (simulated)",
+        "score": 0.6,
+        "confirmed": true
+      },
+      "nextSlots": [
+        "Tomorrow 8:00 AM"
+      ],
+      "profile": {
+        "rating": 4.0,
+        "reviewCount": 87,
+        "themes": [
+          "fast",
+          "budget parts"
+        ],
+        "certifications": [],
+        "distanceMiles": 9.8,
+        "source": null,
+        "simulated": true,
+        "status": "simulated profile"
+      }
+    }
+  ]
+}

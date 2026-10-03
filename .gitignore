@@ -1,0 +1,6 @@
+node_modules/
+.env
+data/raw/
+*.sqlite
+*.sqlite-journal
+.state/
