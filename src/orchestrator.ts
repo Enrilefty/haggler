@@ -427,7 +427,7 @@ export class Orchestrator extends EventEmitter {
       items, disputed: [], amendments: [...adds, ...omits], ...priced, initialTotal: priced.price?.total,
       slot: s.nextSlots[0], turnaroundDays: s.turnaroundDays.value, warranty: s.warranty.label, createdBy: ctx.via === "zoowork" ? "agent" : "rule",
     });
-    const hist = assessment.history?.summary ? `${assessment.history.summary}\n` : "";
+    const hist = ""; // Gio's history stats are for his agent and his Slack room, not the customer feed
     const lines = assessment.items.map((i) => `• ${i.label} — ${cat.opPhrase(i.operation)}${i.partType ? ` (${i.partType})` : ""}: ${i.reason}`).join("\n");
     this.log(req.id, "assessment_posted", SHOP_ACTOR[shopId], `${hist}Looked at the photos.${notes ? ` ${notes}` : ""}\n${lines}`, { shopId, assessment }, ["buyer"]);
     this.log(req.id, "offer_posted", SHOP_ACTOR[shopId], `Offer v${offer.version}: ${this.describeOffer(offer)}`, offer, ["buyer"]);

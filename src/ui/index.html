@@ -1026,11 +1026,11 @@ function renderLanes(r, phase){
         offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="price num">${money(o.price?.total)}</div>${was}${(o.incentives || []).length ? `<div class="incs" style="margin-top:.6rem">${o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("")}</div>` : ""}<div class="sub">Preliminary price${o.createdBy === "owner" ? `, approved by ${esc(ownerOf(r, s))}` : ""}. Final details confirmed at inspection.</div></div>`;
       } else {
         const firstA = assistOf(first), nowA = assistOf(o);
-        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="incs">${(o.incentives || []).length ? o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("") : `<span class="inc none">No incentives offered</span>`}</div>${nowA > firstA ? `<div class="was"><s class="num">${money(firstA)} toward deductible</s><span class="delta">+${money(nowA - firstA)}</span></div>` : ""}<div class="sub">Shop's preliminary estimate ${money(o.jobSize)}, subject to your insurer's process.</div></div>`;
+        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="incs">${(o.incentives || []).length ? o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("") : `<span class="inc none">No incentives offered</span>`}</div>${nowA > firstA ? `<div class="was"><s class="num">${money(firstA)} toward deductible</s><span class="delta">+${money(nowA - firstA)}</span></div>` : ""}</div>`;
       }
     } else offer = `<div class="lstate work"><i></i>Pricing what it found…</div>`;
     const facts = o ? `<dl class="facts"><dt>Drop-off</dt><dd>${esc(clean(o.slot))}</dd><dt>Turnaround</dt><dd>${esc(o.turnaroundDays)} days</dd><dt>Warranty</dt><dd>${esc(clean(o.warranty))}</dd></dl>` : "";
-    const hist = a?.history?.summary ? `<div class="grounded"><b>Grounded in Gio's past estimates</b>${esc(a.history.summary)}${a.history.jobs ? ` <span class="hold">(${esc(a.history.jobs)} similar jobs)</span>` : ""}</div>` : "";
+    const hist = ""; // history stays server-side; customers see findings, not Gio's stats
     let found = "";
     if (a?.items?.length){
       const others = have.filter((x) => x !== s);
@@ -1105,7 +1105,7 @@ function renderDecision(r){
   }
   const why = clean(top.why || "").replace(/^Recommended:\s*/i, "");
   const amount = ins
-    ? `<div class="amount" style="font-size:1.5rem;line-height:1.3">${(to.incentives || []).map((i) => esc(clean(i.label))).join("<br>") || "No incentives"}<small>Shop's preliminary estimate ${money(to.jobSize)}, subject to your insurer's process.</small></div>`
+    ? `<div class="amount" style="font-size:1.5rem;line-height:1.3">${(to.incentives || []).map((i) => esc(clean(i.label))).join("<br>") || "No incentives"}</div>`
     : `<div class="amount num">${money(to.price?.total)}<small>Drop-off ${esc(clean(to.slot))} · ${esc(to.turnaroundDays)}-day turnaround</small></div>`;
   const btn = (x, o, main) => `<button class="confirm${main ? " main" : " sm"}" type="button" ${ready ? "" : "disabled"} data-o="${esc(o.id)}" data-v="${esc(o.version)}">${main ? `Confirm ${esc(shopName(r, x.shopId))}` : "Confirm"}</button>`;
   setHTML("decision", `<div class="decide${once("decide")}"><div class="pick"><div><span class="k"><i></i>${top.recommended ? "Your agent recommends" : "Top of the list"}</span><h2>${esc(shopName(r, top.shopId))}</h2><p class="why">${esc(why ? why.charAt(0).toUpperCase() + why.slice(1) + "." : `Ranked first for ${prioLabel(r.mode, r.priority).toLowerCase()}.`)}</p>${vs ? `<p class="vs">${esc(vs)}</p>` : ""}</div><div class="pick-r">${amount}${btn(top, to, true)}${ready ? "" : `<span class="hold">Your agent is wrapping up. Confirm unlocks in a moment.</span>`}</div></div><ol class="others">${rest.map((x, i) => { const o = r.latest[x.shopId]; return `<li><span class="n">${String(i + 2).padStart(2, "0")}</span><div><b>${esc(shopName(r, x.shopId))}</b><p>${esc(clean(x.why || "").replace(/^Recommended:\s*/i, "")) || (x.eligible === false ? "Missing part of the repair." : "&nbsp;")}</p></div><span class="amt num">${ins ? (o.incentives || []).length ? money(incTotal(o)) + " extras" : "No extras" : money(o.price?.total)}</span>${btn(x, o, false)}</li>`; }).join("")}</ol></div>`);
