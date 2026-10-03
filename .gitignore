@@ -5,3 +5,4 @@ data/raw/
 *.sqlite-journal
 .state/
 deploy-env.yaml
+__pycache__/

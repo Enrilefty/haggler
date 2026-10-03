@@ -6,3 +6,4 @@ data/raw/
 .git/
 *.sqlite*
 deploy-env.yaml
+__pycache__/
