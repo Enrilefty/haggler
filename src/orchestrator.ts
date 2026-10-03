@@ -158,10 +158,10 @@ export class Orchestrator extends EventEmitter {
       const items = [...base.items, { ...addDef }];
       const priced = this.priceFor(req, shopId, items);
       next = this.pushOffer(req, shopId, { ...base, items, disputed: base.disputed, ...priced, createdBy: base.createdBy, note: `added ${cl.itemId} after clarification`, approvalId: undefined });
-      cl.status = "added"; cl.answer = args.message || `Good catch — we'll include ${addDef.label.toLowerCase()}.`;
+      cl.status = "added"; cl.answer = `Good catch — we'll include ${addDef.label.toLowerCase()}.`;
     } else {
       next = this.pushOffer(req, shopId, { ...base, disputed: [...base.disputed, cl.itemId], note: `disputed ${cl.itemId}`, approvalId: undefined });
-      cl.status = "disputed"; cl.answer = args.message || "We don't think that's needed from the photos — we'll confirm at inspection.";
+      cl.status = "disputed"; cl.answer = "We don't think that's needed from the photos — we'll confirm at inspection.";
     }
     this.log(req.id, "clarification_answered", SHOP_ACTOR[shopId], `${cl.answer}\nOffer v${next.version}: ${this.describeOffer(next)}`, { clarification: cl, offer: next }, ["buyer"]);
     this.signal(`clar:${cl.id}`, cl);
@@ -194,7 +194,7 @@ export class Orchestrator extends EventEmitter {
       if (total < (lim.autonomousLimit as number)) return { error: "beyond_authority", autonomousLimit: lim.autonomousLimit, hint: "Call request_exception to ask the owner." };
       if (total >= (base.price?.total ?? 0)) return { error: "revision_must_lower_price", currentTotal: base.price?.total };
       const next = this.pushOffer(req, shopId, { ...base, price: { ...base.price!, total }, createdBy: base.createdBy, note: "revised within authority", approvalId: undefined });
-      this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Revised within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
+      this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${this.safeAgentText(req.id, String(args.message ?? "")) || "Revised within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
       // A partial move leaves the ask open, so the owner is still asked for the rest.
       if (openAsk && total <= (openAsk.target.total ?? -Infinity)) this.askAnswered(req, shopId, "revised");
       return { ok: true, offer: this.offerView(next), askStillOpen: !!openAsk && !openAsk.outcome };
@@ -205,7 +205,7 @@ export class Orchestrator extends EventEmitter {
     if (assist <= currentAssist(base)) return { error: "revision_must_raise_assist", currentAssist: currentAssist(base) };
     const incentives = setAssist(base.incentives ?? [], assist);
     const next = this.pushOffer(req, shopId, { ...base, incentives, note: "incentive within authority", approvalId: undefined });
-    this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
+    this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${this.safeAgentText(req.id, String(args.message ?? "")) || "Within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
     if (openAsk && assist >= (openAsk.target.deductibleAssist ?? Infinity)) this.askAnswered(req, shopId, "revised");
     return { ok: true, offer: this.offerView(next), askStillOpen: !!openAsk && !openAsk.outcome };
   }
@@ -328,7 +328,8 @@ export class Orchestrator extends EventEmitter {
     if (this.closed(req)) return { error: "negotiation_closed" };
     if (!req.shops.includes(args.shopId)) return { error: "shop_not_in_room" };
     if (req.clarifications.some((c) => c.shopId === args.shopId && c.itemId === args.itemId)) return { error: "already_asked_once" };
-    const cl: Clarification = { id: uid("C"), shopId: args.shopId, itemId: args.itemId, question: String(args.question ?? "").slice(0, 300), status: "open" };
+    const question = this.plainItems(req, String(args.question ?? "")).slice(0, 300);
+    const cl: Clarification = { id: uid("C"), shopId: args.shopId, itemId: args.itemId, question, status: "open" };
     req.clarifications.push(cl);
     this.log(req.id, "clarify_sent", "Driver's agent", `@${SHOP_ACTOR[args.shopId]} ${cl.question}`, { clarification: cl }, [args.shopId]);
     this.emit("deliver", { requestId: req.id, shopId: args.shopId, kind: "clarify", clarification: cl });
@@ -350,7 +351,7 @@ export class Orchestrator extends EventEmitter {
       if (!(Number.isFinite(t) && t > currentAssist(cur))) return { error: "deductibleAssist_must_exceed_current", currentAssist: currentAssist(cur) };
       target = { deductibleAssist: t };
     }
-    const ask = { id: uid("Q"), shopId: args.shopId, text: String(args.message ?? "").slice(0, 300), target };
+    const ask = { id: uid("Q"), shopId: args.shopId, text: this.plainItems(req, String(args.message ?? "")).slice(0, 300), target };
     req.asks.push(ask); req.status = "negotiating";
     this.log(req.id, "ask_sent", "Driver's agent", `@${SHOP_ACTOR[args.shopId]} ${ask.text}`, { ask }, [args.shopId]);
     this.emit("deliver", { requestId: req.id, shopId: args.shopId, kind: "ask", ask, limits: this.limits(req, args.shopId) });
@@ -414,6 +415,13 @@ export class Orchestrator extends EventEmitter {
     if (!ask) return;
     ask.outcome = outcome;
     this.signal(`askdone:${req.id}`, { shopId, outcome });
+  }
+  plainItems(req: Request, text: string) {
+    const c = this.cases[req.caseId];
+    const items = [...c.baseline, ...(c.amendments?.drive ?? []).map((a: any) => a.item)];
+    let out = text;
+    for (const i of items) out = out.replace(new RegExp(`\\b${i.id.replace(/[-]/g, "\\-")}\\b`, "g"), String(i.label).toLowerCase());
+    return out;
   }
   hasApprovalForAsk(askId: string) { return Object.values(this.approvals).some((a) => a.askId === askId); }
   // Agent free text is shown only if every dollar figure matches a current offer number and, in
