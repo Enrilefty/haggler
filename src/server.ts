@@ -7,6 +7,7 @@ import { Flow } from "./flow.ts";
 import { ZooWorkRuntime } from "./zoowork.ts";
 import { TelegramOwner } from "./telegram.ts";
 import { BandBridge } from "./band.ts";
+import { SlackOwner } from "./slack.ts";
 import { PRIORITIES } from "./engines.ts";
 
 const o = new Orchestrator();
@@ -14,6 +15,7 @@ const zw = integrations().zoowork ? new ZooWorkRuntime(o) : undefined;
 const flow = new Flow(o, zw);
 const tg = new TelegramOwner(o);
 const band = new BandBridge(o);
+const slack = new SlackOwner(o);
 let zwInit: any = { ok: false, error: integrations().zoowork ? "starting" : "ZOOWORK_API_KEY not set" };
 
 // Optional: real public reviews for Drive Auto Body, cached by scripts/fetch-reviews.ts
@@ -56,7 +58,7 @@ const server = createServer(async (req, res) => {
       return send(res, 200, readFileSync(f), MIME[extname(f)] ?? "application/octet-stream");
     }
     if (req.method === "GET" && p === "/api/status") {
-      return send(res, 200, { integrations: integrations(), zoowork: { ready: !!zw?.ready, model: zw?.model, init: zwInit, lastError: zw?.lastError }, band: { status: band.status, lastError: band.lastError }, telegram: { status: tg.status, bot: tg.botName, ownerConnected: !!tg.ownerChatId } });
+      return send(res, 200, { integrations: integrations(), zoowork: { ready: !!zw?.ready, model: zw?.model, init: zwInit, lastError: zw?.lastError }, band: { status: band.status, lastError: band.lastError }, telegram: { status: tg.status, bot: tg.botName, ownerConnected: !!tg.ownerChatId }, slack: { configured: slack.configured(), status: slack.status, lastError: slack.lastError } });
     }
     if (req.method === "GET" && p === "/api/cases") {
       return send(res, 200, Object.values(o.cases).map((c: any) => ({ id: c.id, title: c.title, vehicle: c.vehicle, defaultMode: c.defaultMode, photos: c.photos, photoNote: c.photoNote, reviewNote: c.reviewNote, baseline: c.baseline, source: c.source })));
@@ -99,4 +101,5 @@ server.listen(PORT, async () => {
   console.log("zoowork:", JSON.stringify(zwInit));
   await tg.start(); console.log("telegram:", tg.status);
   await band.start(); console.log("band:", band.status, band.lastError);
+  await slack.start(); console.log("slack:", slack.status, slack.lastError);
 });

@@ -124,8 +124,8 @@ function setPrio(){ $("prio").innerHTML = PRIO[mode].map(([v,l]) => `<option val
 document.querySelectorAll("#modeSeg button").forEach((b) => b.onclick = () => { mode = b.dataset.m; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x === b)); setPrio(); });
 setPrio();
 async function status(){ try{ const s = await (await fetch("/api/status")).json();
-  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = s.telegram.ownerConnected ? "on" : (s.integrations.telegram ? "fb" : "");
-  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}"><i></i>Owner alerts</span>`; }catch{} }
+  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = (s.slack && s.slack.status === "ready") || s.telegram.ownerConnected ? "on" : (s.integrations.telegram || (s.slack && s.slack.configured) ? "fb" : "");
+  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}"><i></i>Owner alerts${s.slack && s.slack.status === "ready" ? " · Slack" : ""}</span>`; }catch{} }
 async function loadCases(){ cases = await (await fetch("/api/cases")).json(); caseId = caseId || cases[0]?.id;
   $("cases").innerHTML = cases.map((c) => `<button class="case ${c.id === caseId ? "sel" : ""}" data-c="${c.id}"><b>${esc(c.title)}</b><small>${esc(c.source)}</small>${c.photos?.length ? `<div class="photos">${c.photos.map((p) => `<img src="/photos/${esc(p)}" alt="">`).join("")}</div>` : `<div class="note" style="margin-top:6px">${esc(c.photoNote)}</div>`}</button>`).join("");
   document.querySelectorAll(".case").forEach((b) => b.onclick = () => { caseId = b.dataset.c; const c = cases.find((x) => x.id === caseId); mode = c.defaultMode; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x.dataset.m === mode)); setPrio(); loadCases(); });
