@@ -93,7 +93,16 @@ export class ZooWorkRuntime {
 
   // Runs one agent turn: posts the message, executes custom tool calls as THIS bound identity,
   // and returns when the run finishes (or the timeout hits).
+  // One turn at a time per session: a second message waits for the first run to finish.
+  private locks = new Map<string, Promise<unknown>>();
   async turn(requestId: string, agentKey: string, message: string, timeoutMs = 90_000): Promise<{ ok: boolean; text: string }> {
+    const k = `${requestId}:${agentKey}`;
+    const prev = this.locks.get(k) ?? Promise.resolve();
+    const run = prev.catch(() => undefined).then(() => this.turnUnlocked(requestId, agentKey, message, timeoutMs));
+    this.locks.set(k, run);
+    return run;
+  }
+  private async turnUnlocked(requestId: string, agentKey: string, message: string, timeoutMs: number): Promise<{ ok: boolean; text: string }> {
     const b = this.binding(requestId, agentKey);
     const deadline = Date.now() + timeoutMs;
     let text = "";

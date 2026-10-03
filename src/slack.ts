@@ -76,7 +76,9 @@ export class SlackOwner {
     let v: any = {}; try { v = JSON.parse(action.value ?? "{}"); } catch { return; }
     const ap = this.o.approvals[v.apId]; if (!ap) return;
     const req = this.o.requests[ap.requestId];
-    const decision = action.action_id === "qr_approve" ? "approve" : action.action_id === "qr_counter" ? "counter" : "deny";
+    const aid = String(action.action_id ?? "");
+    const decision = aid === "qr_approve" ? "approve" : aid.startsWith("qr_counter") ? "counter" : aid === "qr_deny" ? "deny" : undefined;
+    if (!decision) return;
     const counter = decision === "counter" ? (req.mode === "self_pay" ? { total: Number(v.amount) } : { deductibleAssist: Number(v.amount) }) : undefined;
     const r: any = this.o.decide(ap.id, decision, counter, "slack");
     if (r?.error) await this.api("chat.postEphemeral", { channel: this.approvals, user: this.owner, text: `Couldn't apply that: ${r.error}` }).catch(() => undefined);
@@ -102,7 +104,7 @@ export class SlackOwner {
     const text = `Approval needed · ${req.id} · ${c.title}\nDriver asks ${ask}.`;
     const val = (amount?: number) => JSON.stringify({ apId: ap.id, amount });
     const buttons: any[] = [{ type: "button", action_id: "qr_approve", style: "primary", text: { type: "plain_text", text: `Approve ${req.mode === "self_pay" ? money(ap.requested.total) : money(ap.requested.deductibleAssist)}` }, value: val() }];
-    for (const amt of this.presets(ap, req)) buttons.push({ type: "button", action_id: "qr_counter", text: { type: "plain_text", text: `Counter ${money(amt)}` }, value: val(amt) });
+    this.presets(ap, req).forEach((amt, i) => buttons.push({ type: "button", action_id: `qr_counter_${i + 1}`, text: { type: "plain_text", text: `Counter ${money(amt)}` }, value: val(amt) })); // action_ids must be unique per block
     buttons.push({ type: "button", action_id: "qr_deny", style: "danger", text: { type: "plain_text", text: "Deny" }, value: val() });
     const blocks = [
       { type: "section", text: { type: "mrkdwn", text: `:bell: *Approval needed* · ${req.id} · ${c.title} (${req.mode === "self_pay" ? "self-pay" : "insurance"})\nDriver asks *${ask}*. ${lim}` } },
