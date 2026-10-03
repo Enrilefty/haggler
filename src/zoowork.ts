@@ -31,13 +31,13 @@ const BUYER_PERSONA = `You are the driver's agent in Quote Room, a marketplace w
 - One negotiation round: exactly one ask_shop call, aimed where it could change the ranking. Self-pay: ask about price. Insurance: ask about incentives (deductibleAssist), never repair price.
 - Never book. Rank with rank_offers, then present_for_confirmation and wait for the driver.
 - Say that final repair details are confirmed at inspection. Insurance mode: never estimate the driver's out-of-pocket amount; the only allowed wording is: "${GUARDRAIL_INSURANCE}"
-Keep replies to one or two short sentences.`;
+After tool calls, reply with ONE short sentence. Only quote prices that the latest tool results returned.`;
 
 const shopPersona = (name: string, simulated: boolean) => `You are the quoting agent for ${name}${simulated ? " (a simulated demo shop)" : ""}. You answer repair requests under this shop's rules only.
 - To quote: call review_and_quote. It reviews the scope under this shop's rules and prices it with this shop's own numbers. Never type prices yourself.
 - If asked to clarify an item: call respond_clarification with the clarification id (optionally a one-line message).
 - If the driver's agent asks for more: if it's within your authority use revise_offer; if it's beyond your authority call request_exception with a one-line reason and wait for the owner.
-- Compete on fit, completeness, turnaround, parts, warranty and reviews, not just price. Be brief, professional and plain-spoken. Never offer anything the owner hasn't authorized.`;
+- Compete on fit, completeness, turnaround, parts, warranty and reviews, not just price. Be brief, professional and plain-spoken. After tool calls reply with one short sentence, no tables. Never offer anything the owner hasn't authorized.`;
 
 type Binding = { agentKey: string; agentId: string; sessionId?: string; cursor?: string; ctx: Ctx };
 
@@ -112,14 +112,18 @@ export class ZooWorkRuntime {
         const call: any = customToolUse(ev);
         if (call?.phase === "requested" && !handled.has(call.callId)) {
           handled.add(call.callId);
-          const value = await this.dispatch(b.ctx, call.toolName, call.input ?? {});
+          const value = await this.dispatch(b.ctx, call.name ?? call.toolName, call.input ?? {});
           await this.zc.resolveCustomToolCall(b.agentId, call.callId, { content: [{ type: "json", value }], resolvedBy: `quote-room:${agentKey}` } as any);
         }
         if (isRunFinished(ev)) break;
         if (Date.now() > deadline) throw new Error("turn_timeout");
       }
-      const actor = b.ctx.role === "buyer" ? "Driver's agent" : SHOP_ACTOR[b.ctx.shopId!];
-      if (text.trim()) this.o.log(requestId, "agent_says", actor, text.trim().slice(0, 600));
+      // Shops speak through their tool events; only the buyer's short wrap-up is shown, markdown stripped.
+      if (b.ctx.role === "buyer" && text.trim()) {
+        const clean = text.replace(/\*\*|__|`|#+\s|\|/g, "").replace(/\s+/g, " ").trim();
+        const sentence = (clean.match(/^.{20,220}?[.!?](\s|$)/) ?? [clean.slice(0, 220)])[0].trim();
+        if (sentence) this.o.log(requestId, "agent_says", "Driver's agent", sentence);
+      }
       return { ok: true, text };
     } catch (e: any) {
       this.lastError = String(e?.message ?? e);

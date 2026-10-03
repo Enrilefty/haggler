@@ -124,7 +124,7 @@ export class Flow {
   // ----- buyer ranks and presents -----
   private async buyerRank(req: Request) {
     if (this.useZw()) {
-      await this.zw!.turn(req.id, "buyer", `Negotiation is finished. Call rank_offers with priority "${req.priority}", then present_for_confirmation with a one-sentence summary. Do not book.`, 60_000);
+      await this.zw!.turn(req.id, "buyer", `Negotiation is finished. Call rank_offers with priority "${req.priority}", then present_for_confirmation with a one-sentence summary that uses ONLY the currentOffers numbers rank_offers returns. Do not book.`, 60_000);
     }
     if (!req.ranking) this.o.tool_rank_offers(this.ctx(req.id, "buyer"), { priority: req.priority });
     if (req.status !== "ready_for_confirmation") this.o.tool_present_for_confirmation(this.ctx(req.id, "buyer"), {});

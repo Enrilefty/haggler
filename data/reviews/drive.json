@@ -1,0 +1,9 @@
+{
+  "rating": 4.9,
+  "reviewCount": 49,
+  "themes": ["paint matching", "communication", "help with insurance"],
+  "certifications": [],
+  "source": { "label": "Google reviews as shown on driveautobody.com (fetched with Tavily)", "url": "https://driveautobody.com/testimonials", "fetchedAt": "2026-10-03T13:02:00-07:00" },
+  "simulated": false,
+  "status": "real public reviews"
+}

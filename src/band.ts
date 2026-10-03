@@ -14,6 +14,7 @@ export class BandBridge {
   lastError = "";
   private queue: Promise<unknown> = Promise.resolve();
   private prefix = "/agent";
+  private humans: string[] = [];
 
   private o: Orchestrator;
   constructor(o: Orchestrator) {
@@ -37,6 +38,7 @@ export class BandBridge {
       // Docs show both ".../api/v1/agent" as base and "/agent/me" as path; probe which one this deployment uses.
       try { await this.api("buyer", "GET", "/me"); } catch { this.prefix = "/agent/agent"; await this.api("buyer", "GET", "/me"); }
       this.status = "ready";
+      try { const peers: any = await this.api("buyer", "GET", "/peers"); this.humans = (peers?.data ?? []).filter((p: any) => String(p.type ?? "").toLowerCase() === "user" || !Object.values(this.ids).some((i) => i.id === p.id) && !/sim$|agent$|auto-body$/.test(String(p.name ?? ""))).map((p: any) => p.id); } catch { /* optional */ }
       this.o.on("room", (ev: RoomEvent, mentions: string[]) => { this.queue = this.queue.then(() => this.mirror(ev, mentions)).catch((e) => { this.lastError = String(e.message); }); });
     } catch (e: any) { this.status = "error"; this.lastError = String(e.message); }
   }
@@ -58,6 +60,9 @@ export class BandBridge {
       await this.api("buyer", "POST", `/chats/${chatId}/participants`, { participant: { participant_id: pid, role: "member" } })
         .catch(() => this.api("buyer", "POST", `/chats/${chatId}/participants`, { participant_id: pid }))
         .catch((e) => { this.lastError = String(e.message); });
+    }
+    for (const hid of this.humans) {
+      await this.api("buyer", "POST", `/chats/${chatId}/participants`, { participant: { participant_id: hid, role: "member" } }).catch(() => undefined);
     }
     req.roomRef = chatId;
     return chatId;

@@ -9,8 +9,13 @@
   "defaultMode": "insurance",
   "zip": "92583",
   "neededBy": "Next week",
-  "photos": [],
-  "photoNote": "Exterior photos from the shop's intake set (no VIN, plate or people shown).",
+  "photos": [
+    "elantra-front.jpg",
+    "elantra-left-front.jpg",
+    "elantra-left-fender.jpg",
+    "elantra-right-front.jpg"
+  ],
+  "photoNote": "Exterior photos from the shop intake set. Plates blurred, metadata removed.",
   "reviewNote": "Proposed scope is the damage visible from outside, reviewed by a person. Each shop may amend it. Final details are confirmed at teardown.",
   "source": "Anonymized from a real Drive Auto Body preliminary estimate (Sep 2026). Customer and claim details removed.",
   "realEstimateTotal": 14230.74,

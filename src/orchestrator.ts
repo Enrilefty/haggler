@@ -300,7 +300,7 @@ export class Orchestrator extends EventEmitter {
       };
     }));
     this.log(req.id, "ranking_ready", "Driver's agent", `Ranked by "${req.priority.replace("_", " ")}":\n${req.ranking.map((r, i) => `${i + 1}. ${SHOP_ACTOR[r.shopId]} — ${r.why || "—"}`).join("\n")}`, { ranking: req.ranking });
-    return { ok: true, ranking: req.ranking };
+    return { ok: true, ranking: req.ranking, currentOffers: offers.map((x) => this.offerView(x)), note: "Quote only these current numbers." };
   }
   tool_present_for_confirmation(ctx: Ctx, args: { summary?: string }) {
     this.assertBuyer(ctx); const req = this.requests[ctx.requestId];
