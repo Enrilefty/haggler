@@ -1,0 +1,8 @@
+.env
+.env.*
+.state/
+node_modules/
+data/raw/
+.git/
+*.sqlite*
+deploy-env.yaml

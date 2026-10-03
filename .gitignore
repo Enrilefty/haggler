@@ -4,3 +4,4 @@ data/raw/
 *.sqlite
 *.sqlite-journal
 .state/
+deploy-env.yaml
