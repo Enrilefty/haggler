@@ -139,8 +139,12 @@ export function searchHistory(q: HistoryQuery): HistoryResult {
     .map((x) => x.j);
 
   const areaKeys = areas.length ? areas : ["front", "rear", "left", "right", "top"];
-  const areaWord = areas.length ? areas.map((a) => AREA_WORD[a] ?? a).join(" / ") : "all";
+  const areaWord = areas.map((a) => AREA_WORD[a] ?? a).join(" / ");
   const n = candidates.length;
+  // Plain English lead-in: "On 23 similar front-end insurance jobs" when the area matched,
+  // otherwise "Across 86 of Gio's insurance jobs" (no area given, or too few matches for it).
+  const lead = (payer: string) => (areas.length && !widened ? `On ${n} similar ${areaWord} ${payer} jobs` : `Across ${n} of Gio's ${payer} jobs`);
+  const who = areas.length && !widened ? "Gio" : "he";
 
   if (mode === "insurance") {
     const best = new Map<string, AddEntry>();
@@ -175,7 +179,7 @@ export function searchHistory(q: HistoryQuery): HistoryResult {
       const top = [proc, hid].filter((x): x is PlaybookAdd => !!x);
       if (!top.length) top.push(...adds.slice(0, 2));
       parts.push(
-        `On ${n} ${widened ? "insurance jobs (closest matches across all areas)" : `similar ${areaWord} insurance jobs`} Gio wrote ` +
+        `${lead("insurance")}${widened ? ` (few ${areaWord} jobs, so all areas)` : ""}, ${who} wrote ` +
           (top.length
             ? top.map((t) => `${label(t.catalogId)} ${pct(t.rate)} of the time`).join(" and ")
             : "the visible damage only") +
@@ -202,10 +206,10 @@ export function searchHistory(q: HistoryQuery): HistoryResult {
   } else {
     const topRepair = (repairs.length ? repairs : repairsAll).find((r) => r.rate > 0);
     parts.push(
-      `On ${n} ${widened ? "self-pay jobs (closest matches across all areas)" : `${areaWord} self-pay jobs`} ` +
+      `${lead("self-pay")}${widened ? ` (few ${areaWord} jobs, so all areas)` : ""}, ` +
         (topRepair
-          ? `Gio repaired the ${label(topRepair.catalogId)} instead of replacing it ${pct(topRepair.rate)} of the time (n=${topRepair.n})`
-          : "Gio mostly replaced damaged panels") +
+          ? `${who} repaired the ${label(topRepair.catalogId)} instead of replacing it ${pct(topRepair.rate)} of the time (n=${topRepair.n})`
+          : `${who} mostly replaced damaged panels`) +
         `, and ${pct(nonOem)} of his major parts were aftermarket or used.`,
     );
     const s = skips[0];

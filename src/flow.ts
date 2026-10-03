@@ -7,6 +7,8 @@ import * as cat from "./catalog.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const assistOf = (o: any) => (o?.incentives ?? []).find((i: any) => i.kind === "deductible_assist")?.value ?? 0;
+// Incentive value as the ranking counts it (rental coordination has no cash value).
+const incentiveTotal = (o: any) => (o?.incentives ?? []).filter((i: any) => i.kind !== "rental_coordination").reduce((s: number, i: any) => s + (Number(i.value) || 0), 0);
 
 export class Flow {
   private o: Orchestrator; private zw?: ZooWorkRuntime;
@@ -17,7 +19,7 @@ export class Flow {
   }
   private useZw() { return !!this.zw?.ready; }
   private ctx(requestId: string, role: "buyer" | "shop", shopId?: string): Ctx { return { requestId, role, shopId, via: "scripted" }; }
-  private note(req: Request, text: string) { this.o.log(req.id, "system_note", "Quote Room", text); }
+  private note(req: Request, text: string) { this.o.log(req.id, "system_note", "Haggler", text); }
 
   async run(req: Request) {
     const t0 = Date.now(); const timings: Record<string, number> = (req.timings ??= {});
@@ -140,7 +142,7 @@ export class Flow {
     if (this.useZw()) {
       const waiting = this.o.waitFor(key, 75_000);
       const c = this.o.cases[req.caseId];
-      const r = await this.zw!.turn(req.id, `shop:${shopId}`, `New ${req.mode === "self_pay" ? "self-pay" : "insurance"} repair request ${req.id} in the Quote Room: ${c.title}. Review the proposed scope and post your offer with review_and_quote.`, 75_000);
+      const r = await this.zw!.turn(req.id, `shop:${shopId}`, `New ${req.mode === "self_pay" ? "self-pay" : "insurance"} repair request ${req.id} in the Haggler: ${c.title}. Review the proposed scope and post your offer with review_and_quote.`, 75_000);
       const offer = await Promise.race([waiting, sleep(r.ok ? 3000 : 0).then(() => this.o.latest(req, shopId))]);
       if (offer || this.o.latest(req, shopId)) return;
       this.note(req, `${SHOP_ACTOR[shopId]}'s agent didn't answer in time — using its configured rules (fallback).`);
@@ -154,7 +156,9 @@ export class Flow {
     if (d.kind === "clarify") {
       if (this.useZw()) {
         const dyn = !!this.o.cases[req.caseId].dynamic;
-        await this.zw!.turn(req.id, `shop:${d.shopId}`, `The driver's agent asks you to clarify item "${d.clarification.itemId}" (clarificationId: ${d.clarification.id}): ${d.clarification.question}\nAnswer with respond_clarification${dyn ? ` and decide: decision "add" (include it; the server prices it) or "dispute" (you don't think it's needed from the photos). Decide the way your shop would, with a one-line message` : ""}.`, 60_000);
+        // A clarify turn still queued behind this shop's other turns is skipped once the question
+        // is closed (answered by rule after the wait), so it never delays the shop's ask turn.
+        await this.zw!.turn(req.id, `shop:${d.shopId}`, `The driver's agent asks you to clarify item "${d.clarification.itemId}" (clarificationId: ${d.clarification.id}): ${d.clarification.question}\nAnswer with respond_clarification${dyn ? ` and decide: decision "add" (include it; the server prices it) or "dispute" (you don't think it's needed from the photos). Decide the way your shop would, with a one-line message` : ""}.`, 60_000, () => d.clarification.status !== "open" || this.o.closed(req));
       }
       if (d.clarification.status === "open") this.o.tool_respond_clarification(this.ctx(req.id, "shop", d.shopId), { clarificationId: d.clarification.id });
     }
@@ -164,7 +168,14 @@ export class Flow {
         const t = req.mode === "self_pay"
           ? `The driver's agent asks: "${d.ask.text}" (target total $${d.ask.target.total}). Your autonomous limit is $${lim.autonomousLimit}. If the target is at or above it, use revise_offer; otherwise call request_exception with a one-line reason and wait for the owner.`
           : `The driver's agent asks: "${d.ask.text}" (target $${d.ask.target.deductibleAssist} toward the deductible). Your cap for this job size is $${lim.deductibleCap}. Within the cap use revise_offer; above it call request_exception and wait for the owner.`;
-        await this.zw!.turn(req.id, `shop:${d.shopId}`, t, 200_000);
+        // The ask never waits forever behind leftover turns: after 90s without the agent revising or
+        // opening an approval, the shop's configured rules answer (one approval per ask prevents doubles).
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        await Promise.race([
+          this.zw!.turn(req.id, `shop:${d.shopId}`, t, 200_000, () => this.askHandled(req, d.ask.id) || this.o.closed(req)),
+          new Promise((res) => { timer = setTimeout(res, 90_000); }),
+        ]);
+        clearTimeout(timer);
         // Handled if the agent revised, or opened an approval (even if the turn itself was cut off:
         // the pending approval still resolves on its own). Never open a second approval.
         if (this.askHandled(req, d.ask.id)) return;
@@ -226,34 +237,58 @@ export class Flow {
     }
   }
 
-  // ----- buyer negotiates (exactly one ask) -----
+  // ----- best-and-final targets: one per shop, aimed at beating the current leader -----
+  // Self-pay: non-leaders are asked ~4% under the leader's total (never at or above their own
+  // current total); the leader is asked for a small (~2%) improvement. Insurance: every shop is asked
+  // for deductible help above the best competing incentive value (the leader: +$100 on its own help).
+  bestAndFinalTargets(req: Request): { shopId: string; total?: number; deductibleAssist?: number; message: string }[] {
+    const offers = this.o.latestOffers(req); if (!offers.length) return [];
+    const ranking = this.o.previewRanking(req);
+    const leaderId = (ranking.find((r) => r.recommended) ?? ranking.find((r) => r.eligible) ?? ranking[0])?.shopId;
+    const leader = offers.find((o) => o.shopId === leaderId) ?? offers[0];
+    const r10 = (n: number) => Math.round(n / 10) * 10, up25 = (n: number) => Math.ceil(n / 25) * 25;
+    const pri = req.priority.replace("_", " ");
+    return offers.map((o) => {
+      if (req.mode === "self_pay") {
+        const cur = o.price!.total, lead = leader.price!.total;
+        if (o.shopId === leader.shopId) {
+          const t = Math.min(r10(cur * 0.98), cur - 10);
+          return { shopId: o.shopId, total: t, message: `Your offer leads on "${pri}" at $${cur}. Best and final: can you do $${t}?` };
+        }
+        const t = Math.min(r10(lead * 0.96), r10(cur * 0.98), cur - 10);
+        // Never ask a shop for more than 15% off its own price; a clamped ask doesn't cite the leader.
+        const floor = r10(cur * 0.85);
+        if (t < floor) return { shopId: o.shopId, total: floor, message: `Best and final: can you do $${floor}?` };
+        return { shopId: o.shopId, total: t, message: `The leading offer on "${pri}" is $${lead}. Best and final: can you do $${t}?` };
+      }
+      const cur = assistOf(o);
+      const bestOther = Math.max(0, ...offers.filter((x) => x.shopId !== o.shopId).map((x) => incentiveTotal(x)));
+      const t = o.shopId === leader.shopId ? up25(Math.max(cur + 100, bestOther + 50)) : up25(Math.max(bestOther + 50, cur + 50));
+      const msg = o.shopId === leader.shopId
+        ? `Your offer leads on "${pri}". Best and final: can you do $${t} toward the deductible?`
+        : `Another shop's incentives add up to $${bestOther}. Best and final: can you do $${t} toward the deductible?`;
+      return { shopId: o.shopId, deductibleAssist: t, message: msg };
+    });
+  }
+
+  // ----- buyer negotiates: one best-and-final ask per shop, all in one round -----
   private async buyerNegotiate(req: Request) {
-    const offers = this.o.latestOffers(req);
-    const drive = offers.find((o) => o.shopId === "drive"); if (!drive) return;
-    let target: any;
-    if (req.mode === "self_pay") {
-      const others = offers.filter((o) => o.shopId !== "drive").map((o) => o.price!.total);
-      const cheapest = Math.min(...others);
-      if (cheapest >= drive.price!.total) target = { total: Math.round(drive.price!.total * 0.98 / 10) * 10, message: `You're already the lowest. Any room on $${drive.price!.total}?` };
-      else { const mid = Math.floor((drive.price!.total + cheapest) / 2 / 10) * 10; target = { total: mid, message: `Your scope is the most complete, but another posted offer is $${cheapest}. Can you do $${mid}?` }; }
-    } else {
-      const cap = (this.o.limits(req, "drive").deductibleCap as number) ?? 0;
-      const cur = assistOf(drive);
-      const best = Math.max(...offers.filter((o) => o.shopId !== "drive").map((o) => (o.incentives ?? []).reduce((s, i) => s + i.value, 0)), 0);
-      const want = Math.max(cap, cur) + 100;
-      target = { deductibleAssist: want, message: `You're at $${cur} toward the deductible and another shop's incentives add up to $${best}. Can you do $${want} toward the deductible?` };
-    }
-    // Wakes when ANY shop's ask is answered (revised, approved, countered, denied, expired, held).
-    const waiting = this.o.waitFor(`askdone:${req.id}`, 240_000);
+    const targets = this.bestAndFinalTargets(req); if (!targets.length) return;
     if (this.useZw()) {
-      await this.zw!.turn(req.id, "buyer", `Clarifications are done. Current offers:\n${JSON.stringify((this.o.tool_get_offers(this.ctx(req.id, "buyer")) as any).offers).slice(0, 5000)}\nMake exactly ONE ask_shop call. Suggested: shopId "drive", ${req.mode === "self_pay" ? `total ${target.total}` : `deductibleAssist ${target.deductibleAssist}`}, message: "${target.message}"`, 60_000);
+      const sugg = targets.map((t) => `- shopId "${t.shopId}", ${req.mode === "self_pay" ? `total ${t.total}` : `deductibleAssist ${t.deductibleAssist}`}, message: "${t.message}"`).join("\n");
+      await this.zw!.turn(req.id, "buyer", `Clarifications are done. Current offers:\n${JSON.stringify((this.o.tool_get_offers(this.ctx(req.id, "buyer")) as any).offers).slice(0, 5000)}\nBest-and-final round: call ask_shop ONCE for EACH shop (${targets.length} calls), each aimed at beating the current leader on the customer's priority. Suggested:\n${sugg}`, 60_000);
     }
-    if (!req.asks.length) {
-      const r: any = this.o.tool_ask_shop(this.ctx(req.id, "buyer"), { shopId: "drive", ...target });
-      if (r?.error) return;
+    // Any shop the agent didn't ask gets the scripted best-and-final ask.
+    for (const t of targets) {
+      if (req.asks.some((a) => a.shopId === t.shopId)) continue;
+      const { shopId, ...rest } = t;
+      this.o.tool_ask_shop(this.ctx(req.id, "buyer"), { shopId, ...rest });
     }
-    if (req.asks[0]?.outcome) return;
-    await waiting;
+    // Owner approvals run in parallel; ranking waits until EVERY ask is answered or the round times out.
+    const deadline = Date.now() + 240_000;
+    while (!this.o.allAsksDone(req) && Date.now() < deadline) await this.o.waitFor(`askdone:${req.id}`, deadline - Date.now());
+    const open = req.asks.filter((a) => !a.outcome);
+    if (open.length) this.note(req, `${open.map((a) => SHOP_ACTOR[a.shopId]).join(" and ")} didn't answer the best-and-final ask in time — holding their current offers.`);
   }
 
   // ----- buyer ranks and presents -----

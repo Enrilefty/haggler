@@ -66,7 +66,7 @@ export class TelegramOwner {
   }
   private async sendOutcome(req: Request, offer: Offer) {
     const c = this.o.cases[req.caseId];
-    if (offer.shopId === "drive") await this.send(`✅ You won · ${c.title}\n${this.o.describeOffer(offer)}\n(simulated booking)`);
+    if (offer.shopId === "drive") await this.send(`✅ You won · ${c.title}\n${this.o.describeOffer(offer)}\nNo payment taken; final details are confirmed at inspection.`);
     else if (req.shops.includes("drive")) await this.send(`Lost · driver chose ${SHOP_ACTOR[offer.shopId]} (${req.priority.replace("_", " ")}).`);
   }
   private async poll() {
@@ -82,7 +82,7 @@ export class TelegramOwner {
     if (!this.ownerChatId && u.message) {
       // First person to message the new bot becomes the owner chat (setup step).
       this.ownerChatId = chatId; writeFileSync(this.stateFile, JSON.stringify({ ownerChatId: chatId })); this.status = "ready";
-      await this.send("Quote Room owner alerts are connected. Approvals for Drive Auto Body will arrive here.");
+      await this.send("Haggler owner alerts are connected. Approvals for Drive Auto Body will arrive here.");
       return;
     }
     if (chatId !== this.ownerChatId) return; // allowlist

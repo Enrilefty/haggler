@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quote Room Admin</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Haggler Admin</title>
 <style>
 body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#F3F4F6;color:#0D1424}
 main{max-width:860px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
@@ -7,32 +7,158 @@ main{max-width:860px;margin:0 auto;padding:20px;display:flex;flex-direction:colu
 h1{font-size:20px;margin:0} h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#5D6678;margin:0 0 10px}
 button{font:600 14px system-ui;padding:8px 12px;border-radius:8px;border:1px solid #CBD2DD;background:#fff;cursor:pointer}
 button.ok{background:#14865B;color:#fff;border:0} button.no{background:#C93434;color:#fff;border:0}
+button:disabled{opacity:.45;cursor:not-allowed}
 input{font:15px system-ui;padding:8px;border:1px solid #CBD2DD;border-radius:8px}
 pre{white-space:pre-wrap;font:12px ui-monospace,Consolas,monospace;background:#F7F8FA;padding:10px;border-radius:8px;max-height:260px;overflow:auto}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .warn{color:#B86E00;font-size:13px}
+.msg{font-size:14px;margin:10px 0 0;padding:8px 10px;border-radius:8px;background:#FBE8E4;color:#9E2A1E}
+.msg.good{background:#E3F3EA;color:#0B5C3C}
+.msg:empty{display:none}
+.ap{border-top:1px solid #E2E5EB;padding:12px 0}
+.ap:first-child{border-top:0;padding-top:0}
+.ap .h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ap .h b{font-size:16px}
+.ap .own{font-size:12px;font-weight:600;color:#0B5C3C;background:#E3F3EA;border-radius:999px;padding:2px 8px}
+.ap .meta{color:#5D6678;font-size:13px;margin:4px 0 8px}
+.ap .reason{font-size:14px;margin:0 0 8px}
+.hash{font:12px ui-monospace,Consolas,monospace;color:#5D6678;margin:0 0 10px;word-break:break-all}
+.hash b{font:600 11px system-ui;letter-spacing:.06em;text-transform:uppercase;color:#5D6678;display:block;margin-bottom:2px}
+.hash span{display:inline-block;margin-right:14px}
+.thumbs{display:flex;gap:6px;margin:0 0 8px;flex-wrap:wrap}
+.thumbs img{width:88px;height:66px;object-fit:cover;border-radius:6px;background:#E2E5EB}
 </style></head>
 <body><main>
-<h1>Quote Room · Admin</h1>
-<div class="p"><h2>PIN</h2><input id="pin" type="password" placeholder="ADMIN_PIN from .env"> <span class="warn">Owner decisions here are an operator override, used only if Slack fails. They are logged as such.</span></div>
-<div class="p"><h2>Pending owner approvals</h2><div id="aps">None.</div></div>
-<div class="p"><h2>Shops in new rooms</h2><div class="row"><label><input type="checkbox" id="shopc"> Include QuickFix Auto Body (simulated, Shop C)</label></div></div>
+<h1>Haggler · Admin</h1>
+<div class="p"><h2>PIN</h2><form id="pinForm" class="row" style="display:inline-flex"><input id="pin" type="password" placeholder="ADMIN_PIN from .env" autocomplete="off"> <button type="submit">Unlock</button></form> <span class="warn">Owner decisions here are an operator override, used only if Slack fails. They are logged as such.</span><p class="msg" id="msg" role="alert"></p></div>
+<div class="p"><h2>Pending owner approvals</h2><div id="aps">Enter the PIN to see approvals.</div></div>
+<div class="p"><h2>Shops in new rooms</h2><div class="row"><label><input type="checkbox" id="shopc"> Include QuickFix Auto Body</label></div></div>
 <div class="p"><h2>Integrations</h2><pre id="st"></pre></div>
-<div class="p"><h2>Requests</h2><div id="reqs"></div></div>
+<div class="p"><h2>Requests</h2><div id="reqs">Enter the PIN to see requests.</div></div>
 </main>
 <script>
+"use strict";
 const $ = (id) => document.getElementById(id);
-const post = (u, b) => fetch(u, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ ...b, pin: $("pin").value }) }).then((r) => r.json());
-async function tick(){
-  const aps = await (await fetch("/api/admin/approvals")).json();
-  $("aps").innerHTML = aps.length ? aps.map((a) => `<div class="row" style="margin:6px 0"><b>${a.id}</b> ${a.requestId} · ${a.requested.total ? "$" + a.requested.total : "$" + a.requested.deductibleAssist + " deductible help"} (agent limit ${a.agentLimit.total ? "$" + a.agentLimit.total : "$" + a.agentLimit.deductibleCap})
-    <button class="ok" onclick="dec('${a.id}','approve')">Approve</button> <input id="c_${a.id}" placeholder="counter" size="7"> <input id="x_${a.id}" placeholder="extra (e.g. Thu 9AM)" size="14"> <button onclick="dec('${a.id}','counter')">Counter</button> <button class="no" onclick="dec('${a.id}','deny')">Deny</button></div>`).join("") : "None.";
-  $("st").textContent = JSON.stringify(await (await fetch("/api/status")).json(), null, 2);
-  const rs = await (await fetch("/api/requests")).json();
-  $("reqs").innerHTML = rs.map((r) => `<div><a href="/?r=${r.id}" target="_blank">${r.id}</a> · ${r.caseId} · ${r.mode} · ${r.status}</div>`).join("") || "None yet.";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const money = (n) => n == null || !Number.isFinite(Number(n)) ? "—" : "$" + Math.round(Number(n)).toLocaleString("en-US");
+const SHOPS = { drive: "Drive Auto Body", "shop-b": "Bayline Collision", "shop-c": "QuickFix Auto Body" };
+const OWNERS = { drive: "Owner (Gio)", "shop-b": "Owner (Bayline)", "shop-c": "Owner (QuickFix)" };
+const reqCache = {}; // requestId -> { shops, hashes } (photo hashes never change after upload)
+let lockedUntil = 0;
+// The PIN is used for reads only once it's submitted (Enter / Unlock / leaving the field), so a half-typed PIN
+// never burns lockout attempts. A PIN the server rejected isn't retried until it changes.
+let activePin = "", badPin = "";
+// Admin text never says "simulated" or "demo".
+const scrub = (s) => String(s ?? "").replace(/\s*\((?:simulated|demo)[^)]*\)/gi, "").replace(/\b(?:simulated|demo)\b/gi, "prototype");
+
+function waitText(sec){ sec = Math.max(1, Math.ceil(Number(sec) || 0)); if (sec < 60) return `${sec} seconds`; const m = Math.ceil(sec / 60); return `${m} minute${m === 1 ? "" : "s"}`; }
+function say(text, good){ $("msg").textContent = text || ""; $("msg").classList.toggle("good", !!good); }
+const lockMsg = (sec) => `Too many wrong PINs. Admin is locked for about ${waitText(sec)}.`;
+const PIN_MSG = "Wrong PIN, or ADMIN_PIN isn't set on the server.";
+const pinHeaders = (extra) => ({ ...(extra || {}), "x-admin-pin": activePin || $("pin").value });
+// PIN-gated GET. Returns parsed JSON, or null after showing the 403/429 message inline.
+async function getAdmin(u){
+  if (!activePin || activePin === badPin || Date.now() < lockedUntil) return null;
+  const pin = activePin;
+  let res, d = null;
+  try { res = await fetch(u, { headers: { "x-admin-pin": pin } }); } catch { say("Can't reach the server."); return null; }
+  try { d = await res.json(); } catch {}
+  if (res.status === 429 || d?.error === "pin_locked"){
+    const sec = Number(d?.retryAfterSec ?? res.headers.get("retry-after")) || 600;
+    lockedUntil = Date.now() + sec * 1000; say(lockMsg(sec)); return null;
+  }
+  if (res.status === 403 || d?.error === "pin_required"){ if (pin === activePin){ badPin = pin; say(PIN_MSG); } return null; }
+  if (!res.ok || d == null){ say(`Couldn't load ${u}: ${d?.error || res.status}`); return null; }
+  if ($("msg").textContent === PIN_MSG || /^Too many wrong PINs/.test($("msg").textContent)) say("");
+  return d;
 }
-async function dec(id, d){ const n = Number(($("c_" + id) || {}).value || 0); const extra = ($("x_" + id) || {}).value || undefined;
-  const r = await post(`/api/approvals/${id}/decision`, { decision: d, counter: d === "counter" ? { total: n, deductibleAssist: n, extra } : undefined }); if (r.error) alert(r.error); tick(); }
-$("shopc").onchange = async (e) => { const r = await post("/api/admin/shop", { id: "shop-c", enabled: e.target.checked }); if (r.error) { alert(r.error); e.target.checked = !e.target.checked; } };
-tick(); setInterval(tick, 2000);
+function setPin(){
+  const v = $("pin").value;
+  if (v === activePin && v !== badPin) return;
+  activePin = v; if (v !== badPin) badPin = "";
+  apKey = ""; reqKey = "";
+  if (!v){ $("aps").textContent = "Enter the PIN to see approvals."; $("reqs").textContent = "Enter the PIN to see requests."; say(""); return; }
+  loop();
+}
+// Returns { ok, d } and turns PIN failures / lockouts into an inline message instead of an alert.
+async function post(u, b){
+  if (Date.now() < lockedUntil){ say(lockMsg((lockedUntil - Date.now()) / 1000)); return { ok: false, d: {} }; }
+  let res, d = {};
+  try { res = await fetch(u, { method: "POST", headers: pinHeaders({ "content-type": "application/json" }), body: JSON.stringify({ ...b, pin: activePin || $("pin").value }) }); }
+  catch { say("Can't reach the server."); return { ok: false, d }; }
+  try { d = await res.json(); } catch {}
+  if (res.status === 429 || d.error === "pin_locked"){
+    const sec = Number(d.retryAfterSec ?? res.headers.get("retry-after")) || 600;
+    lockedUntil = Date.now() + sec * 1000;
+    say(lockMsg(sec)); return { ok: false, d };
+  }
+  if (res.status === 403 || d.error === "pin_required"){ say(PIN_MSG); return { ok: false, d }; }
+  if (!res.ok || d.error){ say(`Didn't go through: ${d.error || res.status}`); return { ok: false, d }; }
+  say(""); return { ok: true, d };
+}
+function hashList(h){
+  return (Array.isArray(h) ? h : Object.values(h || {})).map((x) => String(typeof x === "string" ? x : x?.sha256 || x?.hash || "").replace(/^sha-?256[:-]/i, "")).filter((x) => /^[0-9a-f]{12,}$/i.test(x));
+}
+async function requestInfo(id){
+  if (reqCache[id]) return reqCache[id];
+  try {
+    const r = await (await fetch(`/api/requests/${encodeURIComponent(id)}`)).json();
+    if (!r || r.error) return { shops: {}, hashes: [] };
+    return (reqCache[id] = { shops: r.shopsInfo || {}, hashes: hashList(r.case?.photoHashes || r.photoHashes), mode: r.mode, title: r.case?.title, photos: r.case?.photos || [] });
+  } catch { return { shops: {}, hashes: [] }; }
+}
+const shopNameOf = (a, info) => a.context?.shop || a.shopName || info?.shops?.[a.shopId]?.display || info?.shops?.[a.shopId]?.name || SHOPS[a.shopId] || a.shopId;
+const ownerOf = (a, name) => a.context?.owner || a.ownerLabel || OWNERS[a.shopId] || `Owner (${String(name).split(" ")[0]})`;
+
+let apKey = "";
+async function renderApprovals(aps){
+  // Approvals carry context (shop, owner, photos, hashes); older servers need a request lookup.
+  const infos = await Promise.all(aps.map(async (a) => a.context ? { shops: {}, hashes: hashList(a.context.photoHashes), title: a.context.caseTitle, photos: a.context.photos || [] } : requestInfo(a.requestId)));
+  // Only rebuild when the pending set changes, so a half-typed counter survives the 2s refresh.
+  const key = JSON.stringify(aps.map((a, i) => [a.id, a.status, infos[i].hashes.length]));
+  if (key === apKey) return; apKey = key;
+  $("aps").innerHTML = aps.length ? aps.map((a, i) => {
+    const info = infos[i], name = shopNameOf(a, info), owner = ownerOf(a, name);
+    const ask = a.requested?.total != null ? money(a.requested.total) : `${money(a.requested?.deductibleAssist)} deductible help`;
+    const limit = a.agentLimit ? (a.agentLimit.total != null ? money(a.agentLimit.total) : `${money(a.agentLimit.deductibleCap)} deductible cap`) : "";
+    const hs = info.hashes;
+    return `<div class="ap"><div class="h"><b>${esc(name)}</b><span class="own">${esc(owner)}</span></div>
+      <div class="meta">${esc(a.id)} · <a href="/room/${encodeURIComponent(a.requestId)}" target="_blank" rel="noopener">${esc(a.requestId)}</a>${info.title ? ` · ${esc(info.title)}` : ""} · asks ${esc(ask)}${limit ? ` (agent limit ${esc(limit)})` : ""}</div>
+      ${a.reason ? `<p class="reason">${esc(scrub(a.reason))}</p>` : ""}
+      ${(info.photos || []).length ? `<div class="thumbs">${info.photos.slice(0, 4).map((u) => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}</div>` : ""}
+      ${hs.length ? `<p class="hash"><b>Photo fingerprints (SHA-256)</b>${hs.map((h, n) => `<span>${n + 1} · ${esc(h.slice(0, 12))}</span>`).join("")}</p>` : ""}
+      <div class="row"><button class="ok" data-d="approve" data-id="${esc(a.id)}">Approve</button> <input id="c_${esc(a.id)}" placeholder="counter" size="7" inputmode="numeric"> <input id="x_${esc(a.id)}" placeholder="extra (e.g. Thu 9AM)" size="14"> <button data-d="counter" data-id="${esc(a.id)}">Counter</button> <button class="no" data-d="deny" data-id="${esc(a.id)}">Deny</button></div></div>`;
+  }).join("") : "None.";
+}
+let reqKey = "";
+async function tick(){
+  try { const st = scrub(JSON.stringify(await (await fetch("/api/status")).json(), null, 2)); if ($("st").textContent !== st) $("st").textContent = st; } catch {}
+  if (!activePin) return; // approvals and the request list need the PIN
+  try { const aps = await getAdmin("/api/admin/approvals"); if (aps) await renderApprovals(Array.isArray(aps) ? aps : []); } catch {}
+  try {
+    const rs = await getAdmin("/api/requests");
+    if (rs){
+      const html = (Array.isArray(rs) ? rs : []).map((r) => `<div><a href="/?r=${encodeURIComponent(r.id)}" target="_blank" rel="noopener">${esc(r.id)}</a> · ${esc(r.caseId)} · ${esc(r.mode)} · ${esc(r.phase || r.status)}</div>`).join("") || "None yet.";
+      if (html !== reqKey){ reqKey = html; $("reqs").innerHTML = html; }
+    }
+  } catch {}
+}
+$("aps").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-d]"); if (!b) return;
+  const id = b.dataset.id, d = b.dataset.d;
+  const n = Number(($("c_" + id) || {}).value || 0), extra = ($("x_" + id) || {}).value || undefined;
+  if (d === "counter" && !(n > 0)){ say("Enter a counter amount first."); return; }
+  b.disabled = true;
+  const r = await post(`/api/approvals/${encodeURIComponent(id)}/decision`, { decision: d, counter: d === "counter" ? { total: n, deductibleAssist: n, extra } : undefined });
+  b.disabled = false;
+  if (r.ok){ say(`Sent: ${d} on ${id}.`, true); apKey = ""; }
+  tick();
+});
+$("shopc").onchange = async (e) => { const r = await post("/api/admin/shop", { id: "shop-c", enabled: e.target.checked }); if (!r.ok) e.target.checked = !e.target.checked; };
+$("pinForm").addEventListener("submit", (e) => { e.preventDefault(); setPin(); });
+$("pin").addEventListener("change", setPin);
+$("pin").addEventListener("input", () => { if (!$("pin").value) setPin(); });
+let ticking = false;
+async function loop(){ if (ticking) return; ticking = true; try { await tick(); } finally { ticking = false; } }
+loop(); setInterval(loop, 2000);
 </script></body></html>

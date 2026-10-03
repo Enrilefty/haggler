@@ -2,7 +2,7 @@
 // agent's own BAND identity, with @mentions. The room is the shared, auditable deal record.
 import { env } from "./config.ts";
 import type { Orchestrator, RoomEvent } from "./orchestrator.ts";
-import { SHOP_ACTOR } from "./orchestrator.ts";
+import { SHOP_ACTOR, SHOP_OWNER } from "./orchestrator.ts";
 
 const ROOT = "https://app.band.ai/api/v1";
 type Ident = { key: string; id: string; name: string };
@@ -42,11 +42,20 @@ export class BandBridge {
       this.o.on("room", (ev: RoomEvent, mentions: string[]) => { this.queue = this.queue.then(() => this.mirror(ev, mentions)).catch((e) => { this.lastError = String(e.message); }); });
     } catch (e: any) { this.status = "error"; this.lastError = String(e.message); }
   }
-  private who(actor: string) {
-    if (actor === SHOP_ACTOR.drive || actor.startsWith("Owner")) return "drive";
-    if (actor === SHOP_ACTOR["shop-b"]) return "shop-b";
-    if (actor === SHOP_ACTOR["shop-c"]) return "shop-c";
-    return "buyer";
+  // BAND identity that speaks an event: the shop's own identity for its agent and its owner's
+  // decisions ("Owner (Bayline)" -> shop-b, "Owner (QuickFix)" -> shop-c, "Owner (Gio)" -> drive;
+  // the approval's shopId wins when the payload has one). Falls back to the buyer if that shop has no identity.
+  private who(ev: RoomEvent) {
+    const actor = String(ev.actor ?? "");
+    let id = "buyer";
+    if (isOwner(actor)) {
+      const fromPayload = (ev.payload as any)?.approval?.shopId;
+      id = typeof fromPayload === "string" && SHOP_ACTOR[fromPayload] ? fromPayload
+        : Object.keys(SHOP_OWNER).find((s) => SHOP_OWNER[s] === actor) ?? (/gio|drive/i.test(actor) ? "drive" : "buyer");
+    } else {
+      id = Object.keys(SHOP_ACTOR).find((s) => SHOP_ACTOR[s] === actor) ?? "buyer";
+    }
+    return this.ids[id] ? id : "buyer";
   }
   private async ensureRoom(requestId: string) {
     if (this.rooms[requestId]) return this.rooms[requestId];
@@ -69,12 +78,14 @@ export class BandBridge {
   }
   private async mirror(ev: RoomEvent, mentionShopIds: string[]) {
     const chatId = await this.ensureRoom(ev.requestId);
-    const speaker = this.who(ev.actor);
+    const speaker = this.who(ev);
     let targets = mentionShopIds.length ? mentionShopIds.filter((s) => s !== speaker) : [speaker === "buyer" ? "drive" : "buyer"];
     if (targets.includes("buyer") && speaker === "buyer") targets = ["drive"];
     const mentions = targets.map((t) => this.ids[t]).filter(Boolean).map((i) => ({ id: i.id, name: i.name }));
     const prefix = mentions.map((m) => `@${m.name}`).join(" ");
-    const content = `${prefix} ${ev.actor === "Owner (Gio)" ? "[Owner decision] " : ""}${ev.text}`.slice(0, 3500);
+    const content = `${prefix} ${isOwner(String(ev.actor ?? "")) ? "[Owner decision] " : ""}${ev.text}`.slice(0, 3500);
     await this.api(speaker, "POST", `/chats/${chatId}/messages`, { message: { content, mentions } });
   }
 }
+// Any "Owner (…)" actor is an owner decision.
+function isOwner(actor: string) { return actor.startsWith("Owner ("); }

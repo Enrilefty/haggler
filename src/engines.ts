@@ -127,6 +127,13 @@ function norm(values: number[], higherIsBetter: boolean): { scores: number[]; eq
   if (max === min) return { scores: values.map(() => 1), equal: true }; // equal values: all 1, excluded from "why"
   return { scores: values.map((v) => (higherIsBetter ? (v - min) / (max - min) : (max - v) / (max - min))), equal: false };
 }
+// Priorities whose own metric is decisive among eligible offers (the weighted score only breaks ties).
+// best_value and best_reviewed rank on the weighted score alone.
+const PRIMARY: Partial<Record<Priority, { k: string; val: (i: RankInput) => number; lowerIsBetter: boolean }>> = {
+  lowest_price: { k: "price", val: (i) => i.total ?? Number.POSITIVE_INFINITY, lowerIsBetter: true },
+  best_incentives: { k: "incentives", val: (i) => i.incentiveValue ?? 0, lowerIsBetter: false },
+  fastest: { k: "turnaround", val: (i) => i.turnaroundDays, lowerIsBetter: true },
+};
 const reviewScore = (rating?: number | null, count?: number | null) =>
   rating == null || count == null ? 0 : (rating / 5) * Math.min(1, Math.log10(count + 1) / 2);
 
@@ -151,8 +158,13 @@ export function rank(mode: Mode, priority: Priority, inputs: RankInput[]): Ranke
     for (const [k, wk] of Object.entries(w)) { const v = crit[k].scores[idx]; breakdown[k] = Math.round(v * 100) / 100; s += (wk as number) * v; }
     return { inp, idx, score: Math.round(s * 1000) / 1000, breakdown };
   });
+  const primary = PRIMARY[priority];
   scored.sort((a, b) => {
     if (a.inp.comparison.eligible !== b.inp.comparison.eligible) return a.inp.comparison.eligible ? -1 : 1;
+    if (primary) {
+      const va = primary.val(a.inp), vb = primary.val(b.inp);
+      if (va !== vb) return primary.lowerIsBetter ? (va < vb ? -1 : 1) : (va > vb ? -1 : 1);
+    }
     if (Math.abs(a.score - b.score) > 0.01) return b.score - a.score;
     // tie-breakers: fewer disputed, earlier drop-off, higher reviews, price/incentive, name
     if (a.inp.comparison.disputedCount !== b.inp.comparison.disputedCount) return a.inp.comparison.disputedCount - b.inp.comparison.disputedCount;
@@ -163,14 +175,22 @@ export function rank(mode: Mode, priority: Priority, inputs: RankInput[]): Ranke
     if (mode === "insurance" && (a.inp.incentiveValue ?? 0) !== (b.inp.incentiveValue ?? 0)) return (b.inp.incentiveValue ?? 0) - (a.inp.incentiveValue ?? 0);
     return a.inp.shopName.localeCompare(b.inp.shopName);
   });
+  // Decisive metric among eligible offers: the "why" leads with it only for the offers that are best
+  // on it (and only when it actually separated them), so the line always agrees with the order.
+  const eligVals = primary ? inputs.filter((i) => i.comparison.eligible).map((i) => primary.val(i)) : [];
+  const bestPrimary = eligVals.length ? (primary!.lowerIsBetter ? Math.min(...eligVals) : Math.max(...eligVals)) : undefined;
+  const primaryDecided = new Set(eligVals).size > 1;
   return scored.map((s, pos) => {
+    const topOnPrimary = !!primary && primaryDecided && s.inp.comparison.eligible && primary.val(s.inp) === bestPrimary;
     const leads = Object.keys(w)
-      .filter((k) => !crit[k].equal)
+      .filter((k) => !crit[k].equal && (!primary || k !== primary.k))
       .map((k) => ({ k, v: crit[k].scores[s.idx], best: Math.max(...crit[k].scores) }))
       .filter((x) => x.v === x.best && x.v > 0)
       .sort((a, b) => (w as any)[b.k] - (w as any)[a.k])
-      .slice(0, 2)
       .map((x) => LABEL[x.k]);
+    if (topOnPrimary) leads.unshift(LABEL[primary!.k]);
+    else if (primary && !primaryDecided && !crit[primary.k].equal && crit[primary.k].scores[s.idx] === Math.max(...crit[primary.k].scores) && crit[primary.k].scores[s.idx] > 0) leads.unshift(LABEL[primary.k]);
+    leads.splice(2);
     const recommended = pos === 0 && s.inp.comparison.eligible;
     const why = !s.inp.comparison.eligible
       ? `Needs clarification: missing ${s.inp.comparison.missingRequired.join(", ")}`

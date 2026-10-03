@@ -1,5 +1,5 @@
 {
-  "_note": "Drive Auto Body rates come from Gio's own estimates (self-pay median across 21 self-pay estimates; insurance from the Elantra job) and must be confirmed by Gio. Bayline Collision and QuickFix Auto Body are DEMO shops (rates derived from Drive's); the customer UI discloses that in one footer line and shows them as 'New on Quote Room' with no ratings. partsPolicy.self_pay/insurance = default part source per payer (oem | aftermarket | used); allow = part types the shop may use. Incentive tiers are ILLUSTRATIVE demo policy until Gio confirms.",
+  "_note": "Drive Auto Body rates come from Gio's own estimates (self-pay median across 21 self-pay estimates; insurance from the Elantra job) and must be confirmed by Gio. Bayline Collision and QuickFix Auto Body are prototype shops (rates derived from Drive's; internal flag isSimulated). No customer- or owner-facing text may call them simulated or demo; they show 'New on Quote Room' with no ratings. partsPolicy.self_pay/insurance = default part source per payer (oem | aftermarket | used); allow = part types the shop may use. Drive insurance defaults to aftermarket because Gio's insurance parts mix is 50% A/M, 33% OEM, 17% used (data/gio/playbook.json); Drive self-pay picks the cheapest sound option per part. exceptionMode is the fallback when the shop has no Slack owner room; with a room (SLACK_SHOP_CHANNELS) every shop's exceptions go to its owner. Incentive tiers are illustrative until Gio confirms.",
   "shops": [
     {
       "id": "drive",
@@ -33,14 +33,14 @@
         ],
         "prefer": "as_written",
         "self_pay": "aftermarket",
-        "insurance": "oem"
+        "insurance": "aftermarket"
       },
       "selfPayAuthority": {
         "autonomousDiscountPct": 0.04,
         "hardMinimumPct": 0.88
       },
       "incentivePolicy": {
-        "status": "demo policy (illustrative until Gio confirms)",
+        "status": "Shop incentive policy (pending owner confirmation)",
         "tiers": [
           {
             "minJob": 0,
@@ -150,7 +150,7 @@
         "hardMinimumPct": 0.95
       },
       "incentivePolicy": {
-        "status": "demo shop",
+        "status": "Shop incentive policy",
         "tiers": [
           {
             "minJob": 0,
@@ -241,7 +241,7 @@
         "hardMinimumPct": 0.93
       },
       "incentivePolicy": {
-        "status": "demo shop",
+        "status": "Shop incentive policy",
         "tiers": [
           {
             "minJob": 0,
