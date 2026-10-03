@@ -37,7 +37,7 @@ function requestView(id: string) {
   return {
     ...r, case: { id: c.id, title: c.title, vehicle: c.vehicle, photos: c.photos, photoNote: c.photoNote, reviewNote: c.reviewNote, baseline: c.baseline, labels: Object.fromEntries([...c.baseline, ...(c.amendments?.drive ?? []).map((a: any) => a.item)].map((i: any) => [i.id, i.label])) },
     latest: Object.fromEntries(r.shops.map((s) => [s, o.latest(r, s)]).filter(([, v]) => v)),
-    shopsInfo: Object.fromEntries(r.shops.map((s) => { const sh = o.shop(s); return [s, { name: sh.name, display: SHOP_ACTOR[s], simulated: sh.isSimulated, profile: sh.profile, warranty: sh.warranty, turnaround: sh.turnaroundDays }]; })),
+    shopsInfo: Object.fromEntries(r.shops.map((s) => { const sh = o.shop(s); return [s, { name: sh.name, display: SHOP_ACTOR[s], simulated: sh.isSimulated, profile: sh.profile, warranty: sh.warranty, turnaround: sh.turnaroundDays, incentiveStatus: sh.incentivePolicy?.status }]; })),
     approvals: Object.values(o.approvals).filter((a) => a.requestId === id),
     guardrails: r.mode === "insurance" ? [GUARDRAIL_INCENTIVE, GUARDRAIL_INSURANCE] : ["Preliminary offers. Final details are confirmed at inspection."],
     priorities: PRIORITIES[r.mode],
@@ -48,7 +48,7 @@ const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? "/", "http://localhost");
     const p = url.pathname;
-    if (req.method === "GET" && (p === "/" || p === "/room" || p === "/admin")) {
+    if (req.method === "GET" && (p === "/" || p === "/admin" || /^\/room(?:\/[\w-]+)?\/?$/.test(p))) {
       const file = p === "/admin" ? "admin.html" : "index.html";
       return send(res, 200, readFileSync(join(ROOT, "src/ui", file), "utf8"), MIME[".html"]);
     }
@@ -97,9 +97,11 @@ server.listen(PORT, async () => {
   console.log(`Quote Room on http://localhost:${PORT}  (admin: /admin)`);
   const ints = integrations();
   console.log("integrations:", JSON.stringify(ints));
-  if (zw) zwInit = await zw.init();
-  console.log("zoowork:", JSON.stringify(zwInit));
-  await tg.start(); console.log("telegram:", tg.status);
-  await band.start(); console.log("band:", band.status, band.lastError);
-  await slack.start(); console.log("slack:", slack.status, slack.lastError);
+  // Owner channels and BAND come up alongside ZooWork; none of them blocks the others.
+  await Promise.all([
+    (async () => { if (zw) zwInit = await zw.init(); console.log("zoowork:", JSON.stringify(zwInit)); })(),
+    tg.start().then(() => console.log("telegram:", tg.status)).catch((e) => console.log("telegram error:", e?.message)),
+    band.start().then(() => console.log("band:", band.status, band.lastError)).catch((e) => console.log("band error:", e?.message)),
+    slack.start().then(() => console.log("slack:", slack.status, slack.lastError)).catch((e) => console.log("slack error:", e?.message)),
+  ]);
 });

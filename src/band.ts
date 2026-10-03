@@ -27,7 +27,7 @@ export class BandBridge {
   }
   private async api(who: string, method: string, path: string, body?: unknown) {
     const id = this.ids[who]; if (!id) throw new Error(`no BAND identity for ${who}`);
-    const r = await fetch(`${ROOT}${this.prefix}${path}`, { method, headers: { "X-API-Key": id.key, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+    const r = await fetch(`${ROOT}${this.prefix}${path}`, { method, headers: { "X-API-Key": id.key, "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(10_000) });
     const text = await r.text();
     if (!r.ok) throw new Error(`BAND ${method} ${path} ${r.status}: ${text.slice(0, 200)}`);
     return text ? JSON.parse(text) : {};

@@ -5,6 +5,7 @@ import { SHOP_ACTOR } from "./orchestrator.ts";
 import type { ZooWorkRuntime } from "./zoowork.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const assistOf = (o: any) => (o?.incentives ?? []).find((i: any) => i.kind === "deductible_assist")?.value ?? 0;
 
 export class Flow {
   private o: Orchestrator; private zw?: ZooWorkRuntime;
@@ -42,13 +43,12 @@ export class Flow {
     this.o.tool_review_and_quote(this.ctx(req.id, "shop", shopId));
   }
 
-  // ----- clarification deliveries -----
+  // ----- clarification and ask deliveries -----
   private async onDeliver(d: any) {
     const req = this.o.requests[d.requestId]; if (!req) return;
     if (d.kind === "clarify") {
       if (this.useZw()) {
-        const r = await this.zw!.turn(req.id, `shop:${d.shopId}`, `The driver's agent asks you to clarify item "${d.clarification.itemId}" (clarificationId: ${d.clarification.id}): ${d.clarification.question}\nAnswer with respond_clarification.`, 60_000);
-        if (r.ok && d.clarification.status !== "open") return;
+        await this.zw!.turn(req.id, `shop:${d.shopId}`, `The driver's agent asks you to clarify item "${d.clarification.itemId}" (clarificationId: ${d.clarification.id}): ${d.clarification.question}\nAnswer with respond_clarification.`, 60_000);
       }
       if (d.clarification.status === "open") this.o.tool_respond_clarification(this.ctx(req.id, "shop", d.shopId), { clarificationId: d.clarification.id });
     }
@@ -58,25 +58,32 @@ export class Flow {
         const t = req.mode === "self_pay"
           ? `The driver's agent asks: "${d.ask.text}" (target total $${d.ask.target.total}). Your autonomous limit is $${lim.autonomousLimit}. If the target is at or above it, use revise_offer; otherwise call request_exception with a one-line reason and wait for the owner.`
           : `The driver's agent asks: "${d.ask.text}" (target $${d.ask.target.deductibleAssist} toward the deductible). Your cap for this job size is $${lim.deductibleCap}. Within the cap use revise_offer; above it call request_exception and wait for the owner.`;
-        const r = await this.zw!.turn(req.id, `shop:${d.shopId}`, t, 200_000);
-        if (r.ok && (req.asks[0]?.outcome || this.lastAskHandled(req, d.shopId))) return;
+        await this.zw!.turn(req.id, `shop:${d.shopId}`, t, 200_000);
+        // Handled if the agent revised, or opened an approval (even if the turn itself was cut off:
+        // the pending approval still resolves on its own). Never open a second approval.
+        if (this.askHandled(req, d.ask.id)) return;
       }
       await this.scriptedAnswerAsk(req, d.shopId, d.ask, lim);
     }
   }
-  private lastAskHandled(req: Request, shopId: string) {
-    const list = req.offers[shopId] ?? []; return list.length > 1 && list[list.length - 1].note !== undefined;
+  private askHandled(req: Request, askId: string) {
+    return !!req.asks.find((a) => a.id === askId)?.outcome || this.o.hasApprovalForAsk(askId);
   }
   private async scriptedAnswerAsk(req: Request, shopId: string, ask: any, lim: any) {
+    if (this.askHandled(req, ask.id)) return;
     const ctx = this.ctx(req.id, "shop", shopId);
+    let r: any;
     if (req.mode === "self_pay") {
-      if (ask.target.total >= lim.autonomousLimit) this.o.tool_revise_offer(ctx, { total: ask.target.total, message: "We can do that." });
-      else await this.o.tool_request_exception(ctx, { total: ask.target.total, reason: `Driver asks $${ask.target.total}; competing offer cited in the room.` });
+      if (ask.target.total >= lim.autonomousLimit) r = this.o.tool_revise_offer(ctx, { total: ask.target.total, message: "We can do that." });
+      else r = await this.o.tool_request_exception(ctx, { reason: `Driver asks $${ask.target.total}; competing offer cited in the room.` });
     } else {
-      if (ask.target.deductibleAssist <= lim.deductibleCap) this.o.tool_revise_offer(ctx, { deductibleAssist: ask.target.deductibleAssist, message: "We can do that." });
-      else await this.o.tool_request_exception(ctx, { deductibleAssist: ask.target.deductibleAssist, reason: `Driver asks $${ask.target.deductibleAssist} toward the deductible.` });
+      if (ask.target.deductibleAssist <= lim.deductibleCap) r = this.o.tool_revise_offer(ctx, { deductibleAssist: ask.target.deductibleAssist, message: "We can do that." });
+      else r = await this.o.tool_request_exception(ctx, { reason: `Driver asks $${ask.target.deductibleAssist} toward the deductible.` });
     }
-    if (req.asks[0]) req.asks[0].outcome = "answered";
+    if (r?.error && !this.askHandled(req, ask.id)) {
+      this.o.log(req.id, "owner_decision", SHOP_ACTOR[shopId], "We'll hold our current offer.");
+      this.o.askAnswered(req, shopId, "held");
+    }
   }
 
   // ----- buyer clarifies -----
@@ -93,9 +100,11 @@ export class Flow {
         this.o.tool_clarify_item(this.ctx(req.id, "buyer"), { shopId: f.shopId, itemId: f.itemId, question: `Another shop recommends "${label}". Does your offer need it?` });
       }
     }
-    // wait for all answers (60s each, in parallel)
-    await Promise.all(req.clarifications.filter((c) => c.status === "open").map((c) => this.o.waitFor(`clar:${c.id}`, 60_000)));
-    for (const c of req.clarifications) if (c.status === "open") c.status = "timeout";
+    // wait for all answers in parallel; anything still open gets the shop's configured rule
+    await Promise.all(req.clarifications.filter((c) => c.status === "open").map((c) => this.o.waitFor(`clar:${c.id}`, 75_000)));
+    for (const c of req.clarifications) {
+      if (c.status === "open") this.o.tool_respond_clarification(this.ctx(req.id, "shop", c.shopId), { clarificationId: c.id, message: "No answer from the shop's agent in time — using its configured rules." });
+    }
   }
 
   // ----- buyer negotiates (exactly one ask) -----
@@ -110,23 +119,32 @@ export class Flow {
       else { const mid = Math.floor((drive.price!.total + cheapest) / 2 / 10) * 10; target = { total: mid, message: `Your scope is the most complete, but another posted offer is $${cheapest}. Can you do $${mid}?` }; }
     } else {
       const cap = (this.o.limits(req, "drive").deductibleCap as number) ?? 0;
+      const cur = assistOf(drive);
       const best = Math.max(...offers.filter((o) => o.shopId !== "drive").map((o) => (o.incentives ?? []).reduce((s, i) => s + i.value, 0)), 0);
-      target = { deductibleAssist: cap + 100, message: `Another shop is offering $${best} in incentives. Can you do $${cap + 100} toward the deductible?` };
+      const want = Math.max(cap, cur) + 100;
+      target = { deductibleAssist: want, message: `You're at $${cur} toward the deductible and another shop's incentives add up to $${best}. Can you do $${want} toward the deductible?` };
     }
-    const waiting = this.o.waitFor(`ask:${req.id}:drive`, 240_000);
+    // Wakes when ANY shop's ask is answered (revised, approved, countered, denied, expired, held).
+    const waiting = this.o.waitFor(`askdone:${req.id}`, 240_000);
     if (this.useZw()) {
       await this.zw!.turn(req.id, "buyer", `Clarifications are done. Current offers:\n${JSON.stringify((this.o.tool_get_offers(this.ctx(req.id, "buyer")) as any).offers).slice(0, 5000)}\nMake exactly ONE ask_shop call. Suggested: shopId "drive", ${req.mode === "self_pay" ? `total ${target.total}` : `deductibleAssist ${target.deductibleAssist}`}, message: "${target.message}"`, 60_000);
     }
-    if (!req.asks.length) this.o.tool_ask_shop(this.ctx(req.id, "buyer"), { shopId: "drive", ...target });
+    if (!req.asks.length) {
+      const r: any = this.o.tool_ask_shop(this.ctx(req.id, "buyer"), { shopId: "drive", ...target });
+      if (r?.error) return;
+    }
+    if (req.asks[0]?.outcome) return;
     await waiting;
   }
 
   // ----- buyer ranks and presents -----
   private async buyerRank(req: Request) {
+    req.ranking = undefined; // always rank the final offers
+    req.negotiationDone = true;
     if (this.useZw()) {
-      await this.zw!.turn(req.id, "buyer", `Negotiation is finished. Call rank_offers with priority "${req.priority}", then present_for_confirmation with a one-sentence summary that uses ONLY the currentOffers numbers rank_offers returns. Do not book.`, 60_000);
+      await this.zw!.turn(req.id, "buyer", `Negotiation is finished. Call rank_offers, then present_for_confirmation. Do not book. Reply with one short sentence that quotes only the currentOffers numbers rank_offers returned.`, 60_000);
     }
-    if (!req.ranking) this.o.tool_rank_offers(this.ctx(req.id, "buyer"), { priority: req.priority });
-    if (req.status !== "ready_for_confirmation") this.o.tool_present_for_confirmation(this.ctx(req.id, "buyer"), {});
+    if (!req.ranking) this.o.tool_rank_offers(this.ctx(req.id, "buyer"), {});
+    if (req.status !== "ready_for_confirmation" && !req.booking) this.o.tool_present_for_confirmation(this.ctx(req.id, "buyer"), {});
   }
 }

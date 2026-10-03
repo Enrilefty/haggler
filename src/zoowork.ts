@@ -56,17 +56,25 @@ export class ZooWorkRuntime {
       const models: any[] = await this.zc.listModels();
       const selectable = models.filter((m) => m.selectable !== false);
       const pick = (re: RegExp) => selectable.find((m) => re.test(String(m.model)))?.model;
-      this.model = env("ZOOWORK_MODEL") || pick(/claude.*(sonnet|opus)/i) || pick(/claude/i) || pick(/gpt-5/i) || selectable[0]?.model;
-      if (existsSync(this.agentsFile)) this.agents = JSON.parse(readFileSync(this.agentsFile, "utf8"));
+      this.model = env("ZOOWORK_MODEL") || pick(/claude-sonnet-5/i) || pick(/claude.*(sonnet|opus)/i) || pick(/claude/i) || pick(/gpt-5/i) || selectable[0]?.model;
+      // agents file: key -> { id, hash }. A changed persona/tools/model hash means a fresh agent
+      // (the old one is stopped), so persona fixes always reach the live agents.
+      let stored: Record<string, any> = {};
+      if (existsSync(this.agentsFile)) stored = JSON.parse(readFileSync(this.agentsFile, "utf8"));
       const defs: [string, any][] = [
         ["buyer", { name: "quote-room-buyer", persona: BUYER_PERSONA, tools: BUYER_TOOLS }],
         ...this.o.shops.map((s) => [`shop:${s.id}`, { name: `quote-room-${s.id}`, persona: shopPersona(s.name, s.isSimulated), tools: SHOP_TOOLS }] as [string, any]),
       ];
       for (const [key, d] of defs) {
-        if (!this.agents[key]) {
-          const a: any = await this.zc.createAgent({ resource: { name: d.name, ...(this.model ? { model: { primary: this.model } } : {}), persona: { docs: [{ name: "AGENTS.md", content: d.persona }] }, custom_tools: d.tools, labels: { app: "quote-room", role: key.replace(":", "-") } } } as any);
+        const hash = hashStr(JSON.stringify([d.persona, d.tools, this.model]));
+        const prev = typeof stored[key] === "string" ? { id: stored[key], hash: "" } : stored[key];
+        if (prev?.id && prev.hash === hash) { this.agents[key] = prev.id; }
+        else {
+          if (prev?.id) await this.zc.stopAgent(prev.id).catch(() => undefined);
+          const a: any = await this.zc.createAgent({ resource: { name: `${d.name}-${hash.slice(0, 6)}`, ...(this.model ? { model: { primary: this.model } } : {}), persona: { docs: [{ name: "AGENTS.md", content: d.persona }] }, custom_tools: d.tools, labels: { app: "quote-room", role: key.replace(":", "-") } } } as any);
           this.agents[key] = a.agent_id;
-          writeFileSync(this.agentsFile, JSON.stringify(this.agents, null, 1));
+          stored[key] = { id: a.agent_id, hash };
+          writeFileSync(this.agentsFile, JSON.stringify(stored, null, 1));
         }
         await this.zc.startAgent(this.agents[key]).catch(() => undefined);
       }
@@ -104,8 +112,10 @@ export class ZooWorkRuntime {
   }
   private async turnUnlocked(requestId: string, agentKey: string, message: string, timeoutMs: number): Promise<{ ok: boolean; text: string }> {
     const b = this.binding(requestId, agentKey);
-    const deadline = Date.now() + timeoutMs;
-    let text = "";
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), timeoutMs); // enforced even if the stream goes idle
+    let last = "";
+    let finished = false;
     try {
       if (!b.sessionId) {
         const s: any = await this.zc.createSession(b.agentId, { initial_events: [{ type: "user.message", content: message }] } as any);
@@ -114,29 +124,37 @@ export class ZooWorkRuntime {
         await this.zc.postEvents(b.agentId, b.sessionId, [{ type: "user.message", content: message }] as any);
       }
       const handled = new Set<string>();
-      const stream: any = this.zc.streamEvents(b.agentId, b.sessionId!, b.cursor ? { cursor: b.cursor } : undefined);
+      const stream: any = this.zc.streamEvents(b.agentId, b.sessionId!, { ...(b.cursor ? { cursor: b.cursor } : {}), signal: ac.signal } as any);
       for await (const ev of stream) {
         if (ev?.cursor) b.cursor = ev.cursor;
-        text += assistantText(ev);
+        const said = assistantText(ev);
+        if (said.trim()) last = said; // keep only the latest message (the wrap-up)
         const call: any = customToolUse(ev);
         if (call?.phase === "requested" && !handled.has(call.callId)) {
           handled.add(call.callId);
           const value = await this.dispatch(b.ctx, call.name ?? call.toolName, call.input ?? {});
           await this.zc.resolveCustomToolCall(b.agentId, call.callId, { content: [{ type: "json", value }], resolvedBy: `quote-room:${agentKey}` } as any);
         }
-        if (isRunFinished(ev)) break;
-        if (Date.now() > deadline) throw new Error("turn_timeout");
+        if (isRunFinished(ev)) { finished = true; break; }
       }
-      // Shops speak through their tool events; only the buyer's short wrap-up is shown, markdown stripped.
-      if (b.ctx.role === "buyer" && text.trim()) {
-        const clean = text.replace(/\*\*|__|`|#+\s|\|/g, "").replace(/\s+/g, " ").trim();
+      if (!finished) throw new Error("turn_timeout");
+      // Shops speak through their tool events; the buyer's one-line wrap-up is shown only after the
+      // server checks it (no unknown prices, no insurance promises).
+      if (b.ctx.role === "buyer" && last.trim()) {
+        const clean = last.replace(/\*\*|__|`|#+\s|\|/g, "").replace(/\s+/g, " ").trim();
         const sentence = (clean.match(/^.{20,220}?[.!?](\s|$)/) ?? [clean.slice(0, 220)])[0].trim();
-        if (sentence) this.o.log(requestId, "agent_says", "Driver's agent", sentence);
+        const safe = this.o.safeAgentText(requestId, sentence);
+        if (safe) this.o.log(requestId, "agent_says", "Driver's agent", safe);
       }
-      return { ok: true, text };
+      return { ok: true, text: last };
     } catch (e: any) {
       this.lastError = String(e?.message ?? e);
-      return { ok: false, text };
+      // A cut-off run leaves the session mid-turn; start a fresh session next time so a stale
+      // run.finished is never replayed into the next turn.
+      b.sessionId = undefined; b.cursor = undefined;
+      return { ok: false, text: last };
+    } finally {
+      clearTimeout(timer);
     }
   }
 
@@ -151,4 +169,10 @@ export class ZooWorkRuntime {
       return { error: String(e?.message ?? e) };
     }
   }
+}
+
+function hashStr(s: string) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(16).padStart(8, "0");
 }

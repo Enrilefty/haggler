@@ -22,7 +22,7 @@ export interface Offer {
 }
 export interface Clarification { id: string; shopId: string; itemId: string; question: string; status: "open" | "added" | "disputed" | "timeout"; answer?: string }
 export interface Approval {
-  id: string; requestId: string; shopId: string; baseOfferId: string; baseOfferVersion: number;
+  id: string; requestId: string; shopId: string; askId: string; baseOfferId: string; baseOfferVersion: number;
   requested: { total?: number; deductibleAssist?: number }; agentLimit: { total?: number; deductibleCap?: number };
   reason: string; status: "pending" | "approved" | "countered" | "denied" | "expired";
   counter?: { total?: number; deductibleAssist?: number; extra?: string };
@@ -34,7 +34,7 @@ export interface Request {
   baselineIds: string[]; shops: string[]; offers: Record<string, Offer[]>; clarifications: Clarification[];
   asks: { id: string; shopId: string; text: string; target: { total?: number; deductibleAssist?: number }; outcome?: string }[];
   comparison?: ScopeComparison[]; ranking?: Ranked[]; booking?: { id: string; offerId: string; version: number; shopId: string; at: string; simulated: true };
-  roomRef?: string; agentMode: string;
+  roomRef?: string; agentMode: string; negotiationDone?: boolean;
 }
 
 const now = () => new Date().toISOString();
@@ -90,7 +90,8 @@ export class Orchestrator extends EventEmitter {
   createRequest(caseId: string, mode: Mode, priority: Priority, agentMode: string): Request {
     const c = this.cases[caseId]; if (!c) throw new Error("unknown case");
     if (!PRIORITIES[mode].includes(priority)) priority = "best_value";
-    const id = `R-${Math.floor(100 + Math.random() * 900)}`;
+    let id: string;
+    do { id = `R-${Math.floor(100 + Math.random() * 900)}`; } while (this.requests[id]);
     const req: Request = { id, caseId, mode, priority, status: "room_open", createdAt: now(), baselineIds: c.baseline.map((i: any) => i.id), shops: this.activeShops(), offers: {}, clarifications: [], asks: [], agentMode };
     this.requests[id] = req;
     const scope = c.baseline.map((i: any) => `• ${i.label}`).join("\n");
@@ -118,13 +119,16 @@ export class Orchestrator extends EventEmitter {
     return offer;
   }
   describeOffer(o: Offer) {
-    const head = o.mode === "self_pay" ? `${money(o.price?.total)} total` : (o.incentives?.length ? o.incentives.map((i) => i.label).join(" + ") : "No incentives offered");
+    const head = o.mode === "self_pay"
+      ? `${money(o.price?.total)} total${o.incentives?.length ? ` + ${o.incentives.map((i) => i.label.toLowerCase()).join(" + ")}` : ""}`
+      : (o.incentives?.length ? o.incentives.map((i) => i.label).join(" + ") : "No incentives offered");
     return `${head} · drop-off ${o.slot} · ${o.turnaroundDays}-day turnaround · ${o.warranty}`;
   }
 
   tool_review_and_quote(ctx: Ctx) {
     const { shopId } = this.assertShop(ctx); const req = this.requests[ctx.requestId], c = this.cases[req.caseId], s = this.shop(shopId);
     if (this.latest(req, shopId)) return { ok: true, note: "already quoted", offer: this.latest(req, shopId) };
+    if (this.closed(req)) return { error: "negotiation_closed" };
     const adds = shopId === "drive" ? (c.amendments?.drive ?? []) : [];
     const items = applyAmendments(c.baseline, adds);
     const priced = this.priceFor(req, shopId, items);
@@ -145,6 +149,7 @@ export class Orchestrator extends EventEmitter {
     const cl = req.clarifications.find((x) => x.id === args.clarificationId && x.shopId === shopId);
     if (!cl) return { error: "unknown_clarification_for_this_shop" };
     if (cl.status !== "open") return { ok: true, note: "already answered", status: cl.status };
+    if (this.closed(req)) return { error: "negotiation_closed" };
     const rule = c.clarify?.[shopId] ?? { add: [], dispute: [] };
     const base = this.latest(req, shopId)!;
     const addDef = (c.amendments?.drive ?? []).find((a: any) => a.item.id === cl.itemId)?.item ?? c.baseline.find((i: any) => i.id === cl.itemId);
@@ -177,6 +182,8 @@ export class Orchestrator extends EventEmitter {
 
   tool_revise_offer(ctx: Ctx, args: { total?: number; deductibleAssist?: number; message?: string }) {
     const { shopId } = this.assertShop(ctx); const req = this.requests[ctx.requestId]; const base = this.latest(req, shopId)!;
+    if (this.closed(req)) return { error: "negotiation_closed" };
+    if (!base) return { error: "quote_first" };
     const lim = this.limits(req, shopId);
     if (req.mode === "self_pay") {
       const total = Math.round(Number(args.total));
@@ -185,7 +192,7 @@ export class Orchestrator extends EventEmitter {
       if (total > (base.price?.total ?? Infinity)) return { error: "revision_must_not_raise_price" };
       const next = this.pushOffer(req, shopId, { ...base, price: { ...base.price!, total }, createdBy: base.createdBy, note: "revised within authority", approvalId: undefined });
       this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Revised within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
-      this.signal(`ask:${req.id}:${shopId}`, { outcome: "revised", offer: next });
+      this.askAnswered(req, shopId, "revised");
       return { ok: true, offer: this.offerView(next) };
     }
     const assist = Math.round(Number(args.deductibleAssist));
@@ -194,20 +201,30 @@ export class Orchestrator extends EventEmitter {
     const incentives = setAssist(base.incentives ?? [], assist);
     const next = this.pushOffer(req, shopId, { ...base, incentives, note: "incentive within authority", approvalId: undefined });
     this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
-    this.signal(`ask:${req.id}:${shopId}`, { outcome: "revised", offer: next });
+    this.askAnswered(req, shopId, "revised");
     return { ok: true, offer: this.offerView(next) };
   }
 
-  // Exception: creates an Approval bound to request/shop/base offer version/exact concession.
-  // For the real shop the call PAUSES until the owner decides (Telegram/admin); simulated shops decide by rule.
+  // Exception: creates an Approval bound to the driver's open ask, the request/shop, the base offer
+  // version and the exact concession (the ask's target). One approval per ask. For the real shop the
+  // call PAUSES until the owner decides (Slack/Telegram/admin); simulated shops decide by rule.
   async tool_request_exception(ctx: Ctx, args: { total?: number; deductibleAssist?: number; reason: string }) {
     const { shopId } = this.assertShop(ctx); const req = this.requests[ctx.requestId]; const s = this.shop(shopId);
-    const base = this.latest(req, shopId)!; const lim = this.limits(req, shopId);
-    const requested = req.mode === "self_pay" ? { total: Math.round(Number(args.total)) } : { deductibleAssist: Math.round(Number(args.deductibleAssist)) };
-    if (req.mode === "self_pay" && requested.total! >= (lim.autonomousLimit as number)) return { error: "within_authority_use_revise_offer" };
-    if (req.mode === "insurance" && requested.deductibleAssist! <= (lim.deductibleCap as number)) return { error: "within_authority_use_revise_offer" };
+    if (this.closed(req)) return { error: "negotiation_closed" };
+    const ask = req.asks.find((a) => a.shopId === shopId);
+    if (!ask) return { error: "no_driver_ask_for_this_shop" };
+    const existing = Object.values(this.approvals).find((a) => a.askId === ask.id);
+    if (existing) return existing.status === "pending" ? this.awaitApproval(req, existing) : this.exceptionResult(req, existing);
+    if (ask.outcome) return { error: "ask_already_answered", outcome: ask.outcome };
+    const base = this.latest(req, shopId); if (!base) return { error: "quote_first" };
+    const lim = this.limits(req, shopId);
+    const requested = req.mode === "self_pay" ? { total: ask.target.total } : { deductibleAssist: ask.target.deductibleAssist };
+    if (req.mode === "self_pay" && requested.total! >= (lim.autonomousLimit as number)) return { error: "within_authority_use_revise_offer", total: requested.total };
+    if (req.mode === "insurance" && requested.deductibleAssist! <= (lim.deductibleCap as number)) return { error: "within_authority_use_revise_offer", deductibleAssist: requested.deductibleAssist };
+    let id: string;
+    do { id = `A-${Math.floor(1000 + Math.random() * 9000)}`; } while (this.approvals[id]);
     const ap: Approval = {
-      id: `A-${Math.floor(1000 + Math.random() * 9000)}`, requestId: req.id, shopId, baseOfferId: base.id, baseOfferVersion: base.version,
+      id, requestId: req.id, shopId, askId: ask.id, baseOfferId: base.id, baseOfferVersion: base.version,
       requested, agentLimit: req.mode === "self_pay" ? { total: lim.autonomousLimit as number } : { deductibleCap: lim.deductibleCap as number },
       reason: String(args.reason ?? "").slice(0, 300), status: "pending", createdAt: now(),
     };
@@ -215,29 +232,64 @@ export class Orchestrator extends EventEmitter {
     this.log(req.id, "exception_requested", SHOP_ACTOR[shopId], s.exceptionMode === "owner" ? "That's beyond what I can offer on my own — asking the owner." : "Checking with the shop's rules.", { approval: ap });
     req.status = "awaiting_owner";
     if (s.exceptionMode === "rule") {
-      const ok = req.mode === "self_pay" ? requested.total! >= (lim.hardMinimum as number) : requested.deductibleAssist! <= (lim.deductibleCap as number) * 1.0;
+      const ok = req.mode === "self_pay" ? requested.total! >= (lim.hardMinimum as number) : requested.deductibleAssist! <= (lim.deductibleCap as number);
       this.decide(ap.id, ok ? "approve" : "deny", undefined, "rule");
     } else {
       this.emit("approval", ap, req, base);
     }
-    const decided = ap.status === "pending" ? await new Promise<Approval>((res) => {
-      const t = setTimeout(() => { if (ap.status === "pending") { ap.status = "expired"; ap.decidedAt = now(); this.log(req.id, "owner_decision", "Owner", "No answer in time — holding the current offer."); } res(ap); }, 150_000);
-      this.approvalWaiters.set(ap.id, (a) => { clearTimeout(t); res(a); });
-    }) : ap;
-    req.status = "negotiating";
-    const latest = this.latest(req, shopId);
-    const result = { approvalId: decided.id, status: decided.status, counter: decided.counter, offer: latest ? this.offerView(latest) : undefined };
-    this.signal(`ask:${req.id}:${shopId}`, { outcome: decided.status, offer: latest });
-    return result;
+    return ap.status === "pending" ? this.awaitApproval(req, ap) : this.exceptionResult(req, ap);
+  }
+  private awaitApproval(req: Request, ap: Approval) {
+    return new Promise<any>((res) => {
+      const t = setTimeout(() => { if (ap.status === "pending") this.expire(ap, "timeout", "No answer in time — holding the current offer."); }, 150_000);
+      const prev = this.approvalWaiters.get(ap.id);
+      this.approvalWaiters.set(ap.id, (a) => { clearTimeout(t); prev?.(a); res(this.exceptionResult(req, a)); });
+    });
+  }
+  private exceptionResult(req: Request, ap: Approval) {
+    const latest = this.latest(req, ap.shopId);
+    return { approvalId: ap.id, status: ap.status, counter: ap.counter, offer: latest ? this.offerView(latest) : undefined };
+  }
+  // Closes a pending approval without a concession (timeout, stale offer, request closed).
+  private expire(ap: Approval, via: string, note?: string) {
+    if (ap.status !== "pending") return;
+    const req = this.requests[ap.requestId];
+    ap.status = "expired"; ap.decidedAt = now(); ap.decidedVia = via;
+    if (note && !req.booking) this.log(req.id, "owner_decision", "Owner (Gio)", note, { approval: ap });
+    this.finishApproval(req, ap);
+  }
+  private finishApproval(req: Request, ap: Approval) {
+    if (req.status === "awaiting_owner") req.status = "negotiating";
+    const ask = req.asks.find((a) => a.id === ap.askId);
+    if (ask && !ask.outcome) { ask.outcome = ap.status; this.signal(`askdone:${req.id}`, { shopId: ap.shopId, outcome: ap.status }); }
+    this.approvalWaiters.get(ap.id)?.(ap); this.approvalWaiters.delete(ap.id);
+    this.emit("decided", ap);
   }
 
   // Owner/rule decision. Applies the concession ONLY to the exact bound offer version; single use.
+  // Counters must sit between the driver's ask and the current offer, so a counter can never make
+  // the offer worse for the driver than it already is.
   decide(approvalId: string, decision: "approve" | "counter" | "deny", counter?: { total?: number; deductibleAssist?: number; extra?: string }, via = "telegram") {
     const ap = this.approvals[approvalId];
     if (!ap) return { error: "unknown_approval" };
     if (ap.status !== "pending") return { error: `already_${ap.status}` };
-    const req = this.requests[ap.requestId]; const base = this.latest(req, ap.shopId)!;
-    if (base.id !== ap.baseOfferId || base.version !== ap.baseOfferVersion) { ap.status = "expired"; return { error: "offer_changed_since_request" }; }
+    const req = this.requests[ap.requestId];
+    if (this.closed(req)) { this.expire(ap, "request_closed"); return { error: "request_already_closed" }; }
+    const base = this.latest(req, ap.shopId)!;
+    if (base.id !== ap.baseOfferId || base.version !== ap.baseOfferVersion) { this.expire(ap, "offer_changed", "The offer changed while waiting — holding the current offer."); return { error: "offer_changed_since_request" }; }
+    if (!["approve", "counter", "deny"].includes(decision)) return { error: "bad_decision" };
+    if (decision === "counter") {
+      const v = Math.round(Number(req.mode === "self_pay" ? counter?.total : counter?.deductibleAssist));
+      if (!Number.isFinite(v)) return { error: "counter_amount_required" };
+      if (req.mode === "self_pay") {
+        const cur = base.price?.total ?? 0, ask = ap.requested.total ?? 0;
+        if (!(v >= ask && v < cur)) return { error: `counter_must_be_between_${ask}_and_${cur - 1}` };
+      } else {
+        const cur = currentAssist(base), ask = ap.requested.deductibleAssist ?? 0;
+        if (!(v > cur && v <= ask)) return { error: `counter_must_be_between_${cur + 1}_and_${ask}` };
+      }
+      counter = req.mode === "self_pay" ? { total: v, extra: counter?.extra } : { deductibleAssist: v, extra: counter?.extra };
+    }
     ap.decidedAt = now(); ap.decidedVia = via;
     const who = via === "rule" ? SHOP_ACTOR[ap.shopId] : "Owner (Gio)";
     if (decision === "deny") {
@@ -245,17 +297,18 @@ export class Orchestrator extends EventEmitter {
       this.log(req.id, "owner_decision", who, req.mode === "self_pay" ? `Can't go to ${money(ap.requested.total)}. Holding ${money(base.price?.total)}.` : "Can't add more incentives on this job.", { approval: ap });
     } else {
       const conc = decision === "approve" ? ap.requested : { ...ap.requested, ...counter };
-      if (req.mode === "self_pay" && !(Number(conc.total) > 0)) return { error: "counter_total_required" };
       ap.status = decision === "approve" ? "approved" : "countered"; if (decision === "counter") ap.counter = counter;
+      const extra = counter?.extra?.trim();
+      const pickup = !!extra && /pick\s*-?\s*up/i.test(extra);
       const next = req.mode === "self_pay"
-        ? this.pushOffer(req, ap.shopId, { ...base, price: { ...base.price!, total: Math.round(Number(conc.total)) }, createdBy: via === "rule" ? "rule" : "owner", approvalId: ap.id, note: counter?.extra })
-        : this.pushOffer(req, ap.shopId, { ...base, incentives: setAssist(base.incentives ?? [], Math.round(Number(conc.deductibleAssist))), createdBy: via === "rule" ? "rule" : "owner", approvalId: ap.id, note: counter?.extra });
-      if (counter?.extra) next.slot = counter.extra;
+        ? this.pushOffer(req, ap.shopId, { ...base, price: { ...base.price!, total: Math.round(Number(conc.total)) }, createdBy: via === "rule" ? "rule" : "owner", approvalId: ap.id, note: extra })
+        : this.pushOffer(req, ap.shopId, { ...base, incentives: setAssist(base.incentives ?? [], Math.round(Number(conc.deductibleAssist))), createdBy: via === "rule" ? "rule" : "owner", approvalId: ap.id, note: extra });
+      if (pickup) { if (!(next.incentives ?? []).some((i) => i.kind === "pickup")) next.incentives = [...(next.incentives ?? []), { kind: "pickup", value: 0, label: "Free pickup" }]; }
+      else if (extra) next.slot = extra;
       ap.consumedAt = now(); // single use: bound to this exact concession and version
       this.log(req.id, "owner_decision", who, `${decision === "approve" ? "Approved" : "Countered"}: ${this.describeOffer(next)}`, { approval: ap, offer: next });
     }
-    this.approvalWaiters.get(ap.id)?.(ap); this.approvalWaiters.delete(ap.id);
-    this.emit("decided", ap);
+    this.finishApproval(req, ap);
     return { ok: true, approval: ap };
   }
 
@@ -267,6 +320,7 @@ export class Orchestrator extends EventEmitter {
   }
   tool_clarify_item(ctx: Ctx, args: { shopId: string; itemId: string; question: string }) {
     this.assertBuyer(ctx); const req = this.requests[ctx.requestId];
+    if (this.closed(req)) return { error: "negotiation_closed" };
     if (!req.shops.includes(args.shopId)) return { error: "shop_not_in_room" };
     if (req.clarifications.some((c) => c.shopId === args.shopId && c.itemId === args.itemId)) return { error: "already_asked_once" };
     const cl: Clarification = { id: uid("C"), shopId: args.shopId, itemId: args.itemId, question: String(args.question ?? "").slice(0, 300), status: "open" };
@@ -277,17 +331,29 @@ export class Orchestrator extends EventEmitter {
   }
   tool_ask_shop(ctx: Ctx, args: { shopId: string; total?: number; deductibleAssist?: number; message: string }) {
     this.assertBuyer(ctx); const req = this.requests[ctx.requestId];
+    if (this.closed(req)) return { error: "negotiation_closed" };
     if (!req.shops.includes(args.shopId)) return { error: "shop_not_in_room" };
     if (req.asks.length >= 1) return { error: "one_negotiation_round_only" };
-    const ask = { id: uid("Q"), shopId: args.shopId, text: String(args.message ?? "").slice(0, 300), target: req.mode === "self_pay" ? { total: Math.round(Number(args.total)) } : { deductibleAssist: Math.round(Number(args.deductibleAssist)) } };
+    const cur = this.latest(req, args.shopId); if (!cur) return { error: "shop_has_no_offer" };
+    let target: { total?: number; deductibleAssist?: number };
+    if (req.mode === "self_pay") {
+      const t = Math.round(Number(args.total));
+      if (!(Number.isFinite(t) && t > 0 && t < (cur.price?.total ?? 0))) return { error: "total_must_be_below_current_offer", currentTotal: cur.price?.total };
+      target = { total: t };
+    } else {
+      const t = Math.round(Number(args.deductibleAssist));
+      if (!(Number.isFinite(t) && t > currentAssist(cur))) return { error: "deductibleAssist_must_exceed_current", currentAssist: currentAssist(cur) };
+      target = { deductibleAssist: t };
+    }
+    const ask = { id: uid("Q"), shopId: args.shopId, text: String(args.message ?? "").slice(0, 300), target };
     req.asks.push(ask); req.status = "negotiating";
     this.log(req.id, "ask_sent", "Driver's agent", `@${SHOP_ACTOR[args.shopId]} ${ask.text}`, { ask }, [args.shopId]);
     this.emit("deliver", { requestId: req.id, shopId: args.shopId, kind: "ask", ask, limits: this.limits(req, args.shopId) });
     return { ok: true, askId: ask.id };
   }
-  tool_rank_offers(ctx: Ctx, args: { priority?: Priority }) {
+  // Ranking always uses the driver's chosen priority (agents can't change it).
+  tool_rank_offers(ctx: Ctx, _args: { priority?: Priority } = {}) {
     this.assertBuyer(ctx); const req = this.requests[ctx.requestId];
-    if (args.priority && PRIORITIES[req.mode].includes(args.priority)) req.priority = args.priority;
     this.refreshComparison(req);
     const offers = this.latestOffers(req);
     req.ranking = rank(req.mode, req.priority, offers.map((o, i) => {
@@ -302,10 +368,18 @@ export class Orchestrator extends EventEmitter {
     this.log(req.id, "ranking_ready", "Driver's agent", `Ranked by "${req.priority.replace("_", " ")}":\n${req.ranking.map((r, i) => `${i + 1}. ${SHOP_ACTOR[r.shopId]} — ${r.why || "—"}`).join("\n")}`, { ranking: req.ranking });
     return { ok: true, ranking: req.ranking, currentOffers: offers.map((x) => this.offerView(x)), note: "Quote only these current numbers." };
   }
-  tool_present_for_confirmation(ctx: Ctx, args: { summary?: string }) {
+  // The summary the driver sees is built here from the ranking, never from agent free text.
+  tool_present_for_confirmation(ctx: Ctx, _args: { summary?: string } = {}) {
     this.assertBuyer(ctx); const req = this.requests[ctx.requestId];
+    if (req.booking) return { error: "already_booked" };
+    if (!req.negotiationDone) return { error: "negotiation_still_running" };
+    if (!req.ranking) this.tool_rank_offers(ctx);
     req.status = "ready_for_confirmation";
-    this.log(req.id, "ready", "Driver's agent", args.summary || "Here are your offers. Pick the one you want and confirm — nothing is booked until you do. Final details are confirmed at inspection.");
+    const top = req.ranking?.find((r) => r.recommended) ?? req.ranking?.find((r) => r.eligible) ?? req.ranking?.[0];
+    const offer = top ? this.latest(req, top.shopId) : undefined;
+    const pick = offer ? `Top pick for "${req.priority.replace("_", " ")}": ${SHOP_ACTOR[offer.shopId]} — ${this.describeOffer(offer)}. ` : "";
+    const tail = req.mode === "insurance" ? `${GUARDRAIL_INCENTIVE} ${GUARDRAIL_INSURANCE}` : "Final details are confirmed at inspection.";
+    this.log(req.id, "ready", "Driver's agent", `${pick}Pick the offer you want and confirm — nothing is booked until you do. ${tail}`);
     this.signal(`ready:${req.id}`, true);
     return { ok: true };
   }
@@ -314,16 +388,45 @@ export class Orchestrator extends EventEmitter {
   confirm(requestId: string, offerId: string, version: number) {
     const req = this.requests[requestId]; if (!req) return { error: "unknown_request" };
     if (req.booking) return { error: "already_booked" };
+    if (req.status !== "ready_for_confirmation") return { error: "offers_not_final_yet" };
     const o = (req.offers[Object.keys(req.offers).find((s) => req.offers[s].some((x) => x.id === offerId)) ?? ""] ?? []).find((x) => x.id === offerId);
     if (!o || o.version !== version || this.latest(req, o.shopId)!.id !== o.id) return { error: "offer_not_current" };
     req.booking = { id: uid("B"), offerId: o.id, version: o.version, shopId: o.shopId, at: now(), simulated: true };
     req.status = "booked";
     this.log(req.id, "booked", "Quote Room", `Booked (simulated — no payment taken): ${SHOP_ACTOR[o.shopId]} · ${this.describeOffer(o)}`, { booking: req.booking, offer: o });
+    for (const ap of Object.values(this.approvals)) if (ap.requestId === req.id && ap.status === "pending") this.expire(ap, "request_closed");
     this.emit("booked", req, o);
     return { ok: true, booking: req.booking };
   }
 
   // ---------- helpers ----------
+  // Once offers are presented (or booked) nothing can change them.
+  closed(req: Request) { return !!req.booking || req.status === "ready_for_confirmation" || req.status === "booked"; }
+  // Marks the shop's open ask answered and wakes the negotiation step.
+  askAnswered(req: Request, shopId: string, outcome: string) {
+    const ask = req.asks.find((a) => a.shopId === shopId && !a.outcome);
+    if (!ask) return;
+    ask.outcome = outcome;
+    this.signal(`askdone:${req.id}`, { shopId, outcome });
+  }
+  hasApprovalForAsk(askId: string) { return Object.values(this.approvals).some((a) => a.askId === askId); }
+  // Agent free text is shown only if every dollar figure matches a current offer number and, in
+  // insurance mode, it makes no out-of-pocket or coverage claims.
+  safeAgentText(requestId: string, text: string) {
+    const req = this.requests[requestId]; if (!req) return "";
+    const t = text.replace(/[*_`#|]/g, "").replace(/\s+/g, " ").trim();
+    if (!t) return "";
+    const allowed = new Set<number>();
+    for (const o of this.latestOffers(req)) {
+      if (o.price?.total != null) allowed.add(Math.round(o.price.total));
+      if (o.jobSize != null) allowed.add(Math.round(o.jobSize));
+      for (const i of o.incentives ?? []) if (i.value) allowed.add(Math.round(i.value));
+    }
+    const amounts = [...t.matchAll(/\$\s?([\d,]+(?:\.\d+)?)/g)].map((m) => Math.round(Number(m[1].replace(/,/g, ""))));
+    if (amounts.some((a) => ![...allowed].some((x) => Math.abs(x - a) <= 1))) return "";
+    if (req.mode === "insurance" && /out[- ]of[- ]pocket|you(?:'ll| will)? (?:only )?(?:pay|owe)|covered|insurer will|insurance will|deductible will be|free repair/i.test(t)) return "";
+    return t;
+  }
   refreshComparison(req: Request) {
     const offers = this.latestOffers(req);
     req.comparison = compareScopes(req.baselineIds, offers.map((o) => ({ shopId: o.shopId, itemIds: o.items.map((i) => i.id), disputed: o.disputed })));
@@ -344,6 +447,7 @@ export class Orchestrator extends EventEmitter {
   }
 }
 
+function currentAssist(o: Offer) { return (o.incentives ?? []).find((i) => i.kind === "deductible_assist")?.value ?? 0; }
 function setAssist(list: Incentive[], amount: number): Incentive[] {
   const rest = list.filter((i) => i.kind !== "deductible_assist");
   return amount > 0 ? [{ kind: "deductible_assist", value: amount, label: `$${amount} toward your deductible` }, ...rest] : rest;

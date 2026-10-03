@@ -14,7 +14,7 @@
   --display:"Archivo", "Arial Narrow", system-ui, sans-serif; --body:"Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
 }
 *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--body)}
-body.big{font-size:19px}
+body.proj{font-size:19px}
 header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:var(--ink);color:#fff;flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:12px}
 .brand b{font:800 22px/1 var(--display);letter-spacing:.02em}
@@ -83,6 +83,9 @@ td.st{font-weight:600} .st.covered{color:var(--ok)} .st.missing_required{color:v
 .guard{font-size:12.5px;color:var(--muted);border-left:3px solid var(--warn);padding:6px 10px;background:#fff;border-radius:6px}
 .empty{color:var(--muted);font-size:14px;padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:12px}
 .status{font:600 12px var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.pill.warn{background:#5A3A00;color:#FFE2A8} .pill.warn i{background:var(--gold)}
+.toast{margin-top:10px;font-size:13px;color:var(--bad)} .toast:empty{display:none}
+.policy{font:600 10.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--warn)}
 </style>
 </head>
 <body>
@@ -110,12 +113,15 @@ td.st{font-weight:600} .st.covered{color:var(--ok)} .st.missing_required{color:v
     <div id="booked"></div>
     <div class="panel"><h2>Offers</h2><div class="offers" id="offers"><div class="empty">No offers yet.</div></div></div>
     <div class="panel"><h2>Scope comparison</h2><div class="tbl" id="cmp"><div class="empty">Shops' scopes are compared here.</div></div></div>
-    <div class="panel"><h2>Ranked for you</h2><div class="rank" id="rank"><div class="empty">Ranking appears after the shops answer and the one negotiation round.</div></div><div id="guards" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div></div>
+    <div class="panel"><h2>Ranked for you</h2><div class="rank" id="rank"><div class="empty">Ranking appears after the shops answer and the one negotiation round.</div></div><div class="toast" id="toast"></div><div id="guards" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div></div>
   </section>
 </main>
 <script>
-const qs = new URLSearchParams(location.search); if (qs.has("big") || location.pathname === "/room") document.body.classList.add("big");
-let cases = [], caseId = null, mode = "self_pay", reqId = qs.get("r"), after = 0, last = null;
+const qs = new URLSearchParams(location.search); if (qs.has("big") || location.pathname.startsWith("/room")) document.body.classList.add("proj");
+const pathId = (location.pathname.match(/^\/room\/([\w-]+)/) || [])[1];
+let cases = [], caseId = null, mode = "self_pay", reqId = pathId || qs.get("r"), after = 0, last = null;
+const shown = new Map(); // element id -> last html, so live polling never rebuilds unchanged panels
+function setHTML(id, html){ if (shown.get(id) === html) return; shown.set(id, html); $(id).innerHTML = html; }
 const PRIO = { self_pay: [["best_value","Best value"],["lowest_price","Lowest price"],["fastest","Fastest"],["best_reviewed","Best reviewed"]], insurance: [["best_value","Best value"],["best_incentives","Best incentives"],["fastest","Fastest"],["best_reviewed","Best reviewed"]] };
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
@@ -124,45 +130,65 @@ function setPrio(){ $("prio").innerHTML = PRIO[mode].map(([v,l]) => `<option val
 document.querySelectorAll("#modeSeg button").forEach((b) => b.onclick = () => { mode = b.dataset.m; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x === b)); setPrio(); });
 setPrio();
 async function status(){ try{ const s = await (await fetch("/api/status")).json();
-  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = (s.slack && s.slack.status === "ready") || s.telegram.ownerConnected ? "on" : (s.integrations.telegram || (s.slack && s.slack.configured) ? "fb" : "");
-  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}"><i></i>Owner alerts${s.slack && s.slack.status === "ready" ? " · Slack" : ""}</span>`; }catch{} }
+  const sl = s.slack || {}, slackUp = sl.status === "ready" || sl.status === "connected", slackWarn = String(sl.status || "").startsWith("WARNING");
+  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = slackWarn ? "warn" : slackUp || s.telegram.ownerConnected ? "on" : (s.integrations.telegram || sl.configured ? "fb" : "");
+  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}" title="${esc(sl.status || "")}"><i></i>Owner alerts${slackUp || slackWarn ? " · Slack" : ""}${slackWarn ? " · 2 listeners!" : ""}</span>`; }catch{} }
 async function loadCases(){ cases = await (await fetch("/api/cases")).json(); caseId = caseId || cases[0]?.id;
   $("cases").innerHTML = cases.map((c) => `<button class="case ${c.id === caseId ? "sel" : ""}" data-c="${c.id}"><b>${esc(c.title)}</b><small>${esc(c.source)}</small>${c.photos?.length ? `<div class="photos">${c.photos.map((p) => `<img src="/photos/${esc(p)}" alt="">`).join("")}</div>` : `<div class="note" style="margin-top:6px">${esc(c.photoNote)}</div>`}</button>`).join("");
   document.querySelectorAll(".case").forEach((b) => b.onclick = () => { caseId = b.dataset.c; const c = cases.find((x) => x.id === caseId); mode = c.defaultMode; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x.dataset.m === mode)); setPrio(); loadCases(); });
 }
-$("go").onclick = async () => { $("go").disabled = true; after = 0; $("feed").innerHTML = ""; $("booked").innerHTML = "";
+function resetPanels(){
+  after = 0; last = null; shown.clear();
+  $("feed").innerHTML = '<div class="empty">Offers and negotiation appear here live.</div>';
+  $("booked").innerHTML = ""; $("st").textContent = ""; $("scopeP").hidden = true; $("toast").textContent = "";
+  $("offers").innerHTML = '<div class="empty">No offers yet.</div>';
+  $("cmp").innerHTML = '<div class="empty">Shops\' scopes are compared here.</div>';
+  $("rank").innerHTML = '<div class="empty">Ranking appears after the shops answer and the one negotiation round.</div>';
+  $("guards").innerHTML = "";
+}
+$("go").onclick = async () => { $("go").disabled = true; reqId = null; resetPanels();
   const r = await (await fetch("/api/requests", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ caseId, mode, priority: $("prio").value }) })).json();
-  reqId = r.requestId; history.replaceState(null, "", "?r=" + reqId + (document.body.classList.contains("big") ? "&big=1" : "")); };
-function avatar(actor){ if (actor.startsWith("Drive")) return ["DA","drive"]; if (actor.startsWith("Owner")) return ["GO","owner"]; if (actor.startsWith("Bayline")) return ["BC","sim"]; if (actor.startsWith("QuickFix")) return ["QF","sim"]; if (actor.startsWith("Quote")) return ["QR","sys"]; return ["YOU",""]; }
+  reqId = r.requestId; history.replaceState(null, "", (location.pathname.startsWith("/room") ? "/room/" + reqId : "/?r=" + reqId) + (qs.has("big") ? (location.pathname.startsWith("/room") ? "?big=1" : "&big=1") : "")); };
+function avatar(actor){ if (actor === "Drive Auto Body") return ["DA","drive"]; if (actor === "Driver's agent") return ["YOU",""]; if (actor.startsWith("Owner")) return ["GO","owner"]; if (actor.startsWith("Bayline")) return ["BC","sim"]; if (actor.startsWith("QuickFix")) return ["QF","sim"]; if (actor.startsWith("Quote")) return ["QR","sys"]; return ["YOU",""]; }
+let polling = false;
 async function poll(){
-  if (!reqId) return;
-  const f = await (await fetch(`/api/requests/${reqId}/feed?after=${after}`)).json();
+  if (!reqId || polling) return; polling = true;
+  try { await pollOnce(); } catch {} finally { polling = false; }
+}
+async function pollOnce(){
+  const id = reqId;
+  const f = await (await fetch(`/api/requests/${id}/feed?after=${after}`)).json();
+  if (id !== reqId) return;
   for (const e of f.events){ after = Math.max(after, e.seq); const [ini, cls] = avatar(e.actor);
     const kind = e.type === "owner_decision" ? "owner" : e.type === "exception_requested" ? "exc" : "";
     if ($("feed").querySelector(".empty")) $("feed").innerHTML = "";
     $("feed").insertAdjacentHTML("beforeend", `<div class="msg ${kind}"><div class="av ${cls}">${ini}</div><div><div class="who">${esc(e.actor)}<time>${new Date(e.at).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })}</time></div><div class="txt">${esc(e.text)}</div></div></div>`);
     $("feed").scrollTop = $("feed").scrollHeight; }
-  const r = await (await fetch(`/api/requests/${reqId}`)).json(); if (r.error) return; last = r; render(r);
+  const r = await (await fetch(`/api/requests/${id}`)).json(); if (r.error || id !== reqId) return; last = r; render(r);
 }
 function render(r){
   $("st").textContent = r.status.replaceAll("_"," "); $("scopeP").hidden = false;
-  $("scope").innerHTML = `<ul>${r.case.baseline.map((i) => `<li>${esc(i.label)}</li>`).join("")}</ul><p class="note">${esc(r.case.reviewNote)}</p>`;
+  setHTML("scope", `<ul>${r.case.baseline.map((i) => `<li>${esc(i.label)}</li>`).join("")}</ul><p class="note">${esc(r.case.reviewNote)}</p>`);
   const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c])), rankMap = Object.fromEntries((r.ranking || []).map((x, i) => [x.shopId, { ...x, pos: i }]));
   const shops = r.shops.filter((s) => r.latest[s]);
-  $("offers").innerHTML = shops.length ? shops.map((s) => { const o = r.latest[s], info = r.shopsInfo[s], c = cmp[s], rk = rankMap[s];
+  setHTML("offers", shops.length ? shops.map((s) => { const o = r.latest[s], info = r.shopsInfo[s], c = cmp[s], rk = rankMap[s];
     const prof = info.profile.rating ? `<div class="stars"><b>★ ${info.profile.rating}</b> · ${info.profile.reviewCount} reviews${info.profile.themes?.length ? " · " + esc(info.profile.themes.join(", ")) : ""}${info.profile.source ? ` · <a href="${esc(info.profile.source.url)}" target="_blank" rel="noopener">source</a>` : ""}</div>` : `<div class="stars">${info.simulated ? "Simulated profile" : "Reviews: " + esc(info.profile.status || "pending")}</div>`;
     const head = r.mode === "self_pay" ? `<div class="big">${money(o.price?.total)}<small>v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</small></div>`
-      : `<div class="inc">${(o.incentives || []).length ? o.incentives.map((i) => `<span>🎁 ${esc(i.label)}</span>`).join("") : "<span>No incentives offered</span>"}<span class="note">Shop's preliminary estimate (internal sizing): ${money(o.jobSize)} · v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</span></div>`;
+      : `<div class="inc">${(o.incentives || []).length ? o.incentives.map((i) => `<span>🎁 ${esc(i.label)}</span>`).join("") : "<span>No incentives offered</span>"}${info.incentiveStatus && !info.simulated ? `<span class="policy">Incentives: ${esc(info.incentiveStatus)}</span>` : ""}<span class="note">Shop's preliminary estimate, subject to your insurer's process: ${money(o.jobSize)} · v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</span></div>`;
     const chips = c ? Object.entries(c.statuses).map(([id, st]) => `<span class="chip ${st}" title="${st.replaceAll("_"," ")}">${esc(r.case.labels[id] || id)}</span>`).join("") : "";
-    return `<div class="card ${info.simulated ? "sim" : ""} ${rk?.recommended ? "rec" : ""}"><div class="top"><div><div class="name">${esc(info.name)}</div>${prof}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${info.simulated ? '<span class="badge simb">Simulated</span>' : '<span class="badge real">Real shop</span>'}${rk?.recommended ? '<span class="badge recb">Recommended</span>' : ""}${c && !c.eligible ? '<span class="badge clar">Needs clarification</span>' : ""}</div></div>${head}<dl class="kv"><dt>Drop-off</dt><dd>${esc(o.slot)}</dd><dt>Turnaround</dt><dd>${o.turnaroundDays} days</dd><dt>Warranty</dt><dd>${esc(o.warranty)}</dd></dl><div class="chips">${chips}</div></div>`; }).join("") : '<div class="empty">Waiting for shops…</div>';
+    return `<div class="card ${info.simulated ? "sim" : ""} ${rk?.recommended ? "rec" : ""}"><div class="top"><div><div class="name">${esc(info.name)}</div>${prof}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${info.simulated ? '<span class="badge simb">Simulated</span>' : '<span class="badge real">Real shop</span>'}${rk?.recommended ? '<span class="badge recb">Recommended</span>' : ""}${c && !c.eligible ? '<span class="badge clar">Needs clarification</span>' : ""}</div></div>${head}<dl class="kv"><dt>Drop-off</dt><dd>${esc(o.slot)}</dd><dt>Turnaround</dt><dd>${o.turnaroundDays} days</dd><dt>Warranty</dt><dd>${esc(o.warranty)}</dd></dl><div class="chips">${chips}</div></div>`; }).join("") : '<div class="empty">Waiting for shops…</div>');
   if (r.comparison?.length){ const ids = Object.keys(r.comparison[0].statuses); const L = { covered:"✓ Included", missing_required:"✗ Missing — needs clarification", recommended_elsewhere:"⚠ Not included (recommended by another shop)", disputed:"? Disputed — confirm at inspection" };
-    $("cmp").innerHTML = `<table><thead><tr><th>Item</th>${shops.map((s) => `<th>${esc(r.shopsInfo[s].name)}</th>`).join("")}</tr></thead><tbody>${ids.map((id) => `<tr><td>${esc(r.case.labels[id] || id)}${r.case.baseline.some((b) => b.id === id) ? "" : ' <span class="note">(added by a shop)</span>'}</td>${shops.map((s) => { const st = cmp[s]?.statuses[id]; return `<td class="st ${st}">${L[st] || "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`; }
+    setHTML("cmp", `<table><thead><tr><th>Item</th>${shops.map((s) => `<th>${esc(r.shopsInfo[s].display || r.shopsInfo[s].name)}</th>`).join("")}</tr></thead><tbody>${ids.map((id) => `<tr><td>${esc(r.case.labels[id] || id)}${r.case.baseline.some((b) => b.id === id) ? "" : ' <span class="note">(added by a shop)</span>'}</td>${shops.map((s) => { const st = cmp[s]?.statuses[id]; return `<td class="st ${st}">${L[st] || "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`); }
   if (r.ranking?.length){ const ready = r.status === "ready_for_confirmation";
-    $("rank").innerHTML = r.ranking.map((x, i) => { const o = r.latest[x.shopId]; return `<div class="rrow ${x.recommended ? "rec" : ""}"><div class="n">${i + 1}</div><div><b>${esc(r.shopsInfo[x.shopId].name)}</b> ${r.mode === "self_pay" ? "· " + money(o.price?.total) : ""}<div class="note">${esc(x.why || "")}</div></div><button class="confirm" ${ready && !r.booking ? "" : "disabled"} data-o="${o.id}" data-v="${o.version}">Confirm</button></div>`; }).join("");
-    document.querySelectorAll(".confirm").forEach((b) => b.onclick = async () => { const res = await (await fetch(`/api/requests/${reqId}/confirm`, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ offerId: b.dataset.o, version: Number(b.dataset.v) }) })).json(); if (res.error) alert(res.error); }); }
-  $("guards").innerHTML = (r.guardrails || []).map((g) => `<div class="guard">${esc(g)}</div>`).join("");
-  if (r.booking){ const o = r.latest[r.booking.shopId]; $("booked").innerHTML = `<div class="banner">Booked with ${esc(r.shopsInfo[r.booking.shopId].name)} · ${r.mode === "self_pay" ? money(o.price?.total) : (o.incentives || []).map((i) => esc(i.label)).join(" + ")} · drop-off ${esc(o.slot)}<small>Simulated booking — no payment taken. Final details are confirmed at inspection.</small></div>`; $("go").disabled = false; }
+    setHTML("rank", r.ranking.map((x, i) => { const o = r.latest[x.shopId]; return `<div class="rrow ${x.recommended ? "rec" : ""}"><div class="n">${i + 1}</div><div><b>${esc(r.shopsInfo[x.shopId].display || r.shopsInfo[x.shopId].name)}</b> ${r.mode === "self_pay" ? "· " + money(o.price?.total) : ""}<div class="note">${esc(x.why || "")}</div></div><button class="confirm" ${ready && !r.booking ? "" : "disabled"} data-o="${o.id}" data-v="${o.version}">Confirm</button></div>`; }).join("")); }
+  setHTML("guards", (r.guardrails || []).map((g) => `<div class="guard">${esc(g)}</div>`).join(""));
+  if (r.booking){ const o = r.latest[r.booking.shopId]; setHTML("booked", `<div class="banner">Booked with ${esc(r.shopsInfo[r.booking.shopId].display || r.shopsInfo[r.booking.shopId].name)} · ${r.mode === "self_pay" ? money(o.price?.total) : (o.incentives || []).map((i) => esc(i.label)).join(" + ")} · drop-off ${esc(o.slot)}<small>Simulated booking — no payment taken. Final details are confirmed at inspection.</small></div>`); $("go").disabled = false; }
 }
+// one delegated handler: survives re-renders, no alert() popups mid-demo
+const FRIENDLY = { offer_not_current: "That offer just changed — confirm the updated one.", offers_not_final_yet: "Hold on — the shops are still negotiating.", already_booked: "Already booked." };
+$("rank").addEventListener("click", async (ev) => { const b = ev.target.closest(".confirm"); if (!b || b.disabled) return; b.disabled = true;
+  const res = await (await fetch(`/api/requests/${reqId}/confirm`, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ offerId: b.dataset.o, version: Number(b.dataset.v) }) })).json();
+  $("toast").textContent = res.error ? (FRIENDLY[res.error] || res.error) : ""; if (res.error) { shown.delete("rank"); poll(); } });
 loadCases(); status(); setInterval(status, 5000); setInterval(poll, 1000); poll();
 </script>
 </body>

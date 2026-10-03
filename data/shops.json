@@ -93,7 +93,7 @@
         "confirmed": false
       },
       "warranty": {
-        "label": "Workmanship warranty (confirm terms with Gio)",
+        "label": "Workmanship warranty (terms confirmed at drop-off)",
         "score": 0.8,
         "confirmed": false
       },
