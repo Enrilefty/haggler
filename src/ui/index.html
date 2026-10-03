@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quote Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F4F6; --panel:#FFFFFF; --ink:#0D1424; --muted:#5D6678; --line:#E2E5EB;
+  --accent:#1F4FFF; --accent-soft:#E7EDFF; --ok:#14865B; --ok-soft:#E3F5EC; --warn:#B86E00; --warn-soft:#FFF3DD;
+  --bad:#C93434; --bad-soft:#FDE8E8; --dis:#6B7280; --dis-soft:#EEF0F3; --gold:#F5B300;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif; --body:"Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+*{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--body)}
+body.big{font-size:19px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:var(--ink);color:#fff;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand b{font:800 22px/1 var(--display);letter-spacing:.02em}
+.brand span{color:#AFC1FF;font-size:14px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:#1E2840;color:#C9D3EA}
+.pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7A8499;margin-right:6px;vertical-align:1px}
+.pill.on i{background:#3BD38A} .pill.fb i{background:var(--gold)}
+main{display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:18px;padding:18px 24px 40px;max-width:1500px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+h2{font:700 13px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cases{display:grid;gap:10px}
+.case{border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:#fff;text-align:left;font:inherit;color:inherit}
+.case.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.case b{font:700 15px/1.25 var(--display);display:block}
+.case small{color:var(--muted)}
+.photos{display:flex;gap:6px;margin-top:8px;overflow-x:auto}
+.photos img{height:64px;border-radius:8px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:10px;padding:4px;gap:4px}
+.seg button{border:0;border-radius:8px;padding:10px;font:600 14px var(--body);background:transparent;color:var(--muted);cursor:pointer}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(13,20,36,.12)}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px;color:var(--muted)}
+select,input{font:500 15px var(--body);padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.go{border:0;border-radius:12px;padding:14px;font:700 16px var(--display);letter-spacing:.02em;background:var(--accent);color:#fff;cursor:pointer}
+.go:disabled{opacity:.5;cursor:default}
+.scope li{margin:4px 0} .scope ul{margin:0;padding-left:18px}
+.note{font-size:12.5px;color:var(--muted)}
+.feed{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;padding-right:4px}
+.msg{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+.av{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font:700 12px var(--display);color:#fff;background:#3A4560}
+.av.drive{background:var(--accent)} .av.sim{background:#7C6F9C} .av.owner{background:var(--ok)} .av.sys{background:#9AA3B5}
+.msg .who{font-weight:600;font-size:13px} .msg .who time{color:var(--muted);font:400 11px var(--mono);margin-left:6px}
+.msg .txt{white-space:pre-wrap;font-size:14px}
+.msg.owner .txt{background:var(--ok-soft);border:1px solid #BFE6D2;border-radius:10px;padding:8px 10px}
+.msg.exc .txt{background:var(--warn-soft);border:1px solid #F3D9A6;border-radius:10px;padding:8px 10px}
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.sim{border-style:dashed}
+.card.rec{border:2px solid var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card .name{font:800 18px/1.15 var(--display)}
+.badge{font:600 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:5px 7px;border-radius:6px;white-space:nowrap}
+.badge.real{background:var(--accent-soft);color:var(--accent)} .badge.simb{background:#F0ECF8;color:#5E4E8A}
+.badge.recb{background:var(--ok);color:#fff} .badge.clar{background:var(--bad-soft);color:var(--bad)}
+.stars{font-size:13px;color:var(--muted)} .stars b{color:var(--ink)}
+.big{font:800 30px/1 var(--display);letter-spacing:-.01em}
+.big small{font:500 13px var(--body);color:var(--muted);margin-left:6px}
+.inc{display:flex;flex-direction:column;gap:4px;font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px} .kv dt{color:var(--muted)} .kv dd{margin:0}
+.tag{font:600 11px var(--mono);color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11.5px;padding:3px 7px;border-radius:999px;border:1px solid var(--line)}
+.chip.covered{background:var(--ok-soft);border-color:#BFE6D2} .chip.missing_required{background:var(--bad-soft);border-color:#F3C2C2;color:var(--bad)}
+.chip.recommended_elsewhere{background:var(--warn-soft);border-color:#F3D9A6;color:var(--warn)} .chip.disputed{background:var(--dis-soft);color:var(--dis)}
+.tbl{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} th{font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+td.st{font-weight:600} .st.covered{color:var(--ok)} .st.missing_required{color:var(--bad)} .st.recommended_elsewhere{color:var(--warn)} .st.disputed{color:var(--dis)}
+.rank{display:flex;flex-direction:column;gap:10px}
+.rrow{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.rrow .n{font:800 20px var(--display);color:var(--muted)} .rrow.rec{border-color:var(--ok);background:var(--ok-soft)}
+.confirm{border:0;border-radius:10px;padding:10px 14px;font:700 14px var(--body);background:var(--ink);color:#fff;cursor:pointer}
+.confirm:disabled{opacity:.35;cursor:default}
+.banner{border-radius:14px;padding:16px;background:var(--ok);color:#fff;font:700 17px var(--display)} .banner small{display:block;font:500 13px var(--body);opacity:.9}
+.guard{font-size:12.5px;color:var(--muted);border-left:3px solid var(--warn);padding:6px 10px;background:#fff;border-radius:6px}
+.empty{color:var(--muted);font-size:14px;padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:12px}
+.status{font:600 12px var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>QUOTE ROOM</b><span>Send your agent instead.</span></div>
+  <div class="pills" id="pills"></div>
+</header>
+<main>
+  <section class="col">
+    <div class="panel" id="setup">
+      <h2>Your repair</h2>
+      <div class="cases" id="cases"></div>
+      <div style="height:12px"></div>
+      <div class="seg" id="modeSeg"><button data-m="self_pay" class="on">Paying myself</button><button data-m="insurance">Insurance claim</button></div>
+      <div style="height:12px"></div>
+      <label class="f">What matters most<select id="prio"></select></label>
+      <div style="height:14px"></div>
+      <button class="go" id="go">Get offers</button>
+      <p class="note">Your agent posts one request. Each shop's agent answers under its own rules and asks its owner before making an exception.</p>
+    </div>
+    <div class="panel scope" id="scopeP" hidden><h2>Proposed scope</h2><div id="scope"></div></div>
+    <div class="panel"><h2>The room <span class="status" id="st"></span></h2><div class="feed" id="feed"><div class="empty">Offers and negotiation appear here live.</div></div></div>
+  </section>
+  <section class="col">
+    <div id="booked"></div>
+    <div class="panel"><h2>Offers</h2><div class="offers" id="offers"><div class="empty">No offers yet.</div></div></div>
+    <div class="panel"><h2>Scope comparison</h2><div class="tbl" id="cmp"><div class="empty">Shops' scopes are compared here.</div></div></div>
+    <div class="panel"><h2>Ranked for you</h2><div class="rank" id="rank"><div class="empty">Ranking appears after the shops answer and the one negotiation round.</div></div><div id="guards" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div></div>
+  </section>
+</main>
+<script>
+const qs = new URLSearchParams(location.search); if (qs.has("big") || location.pathname === "/room") document.body.classList.add("big");
+let cases = [], caseId = null, mode = "self_pay", reqId = qs.get("r"), after = 0, last = null;
+const PRIO = { self_pay: [["best_value","Best value"],["lowest_price","Lowest price"],["fastest","Fastest"],["best_reviewed","Best reviewed"]], insurance: [["best_value","Best value"],["best_incentives","Best incentives"],["fastest","Fastest"],["best_reviewed","Best reviewed"]] };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const money = (n) => n == null ? "—" : "$" + Math.round(n).toLocaleString("en-US");
+function setPrio(){ $("prio").innerHTML = PRIO[mode].map(([v,l]) => `<option value="${v}">${l}</option>`).join(""); }
+document.querySelectorAll("#modeSeg button").forEach((b) => b.onclick = () => { mode = b.dataset.m; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x === b)); setPrio(); });
+setPrio();
+async function status(){ try{ const s = await (await fetch("/api/status")).json();
+  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = s.telegram.ownerConnected ? "on" : (s.integrations.telegram ? "fb" : "");
+  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}"><i></i>Owner alerts</span>`; }catch{} }
+async function loadCases(){ cases = await (await fetch("/api/cases")).json(); caseId = caseId || cases[0]?.id;
+  $("cases").innerHTML = cases.map((c) => `<button class="case ${c.id === caseId ? "sel" : ""}" data-c="${c.id}"><b>${esc(c.title)}</b><small>${esc(c.source)}</small>${c.photos?.length ? `<div class="photos">${c.photos.map((p) => `<img src="/photos/${esc(p)}" alt="">`).join("")}</div>` : `<div class="note" style="margin-top:6px">${esc(c.photoNote)}</div>`}</button>`).join("");
+  document.querySelectorAll(".case").forEach((b) => b.onclick = () => { caseId = b.dataset.c; const c = cases.find((x) => x.id === caseId); mode = c.defaultMode; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x.dataset.m === mode)); setPrio(); loadCases(); });
+}
+$("go").onclick = async () => { $("go").disabled = true; after = 0; $("feed").innerHTML = ""; $("booked").innerHTML = "";
+  const r = await (await fetch("/api/requests", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ caseId, mode, priority: $("prio").value }) })).json();
+  reqId = r.requestId; history.replaceState(null, "", "?r=" + reqId + (document.body.classList.contains("big") ? "&big=1" : "")); };
+function avatar(actor){ if (actor.startsWith("Drive")) return ["DA","drive"]; if (actor.startsWith("Owner")) return ["GO","owner"]; if (actor.startsWith("Bayline")) return ["BC","sim"]; if (actor.startsWith("QuickFix")) return ["QF","sim"]; if (actor.startsWith("Quote")) return ["QR","sys"]; return ["YOU",""]; }
+async function poll(){
+  if (!reqId) return;
+  const f = await (await fetch(`/api/requests/${reqId}/feed?after=${after}`)).json();
+  for (const e of f.events){ after = Math.max(after, e.seq); const [ini, cls] = avatar(e.actor);
+    const kind = e.type === "owner_decision" ? "owner" : e.type === "exception_requested" ? "exc" : "";
+    if ($("feed").querySelector(".empty")) $("feed").innerHTML = "";
+    $("feed").insertAdjacentHTML("beforeend", `<div class="msg ${kind}"><div class="av ${cls}">${ini}</div><div><div class="who">${esc(e.actor)}<time>${new Date(e.at).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })}</time></div><div class="txt">${esc(e.text)}</div></div></div>`);
+    $("feed").scrollTop = $("feed").scrollHeight; }
+  const r = await (await fetch(`/api/requests/${reqId}`)).json(); if (r.error) return; last = r; render(r);
+}
+function render(r){
+  $("st").textContent = r.status.replaceAll("_"," "); $("scopeP").hidden = false;
+  $("scope").innerHTML = `<ul>${r.case.baseline.map((i) => `<li>${esc(i.label)}</li>`).join("")}</ul><p class="note">${esc(r.case.reviewNote)}</p>`;
+  const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c])), rankMap = Object.fromEntries((r.ranking || []).map((x, i) => [x.shopId, { ...x, pos: i }]));
+  const shops = r.shops.filter((s) => r.latest[s]);
+  $("offers").innerHTML = shops.length ? shops.map((s) => { const o = r.latest[s], info = r.shopsInfo[s], c = cmp[s], rk = rankMap[s];
+    const prof = info.profile.rating ? `<div class="stars"><b>★ ${info.profile.rating}</b> · ${info.profile.reviewCount} reviews${info.profile.themes?.length ? " · " + esc(info.profile.themes.join(", ")) : ""}${info.profile.source ? ` · <a href="${esc(info.profile.source.url)}" target="_blank" rel="noopener">source</a>` : ""}</div>` : `<div class="stars">${info.simulated ? "Simulated profile" : "Reviews: " + esc(info.profile.status || "pending")}</div>`;
+    const head = r.mode === "self_pay" ? `<div class="big">${money(o.price?.total)}<small>v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</small></div>`
+      : `<div class="inc">${(o.incentives || []).length ? o.incentives.map((i) => `<span>🎁 ${esc(i.label)}</span>`).join("") : "<span>No incentives offered</span>"}<span class="note">Shop's preliminary estimate (internal sizing): ${money(o.jobSize)} · v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</span></div>`;
+    const chips = c ? Object.entries(c.statuses).map(([id, st]) => `<span class="chip ${st}" title="${st.replaceAll("_"," ")}">${esc(r.case.labels[id] || id)}</span>`).join("") : "";
+    return `<div class="card ${info.simulated ? "sim" : ""} ${rk?.recommended ? "rec" : ""}"><div class="top"><div><div class="name">${esc(info.name)}</div>${prof}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${info.simulated ? '<span class="badge simb">Simulated</span>' : '<span class="badge real">Real shop</span>'}${rk?.recommended ? '<span class="badge recb">Recommended</span>' : ""}${c && !c.eligible ? '<span class="badge clar">Needs clarification</span>' : ""}</div></div>${head}<dl class="kv"><dt>Drop-off</dt><dd>${esc(o.slot)}</dd><dt>Turnaround</dt><dd>${o.turnaroundDays} days</dd><dt>Warranty</dt><dd>${esc(o.warranty)}</dd></dl><div class="chips">${chips}</div></div>`; }).join("") : '<div class="empty">Waiting for shops…</div>';
+  if (r.comparison?.length){ const ids = Object.keys(r.comparison[0].statuses); const L = { covered:"✓ Included", missing_required:"✗ Missing — needs clarification", recommended_elsewhere:"⚠ Not included (recommended by another shop)", disputed:"? Disputed — confirm at inspection" };
+    $("cmp").innerHTML = `<table><thead><tr><th>Item</th>${shops.map((s) => `<th>${esc(r.shopsInfo[s].name)}</th>`).join("")}</tr></thead><tbody>${ids.map((id) => `<tr><td>${esc(r.case.labels[id] || id)}${r.case.baseline.some((b) => b.id === id) ? "" : ' <span class="note">(added by a shop)</span>'}</td>${shops.map((s) => { const st = cmp[s]?.statuses[id]; return `<td class="st ${st}">${L[st] || "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`; }
+  if (r.ranking?.length){ const ready = r.status === "ready_for_confirmation";
+    $("rank").innerHTML = r.ranking.map((x, i) => { const o = r.latest[x.shopId]; return `<div class="rrow ${x.recommended ? "rec" : ""}"><div class="n">${i + 1}</div><div><b>${esc(r.shopsInfo[x.shopId].name)}</b> ${r.mode === "self_pay" ? "· " + money(o.price?.total) : ""}<div class="note">${esc(x.why || "")}</div></div><button class="confirm" ${ready && !r.booking ? "" : "disabled"} data-o="${o.id}" data-v="${o.version}">Confirm</button></div>`; }).join("");
+    document.querySelectorAll(".confirm").forEach((b) => b.onclick = async () => { const res = await (await fetch(`/api/requests/${reqId}/confirm`, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ offerId: b.dataset.o, version: Number(b.dataset.v) }) })).json(); if (res.error) alert(res.error); }); }
+  $("guards").innerHTML = (r.guardrails || []).map((g) => `<div class="guard">${esc(g)}</div>`).join("");
+  if (r.booking){ const o = r.latest[r.booking.shopId]; $("booked").innerHTML = `<div class="banner">Booked with ${esc(r.shopsInfo[r.booking.shopId].name)} · ${r.mode === "self_pay" ? money(o.price?.total) : (o.incentives || []).map((i) => esc(i.label)).join(" + ")} · drop-off ${esc(o.slot)}<small>Simulated booking — no payment taken. Final details are confirmed at inspection.</small></div>`; $("go").disabled = false; }
+}
+loadCases(); status(); setInterval(status, 5000); setInterval(poll, 1000); poll();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quote Room Admin</title>
+<style>
+body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#F3F4F6;color:#0D1424}
+main{max-width:860px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.p{background:#fff;border:1px solid #E2E5EB;border-radius:12px;padding:14px}
+h1{font-size:20px;margin:0} h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#5D6678;margin:0 0 10px}
+button{font:600 14px system-ui;padding:8px 12px;border-radius:8px;border:1px solid #CBD2DD;background:#fff;cursor:pointer}
+button.ok{background:#14865B;color:#fff;border:0} button.no{background:#C93434;color:#fff;border:0}
+input{font:15px system-ui;padding:8px;border:1px solid #CBD2DD;border-radius:8px}
+pre{white-space:pre-wrap;font:12px ui-monospace,Consolas,monospace;background:#F7F8FA;padding:10px;border-radius:8px;max-height:260px;overflow:auto}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.warn{color:#B86E00;font-size:13px}
+</style></head>
+<body><main>
+<h1>Quote Room · Admin</h1>
+<div class="p"><h2>PIN</h2><input id="pin" type="password" placeholder="ADMIN_PIN from .env"> <span class="warn">Owner decisions here are an operator override, used only if Telegram fails. They are logged as such.</span></div>
+<div class="p"><h2>Pending owner approvals</h2><div id="aps">None.</div></div>
+<div class="p"><h2>Shops in new rooms</h2><div class="row"><label><input type="checkbox" id="shopc"> Include QuickFix Auto Body (simulated, Shop C)</label></div></div>
+<div class="p"><h2>Integrations</h2><pre id="st"></pre></div>
+<div class="p"><h2>Requests</h2><div id="reqs"></div></div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const post = (u, b) => fetch(u, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ ...b, pin: $("pin").value }) }).then((r) => r.json());
+async function tick(){
+  const aps = await (await fetch("/api/admin/approvals")).json();
+  $("aps").innerHTML = aps.length ? aps.map((a) => `<div class="row" style="margin:6px 0"><b>${a.id}</b> ${a.requestId} · ${a.requested.total ? "$" + a.requested.total : "$" + a.requested.deductibleAssist + " deductible help"} (agent limit ${a.agentLimit.total ? "$" + a.agentLimit.total : "$" + a.agentLimit.deductibleCap})
+    <button class="ok" onclick="dec('${a.id}','approve')">Approve</button> <input id="c_${a.id}" placeholder="counter" size="7"> <input id="x_${a.id}" placeholder="extra (e.g. Thu 9AM)" size="14"> <button onclick="dec('${a.id}','counter')">Counter</button> <button class="no" onclick="dec('${a.id}','deny')">Deny</button></div>`).join("") : "None.";
+  $("st").textContent = JSON.stringify(await (await fetch("/api/status")).json(), null, 2);
+  const rs = await (await fetch("/api/requests")).json();
+  $("reqs").innerHTML = rs.map((r) => `<div><a href="/?r=${r.id}" target="_blank">${r.id}</a> · ${r.caseId} · ${r.mode} · ${r.status}</div>`).join("") || "None yet.";
+}
+async function dec(id, d){ const n = Number(($("c_" + id) || {}).value || 0); const extra = ($("x_" + id) || {}).value || undefined;
+  const r = await post(`/api/approvals/${id}/decision`, { decision: d, counter: d === "counter" ? { total: n, deductibleAssist: n, extra } : undefined }); if (r.error) alert(r.error); tick(); }
+$("shopc").onchange = async (e) => { const r = await post("/api/admin/shop", { id: "shop-c", enabled: e.target.checked }); if (r.error) { alert(r.error); e.target.checked = !e.target.checked; } };
+tick(); setInterval(tick, 2000);
+</script></body></html>

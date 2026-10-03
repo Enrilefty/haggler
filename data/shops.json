@@ -202,7 +202,7 @@
       "name": "QuickFix Auto Body",
       "isSimulated": true,
       "exceptionMode": "rule",
-      "enabled": false,
+      "enabled": true,
       "rateCards": {
         "self_pay": {
           "body": 83,
