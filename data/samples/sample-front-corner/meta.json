@@ -1,0 +1,13 @@
+{
+  "id": "sample-front-corner",
+  "title": "Front corner hit, 2007 Chevy HHR",
+  "vehicle": {
+    "year": 2007,
+    "make": "Chevrolet",
+    "model": "HHR"
+  },
+  "photos": [
+    "/samples/sample-front-corner/front-left.jpg"
+  ],
+  "credit": "Crazytales, CC0, Wikimedia Commons"
+}

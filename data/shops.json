@@ -1,5 +1,5 @@
 {
-  "_note": "Drive Auto Body rates come from Gio's own estimates (self-pay median across 21 self-pay estimates; insurance from the Elantra job) and must be confirmed by Gio. Shop B and Shop C are SIMULATED, derived from Drive's rates, and labeled simulated everywhere. Incentive tiers are ILLUSTRATIVE demo policy until Gio confirms.",
+  "_note": "Drive Auto Body rates come from Gio's own estimates (self-pay median across 21 self-pay estimates; insurance from the Elantra job) and must be confirmed by Gio. Bayline Collision and QuickFix Auto Body are DEMO shops (rates derived from Drive's); the customer UI discloses that in one footer line and shows them as 'New on Quote Room' with no ratings. partsPolicy.self_pay/insurance = default part source per payer (oem | aftermarket | used); allow = part types the shop may use. Incentive tiers are ILLUSTRATIVE demo policy until Gio confirms.",
   "shops": [
     {
       "id": "drive",
@@ -31,7 +31,9 @@
           "CAPA",
           "LKQ"
         ],
-        "prefer": "as_written"
+        "prefer": "as_written",
+        "self_pay": "aftermarket",
+        "insurance": "oem"
       },
       "selfPayAuthority": {
         "autonomousDiscountPct": 0.04,
@@ -139,14 +141,16 @@
         "allow": [
           "OEM"
         ],
-        "prefer": "OEM"
+        "prefer": "OEM",
+        "self_pay": "oem",
+        "insurance": "oem"
       },
       "selfPayAuthority": {
         "autonomousDiscountPct": 0.05,
         "hardMinimumPct": 0.95
       },
       "incentivePolicy": {
-        "status": "simulated",
+        "status": "demo shop",
         "tiers": [
           {
             "minJob": 0,
@@ -174,7 +178,7 @@
         "confirmed": true
       },
       "warranty": {
-        "label": "Lifetime paint warranty (simulated)",
+        "label": "Lifetime paint warranty",
         "score": 1.0,
         "confirmed": true
       },
@@ -182,19 +186,20 @@
         "Mon 10:00 AM"
       ],
       "profile": {
-        "rating": 4.4,
-        "reviewCount": 212,
+        "rating": null,
+        "reviewCount": null,
         "themes": [
           "OEM parts",
           "slower turnaround"
         ],
         "certifications": [
-          "OEM-only (simulated)"
+          "OEM-only"
         ],
         "distanceMiles": 6.2,
         "source": null,
         "simulated": true,
-        "status": "simulated profile"
+        "status": "New on Quote Room",
+        "demo": true
       }
     },
     {
@@ -227,14 +232,16 @@
           "CAPA",
           "LKQ"
         ],
-        "prefer": "A/M"
+        "prefer": "A/M",
+        "self_pay": "aftermarket",
+        "insurance": "aftermarket"
       },
       "selfPayAuthority": {
         "autonomousDiscountPct": 0.07,
         "hardMinimumPct": 0.93
       },
       "incentivePolicy": {
-        "status": "simulated",
+        "status": "demo shop",
         "tiers": [
           {
             "minJob": 0,
@@ -262,7 +269,7 @@
         "confirmed": true
       },
       "warranty": {
-        "label": "12-month warranty (simulated)",
+        "label": "12-month warranty",
         "score": 0.6,
         "confirmed": true
       },
@@ -270,8 +277,8 @@
         "Tomorrow 8:00 AM"
       ],
       "profile": {
-        "rating": 4.0,
-        "reviewCount": 87,
+        "rating": null,
+        "reviewCount": null,
         "themes": [
           "fast",
           "budget parts"
@@ -280,7 +287,8 @@
         "distanceMiles": 9.8,
         "source": null,
         "simulated": true,
-        "status": "simulated profile"
+        "status": "New on Quote Room",
+        "demo": true
       }
     }
   ]

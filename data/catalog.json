@@ -1,0 +1,1865 @@
+{
+  "version": 1,
+  "note": "Hours/prices are medians from Gio's estimates (Drive Auto Body, anonymized) where n>=3, else industry defaults marked default. ops: repair|replace|refinish|blend|r&i for parts and panels; procedures and materials use the single op 'add'. area: front|rear|side|top|any (sided items need a left/right note).",
+  "items": [
+    {
+      "id": "front-bumper-cover",
+      "label": "Front bumper cover",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 5.4,
+          "refinishHours": 4.4,
+          "evidence": "n=6"
+        },
+        "replace": {
+          "bodyHours": 2.9,
+          "refinishHours": 4.2,
+          "needsPart": true,
+          "evidence": "n=40"
+        },
+        "refinish": {
+          "refinishHours": 3.0,
+          "evidence": "default"
+        },
+        "r&i": {
+          "bodyHours": 2.1,
+          "evidence": "n=23"
+        },
+        "blend": {
+          "refinishHours": 1.5,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 670,
+        "aftermarket": 315,
+        "used": 260
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=69",
+      "aliases": [
+        "front bumper",
+        "bumper cover",
+        "front fascia"
+      ],
+      "partsEvidence": {
+        "oem": "n=9",
+        "aftermarket": "n=29",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "front-grille",
+      "label": "Grille",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.6,
+          "refinishHours": 1.5,
+          "needsPart": true,
+          "evidence": "n=32"
+        },
+        "r&i": {
+          "bodyHours": 0.5,
+          "evidence": "n=12"
+        }
+      },
+      "parts": {
+        "oem": 308,
+        "aftermarket": 171,
+        "used": 120
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=44",
+      "aliases": [
+        "grille",
+        "grill",
+        "lower grille"
+      ],
+      "partsEvidence": {
+        "oem": "n=8",
+        "aftermarket": "n=24",
+        "used": "default"
+      }
+    },
+    {
+      "id": "front-bumper-trim",
+      "label": "Front bumper moldings & emblem",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "needsPart": true,
+          "evidence": "n=18"
+        },
+        "r&i": {
+          "bodyHours": 0.2,
+          "evidence": "n=4 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 88,
+        "aftermarket": 78,
+        "used": 40
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=22",
+      "aliases": [
+        "front emblem",
+        "bumper molding",
+        "chrome trim",
+        "tow hook cover"
+      ],
+      "partsEvidence": {
+        "oem": "n=11",
+        "aftermarket": "n=6",
+        "used": "n=1 (default)"
+      }
+    },
+    {
+      "id": "front-impact-bar",
+      "label": "Front bumper reinforcement (impact bar)",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "refinishHours": 1.0,
+          "needsPart": true,
+          "evidence": "n=20"
+        }
+      },
+      "parts": {
+        "oem": 380,
+        "aftermarket": 268,
+        "used": 294
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=20",
+      "aliases": [
+        "impact bar",
+        "bumper reinforcement",
+        "rebar"
+      ],
+      "partsEvidence": {
+        "oem": "n=1 (default)",
+        "aftermarket": "n=16",
+        "used": "n=3"
+      }
+    },
+    {
+      "id": "front-energy-absorber",
+      "label": "Front energy absorber",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "needsPart": true,
+          "evidence": "n=19"
+        }
+      },
+      "parts": {
+        "oem": 182,
+        "aftermarket": 68,
+        "used": 50
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=19",
+      "aliases": [
+        "energy absorber",
+        "absorber",
+        "foam absorber",
+        "bumper foam"
+      ],
+      "partsEvidence": {
+        "oem": "n=4",
+        "aftermarket": "n=15",
+        "used": "default"
+      }
+    },
+    {
+      "id": "front-bumper-brackets",
+      "label": "Front bumper brackets & retainers",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "refinishHours": 0.8,
+          "needsPart": true,
+          "evidence": "n=49"
+        }
+      },
+      "parts": {
+        "oem": 24,
+        "aftermarket": 14,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=49",
+      "aliases": [
+        "bumper bracket",
+        "bumper retainer",
+        "side bracket"
+      ],
+      "partsEvidence": {
+        "oem": "n=32",
+        "aftermarket": "n=17 (capped below OEM)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "front-lower-shield",
+      "label": "Air deflectors, shields & ducts",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "refinishHours": 0.8,
+          "needsPart": true,
+          "evidence": "n=41"
+        },
+        "r&i": {
+          "bodyHours": 0.2,
+          "evidence": "n=16"
+        }
+      },
+      "parts": {
+        "oem": 254,
+        "aftermarket": 233,
+        "used": null
+      },
+      "mechHours": 0.6,
+      "fixedCharge": 0,
+      "evidence": "n=57",
+      "aliases": [
+        "splash shield",
+        "lower deflector",
+        "under cover",
+        "air dam"
+      ],
+      "partsEvidence": {
+        "oem": "n=23",
+        "aftermarket": "n=18",
+        "used": "default"
+      }
+    },
+    {
+      "id": "headlamp-assembly",
+      "label": "Headlamp assembly",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.6,
+          "needsPart": true,
+          "evidence": "n=46"
+        },
+        "r&i": {
+          "bodyHours": 0.4,
+          "evidence": "n=15"
+        }
+      },
+      "parts": {
+        "oem": 1376,
+        "aftermarket": 410,
+        "used": 888
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=61",
+      "aliases": [
+        "headlight",
+        "headlamp",
+        "head light",
+        "left headlamp",
+        "right headlamp"
+      ],
+      "partsEvidence": {
+        "oem": "n=6",
+        "aftermarket": "n=15",
+        "used": "n=25"
+      }
+    },
+    {
+      "id": "headlamp-brackets",
+      "label": "Headlamp mounting brackets / repair kit",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.5,
+          "needsPart": true,
+          "evidence": "n=4"
+        }
+      },
+      "parts": {
+        "oem": 28,
+        "aftermarket": 17,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=4",
+      "aliases": [
+        "headlamp tabs",
+        "headlight bracket"
+      ],
+      "partsEvidence": {
+        "oem": "n=4",
+        "aftermarket": "default (capped below OEM)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "aim-headlamps",
+      "label": "Aim headlamps",
+      "area": "front",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "bodyHours": 0.5,
+          "evidence": "n=43"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=43",
+      "aliases": [
+        "headlamp aim"
+      ]
+    },
+    {
+      "id": "fog-drl-lamp",
+      "label": "Fog / daytime running lamp",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "needsPart": true,
+          "evidence": "n=29"
+        },
+        "r&i": {
+          "bodyHours": 0.2,
+          "evidence": "n=4 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 77,
+        "aftermarket": 46,
+        "used": 38
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=33",
+      "aliases": [
+        "fog light",
+        "drl"
+      ],
+      "partsEvidence": {
+        "oem": "n=10",
+        "aftermarket": "n=8 (capped below OEM)",
+        "used": "n=4 (capped below OEM)"
+      }
+    },
+    {
+      "id": "hood",
+      "label": "Hood",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 4.0,
+          "refinishHours": 4.2,
+          "evidence": "n=14"
+        },
+        "replace": {
+          "bodyHours": 1.5,
+          "refinishHours": 5.6,
+          "needsPart": true,
+          "evidence": "n=15"
+        },
+        "refinish": {
+          "refinishHours": 3.6,
+          "evidence": "n=1 (hours default)"
+        },
+        "blend": {
+          "bodyHours": 1.0,
+          "refinishHours": 2.8,
+          "evidence": "n=23"
+        },
+        "r&i": {
+          "bodyHours": 1.0,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 900,
+        "aftermarket": 537,
+        "used": 380
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=53",
+      "aliases": [
+        "bonnet",
+        "hood panel"
+      ],
+      "partsEvidence": {
+        "oem": "n=1 (default)",
+        "aftermarket": "n=12",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "hood-hinges-latch",
+      "label": "Hood hinges & latch",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.6,
+          "refinishHours": 1.0,
+          "needsPart": true,
+          "evidence": "n=8"
+        }
+      },
+      "parts": {
+        "oem": 156,
+        "aftermarket": 60,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=8",
+      "aliases": [
+        "hood hinge",
+        "hood latch"
+      ],
+      "partsEvidence": {
+        "oem": "n=6",
+        "aftermarket": "n=2 (default)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "radiator-support",
+      "label": "Radiator support",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "repair": {
+          "bodyHours": 2.0,
+          "evidence": "n=2 (hours default)"
+        },
+        "replace": {
+          "bodyHours": 2.7,
+          "refinishHours": 1.0,
+          "needsPart": true,
+          "evidence": "n=16"
+        }
+      },
+      "parts": {
+        "oem": 602,
+        "aftermarket": 376,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=18",
+      "aliases": [
+        "rad support",
+        "core support",
+        "tie bar"
+      ],
+      "partsEvidence": {
+        "oem": "n=4",
+        "aftermarket": "n=10",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "condenser",
+      "label": "A/C condenser",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 1.3,
+          "needsPart": true,
+          "evidence": "n=7 (hours default)"
+        },
+        "r&i": {
+          "bodyHours": 1.3,
+          "evidence": "n=4 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 380,
+        "aftermarket": 206,
+        "used": null
+      },
+      "mechHours": 1.3,
+      "fixedCharge": 0,
+      "evidence": "n=11 (hours default)",
+      "aliases": [
+        "ac condenser"
+      ],
+      "partsEvidence": {
+        "oem": "default",
+        "aftermarket": "n=7",
+        "used": "default"
+      }
+    },
+    {
+      "id": "radiator",
+      "label": "Radiator & cooling module",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "needsPart": true,
+          "evidence": "n=6 (hours default)"
+        },
+        "r&i": {
+          "evidence": "n=3 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 420,
+        "aftermarket": 206,
+        "used": null
+      },
+      "mechHours": 2.3,
+      "fixedCharge": 0,
+      "evidence": "n=9 (hours default)",
+      "aliases": [
+        "radiator",
+        "cooling fan",
+        "intercooler"
+      ],
+      "partsEvidence": {
+        "oem": "n=1 (default)",
+        "aftermarket": "n=5",
+        "used": "default"
+      }
+    },
+    {
+      "id": "ac-service",
+      "label": "A/C evacuate & recharge",
+      "area": "front",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=16 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 1.8,
+      "fixedCharge": 0,
+      "evidence": "n=16 (hours default)",
+      "aliases": [
+        "ac recharge",
+        "refrigerant"
+      ]
+    },
+    {
+      "id": "front-fender",
+      "label": "Front fender",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 2.0,
+          "refinishHours": 2.5,
+          "evidence": "n=19"
+        },
+        "replace": {
+          "bodyHours": 2.0,
+          "refinishHours": 3.1,
+          "needsPart": true,
+          "evidence": "n=42"
+        },
+        "refinish": {
+          "refinishHours": 2.2,
+          "evidence": "n=1 (hours default)"
+        },
+        "blend": {
+          "refinishHours": 2.2,
+          "evidence": "n=11"
+        },
+        "r&i": {
+          "bodyHours": 1.2,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 556,
+        "aftermarket": 244,
+        "used": 140
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=73",
+      "aliases": [
+        "fender",
+        "front quarter",
+        "left front fender",
+        "right front fender"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=10",
+        "aftermarket": "n=30",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "fender-liner",
+      "label": "Fender liner",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "needsPart": true,
+          "evidence": "n=38"
+        },
+        "r&i": {
+          "bodyHours": 0.4,
+          "evidence": "n=39"
+        }
+      },
+      "parts": {
+        "oem": 183,
+        "aftermarket": 99,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=77",
+      "aliases": [
+        "wheelhouse liner",
+        "inner fender"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=11",
+        "aftermarket": "n=27",
+        "used": "default"
+      }
+    },
+    {
+      "id": "windshield",
+      "label": "Windshield",
+      "area": "front",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 3.9,
+          "needsPart": true,
+          "evidence": "n=27"
+        },
+        "r&i": {
+          "bodyHours": 2.0,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 659,
+        "aftermarket": 40,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=27",
+      "aliases": [
+        "windscreen",
+        "front glass"
+      ],
+      "partsEvidence": {
+        "oem": "n=7",
+        "aftermarket": "n=19",
+        "used": "default"
+      }
+    },
+    {
+      "id": "parking-sensors",
+      "label": "Parking sensors",
+      "area": "any",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "refinishHours": 0.2,
+          "needsPart": true,
+          "evidence": "n=10"
+        },
+        "r&i": {
+          "bodyHours": 0.2,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 210,
+        "aftermarket": 70,
+        "used": null
+      },
+      "mechHours": 0.2,
+      "fixedCharge": 0,
+      "evidence": "n=10",
+      "aliases": [
+        "park assist sensor",
+        "ultrasonic sensor",
+        "backup sensor"
+      ],
+      "partsEvidence": {
+        "oem": "n=10",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "radar-camera",
+      "label": "Front radar / camera sensor",
+      "area": "front",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 1.0,
+          "refinishHours": 1.4,
+          "needsPart": true,
+          "evidence": "n=15"
+        },
+        "r&i": {
+          "bodyHours": 0.4,
+          "evidence": "n=6"
+        }
+      },
+      "parts": {
+        "oem": 1090,
+        "aftermarket": null,
+        "used": 500
+      },
+      "mechHours": 1.1,
+      "fixedCharge": 0,
+      "evidence": "n=21",
+      "aliases": [
+        "radar",
+        "cruise sensor",
+        "front camera"
+      ],
+      "partsEvidence": {
+        "oem": "n=5",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "airbag-impact-sensor",
+      "label": "Airbag impact sensor",
+      "area": "any",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "needsPart": true,
+          "evidence": "n=2 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 190,
+        "aftermarket": null,
+        "used": null
+      },
+      "mechHours": 0.2,
+      "fixedCharge": 0,
+      "evidence": "n=2 (hours default)",
+      "aliases": [
+        "front impact sensor",
+        "impact sensor",
+        "crash sensor"
+      ],
+      "partsEvidence": {
+        "oem": "n=2 (default)",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "front-door",
+      "label": "Front door",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 1.5,
+          "refinishHours": 2.6,
+          "evidence": "n=18"
+        },
+        "replace": {
+          "bodyHours": 5.5,
+          "refinishHours": 3.1,
+          "needsPart": true,
+          "evidence": "n=16"
+        },
+        "refinish": {
+          "refinishHours": 2.8,
+          "evidence": "default"
+        },
+        "blend": {
+          "refinishHours": 2.1,
+          "evidence": "n=23"
+        },
+        "r&i": {
+          "bodyHours": 1.5,
+          "evidence": "n=1 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 1329,
+        "aftermarket": 520,
+        "used": 636
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=58",
+      "aliases": [
+        "driver door",
+        "passenger door",
+        "door"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=11",
+        "aftermarket": "default",
+        "used": "n=4"
+      }
+    },
+    {
+      "id": "rear-door",
+      "label": "Rear door",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 2.0,
+          "refinishHours": 2.6,
+          "evidence": "n=12"
+        },
+        "replace": {
+          "bodyHours": 4.8,
+          "refinishHours": 3.0,
+          "needsPart": true,
+          "evidence": "n=11"
+        },
+        "refinish": {
+          "refinishHours": 1.9,
+          "evidence": "n=3"
+        },
+        "blend": {
+          "refinishHours": 2.1,
+          "evidence": "n=3"
+        },
+        "r&i": {
+          "bodyHours": 1.5,
+          "evidence": "n=2 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 1075,
+        "aftermarket": 520,
+        "used": 380
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=31",
+      "aliases": [
+        "back door",
+        "rear passenger door"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=9",
+        "aftermarket": "default",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "door-trim",
+      "label": "Door moldings, handle & trim",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 2.4,
+          "refinishHours": 0.5,
+          "needsPart": true,
+          "evidence": "n=29"
+        },
+        "r&i": {
+          "bodyHours": 1.2,
+          "evidence": "n=37"
+        }
+      },
+      "parts": {
+        "oem": 86,
+        "aftermarket": 50,
+        "used": 40
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=66",
+      "aliases": [
+        "door handle",
+        "door molding",
+        "belt molding"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=29",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "side-mirror",
+      "label": "Outside mirror",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "refinishHours": 0.5,
+          "needsPart": true,
+          "evidence": "n=4 (hours default)"
+        },
+        "r&i": {
+          "bodyHours": 0.3,
+          "evidence": "n=48"
+        },
+        "refinish": {
+          "refinishHours": 0.6,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 380,
+        "aftermarket": 120,
+        "used": 110
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=52",
+      "aliases": [
+        "side mirror",
+        "wing mirror",
+        "mirror"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=2 (default)",
+        "aftermarket": "n=2 (default)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "rocker-panel",
+      "label": "Rocker panel / molding",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 2.0,
+          "refinishHours": 1.8,
+          "evidence": "default"
+        },
+        "replace": {
+          "bodyHours": 3.5,
+          "refinishHours": 2.2,
+          "needsPart": true,
+          "evidence": "n=1 (hours default)"
+        },
+        "r&i": {
+          "bodyHours": 1.1,
+          "evidence": "default"
+        },
+        "refinish": {
+          "refinishHours": 1.8,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 160,
+        "aftermarket": 90,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=1 (hours default)",
+      "aliases": [
+        "rocker",
+        "side skirt"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=1 (default)",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "wheel-tire",
+      "label": "Wheel / tire",
+      "area": "side",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.5,
+          "refinishHours": 0.9,
+          "needsPart": true,
+          "evidence": "n=48"
+        },
+        "repair": {
+          "evidence": "n=2 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 168,
+        "aftermarket": 80,
+        "used": 160
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=50",
+      "aliases": [
+        "rim",
+        "wheel",
+        "tire"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=29",
+        "aftermarket": "n=10",
+        "used": "default"
+      }
+    },
+    {
+      "id": "suspension-parts",
+      "label": "Suspension / steering part",
+      "area": "side",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 1.2,
+          "needsPart": true,
+          "evidence": "n=19"
+        }
+      },
+      "parts": {
+        "oem": 786,
+        "aftermarket": 142,
+        "used": 90
+      },
+      "mechHours": 2.3,
+      "fixedCharge": 0,
+      "evidence": "n=19",
+      "aliases": [
+        "control arm",
+        "tie rod",
+        "strut"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=10",
+        "aftermarket": "n=7",
+        "used": "n=2 (default)"
+      }
+    },
+    {
+      "id": "quarter-panel",
+      "label": "Quarter panel",
+      "area": "rear",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 3.7,
+          "refinishHours": 2.8,
+          "evidence": "n=12"
+        },
+        "replace": {
+          "bodyHours": 11.8,
+          "refinishHours": 4.8,
+          "needsPart": true,
+          "evidence": "n=21"
+        },
+        "refinish": {
+          "refinishHours": 3.0,
+          "evidence": "default"
+        },
+        "blend": {
+          "bodyHours": 1.6,
+          "refinishHours": 1.9,
+          "evidence": "n=8"
+        }
+      },
+      "parts": {
+        "oem": 1172,
+        "aftermarket": 450,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=41",
+      "aliases": [
+        "rear quarter",
+        "rear fender",
+        "quarter"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=21",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "rear-bumper-cover",
+      "label": "Rear bumper cover",
+      "area": "rear",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 4.1,
+          "refinishHours": 3.6,
+          "evidence": "n=7"
+        },
+        "replace": {
+          "bodyHours": 2.0,
+          "refinishHours": 4.2,
+          "needsPart": true,
+          "evidence": "n=27"
+        },
+        "refinish": {
+          "refinishHours": 3.0,
+          "evidence": "default"
+        },
+        "r&i": {
+          "bodyHours": 1.6,
+          "refinishHours": 0.3,
+          "evidence": "n=16"
+        },
+        "blend": {
+          "refinishHours": 1.5,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 594,
+        "aftermarket": 243,
+        "used": 297
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=50",
+      "aliases": [
+        "rear bumper",
+        "back bumper",
+        "rear fascia"
+      ],
+      "partsEvidence": {
+        "oem": "n=11",
+        "aftermarket": "n=12",
+        "used": "n=4 (capped below OEM)"
+      }
+    },
+    {
+      "id": "rear-impact-bar",
+      "label": "Rear bumper reinforcement",
+      "area": "rear",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "needsPart": true,
+          "evidence": "n=13"
+        }
+      },
+      "parts": {
+        "oem": 305,
+        "aftermarket": 243,
+        "used": 249
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=13",
+      "aliases": [
+        "rear impact bar",
+        "rear rebar"
+      ],
+      "partsEvidence": {
+        "oem": "n=5",
+        "aftermarket": "n=3",
+        "used": "n=5"
+      }
+    },
+    {
+      "id": "rear-energy-absorber",
+      "label": "Rear energy absorber",
+      "area": "rear",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.2,
+          "needsPart": true,
+          "evidence": "n=6 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 54,
+        "aftermarket": 32,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=6 (hours default)",
+      "aliases": [
+        "rear absorber"
+      ],
+      "partsEvidence": {
+        "oem": "n=3",
+        "aftermarket": "n=3 (capped below OEM)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "rear-bumper-brackets",
+      "label": "Rear bumper brackets & trim",
+      "area": "rear",
+      "kind": "hidden",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.2,
+          "needsPart": true,
+          "evidence": "n=18"
+        }
+      },
+      "parts": {
+        "oem": 43,
+        "aftermarket": 26,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=18",
+      "aliases": [
+        "rear bumper bracket",
+        "step pad"
+      ],
+      "partsEvidence": {
+        "oem": "n=12",
+        "aftermarket": "n=6 (capped below OEM)",
+        "used": "default"
+      }
+    },
+    {
+      "id": "tail-lamp",
+      "label": "Tail lamp",
+      "area": "rear",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.3,
+          "needsPart": true,
+          "evidence": "n=27"
+        },
+        "r&i": {
+          "bodyHours": 0.4,
+          "evidence": "n=35"
+        }
+      },
+      "parts": {
+        "oem": 311,
+        "aftermarket": 154,
+        "used": 156
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=62",
+      "aliases": [
+        "taillight",
+        "tail light",
+        "brake light"
+      ],
+      "sided": true,
+      "partsEvidence": {
+        "oem": "n=9",
+        "aftermarket": "n=11",
+        "used": "n=7 (capped below OEM)"
+      }
+    },
+    {
+      "id": "trunk-liftgate",
+      "label": "Trunk lid / liftgate",
+      "area": "rear",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 2.5,
+          "refinishHours": 3.0,
+          "evidence": "n=2 (hours default)"
+        },
+        "replace": {
+          "bodyHours": 3.7,
+          "refinishHours": 4.0,
+          "needsPart": true,
+          "evidence": "n=15"
+        },
+        "refinish": {
+          "refinishHours": 3.0,
+          "evidence": "default"
+        },
+        "r&i": {
+          "bodyHours": 0.4,
+          "evidence": "n=8"
+        }
+      },
+      "parts": {
+        "oem": 1054,
+        "aftermarket": 520,
+        "used": 686
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=25",
+      "aliases": [
+        "trunk",
+        "decklid",
+        "liftgate",
+        "tailgate",
+        "hatch"
+      ],
+      "partsEvidence": {
+        "oem": "n=8",
+        "aftermarket": "default",
+        "used": "n=7"
+      }
+    },
+    {
+      "id": "rear-body-panel",
+      "label": "Rear body panel / trunk floor",
+      "area": "rear",
+      "kind": "hidden",
+      "ops": {
+        "repair": {
+          "bodyHours": 4.5,
+          "refinishHours": 3.5,
+          "evidence": "n=5"
+        },
+        "replace": {
+          "bodyHours": 11.5,
+          "refinishHours": 3.8,
+          "needsPart": true,
+          "evidence": "n=9"
+        }
+      },
+      "parts": {
+        "oem": 821,
+        "aftermarket": null,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=14",
+      "aliases": [
+        "rear panel",
+        "back panel",
+        "trunk floor"
+      ],
+      "partsEvidence": {
+        "oem": "n=9",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "back-glass",
+      "label": "Back glass",
+      "area": "rear",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 2.0,
+          "needsPart": true,
+          "evidence": "n=3 (hours default)"
+        }
+      },
+      "parts": {
+        "oem": 420,
+        "aftermarket": 260,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=3 (hours default)",
+      "aliases": [
+        "rear window",
+        "rear glass"
+      ],
+      "partsEvidence": {
+        "oem": "n=2 (default)",
+        "aftermarket": "default",
+        "used": "n=1 (default)"
+      }
+    },
+    {
+      "id": "roof-panel",
+      "label": "Roof panel",
+      "area": "top",
+      "kind": "visible",
+      "ops": {
+        "repair": {
+          "bodyHours": 4.0,
+          "refinishHours": 3.2,
+          "evidence": "default"
+        },
+        "replace": {
+          "bodyHours": 14.0,
+          "refinishHours": 3.8,
+          "needsPart": true,
+          "evidence": "n=1 (hours default)"
+        },
+        "refinish": {
+          "refinishHours": 3.2,
+          "evidence": "default"
+        }
+      },
+      "parts": {
+        "oem": 820,
+        "aftermarket": null,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=1 (hours default)",
+      "aliases": [
+        "roof",
+        "top"
+      ],
+      "partsEvidence": {
+        "oem": "n=1 (default)",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "roof-trim",
+      "label": "Roof moldings / rails / sunroof trim",
+      "area": "top",
+      "kind": "visible",
+      "ops": {
+        "replace": {
+          "bodyHours": 0.4,
+          "needsPart": true,
+          "evidence": "default"
+        },
+        "r&i": {
+          "bodyHours": 0.6,
+          "evidence": "n=12"
+        }
+      },
+      "parts": {
+        "oem": 150,
+        "aftermarket": 90,
+        "used": null
+      },
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=12",
+      "aliases": [
+        "roof rack",
+        "roof molding"
+      ],
+      "partsEvidence": {
+        "oem": "default",
+        "aftermarket": "default",
+        "used": "default"
+      }
+    },
+    {
+      "id": "pillar",
+      "label": "Pillar (A/B/C)",
+      "area": "side",
+      "kind": "hidden",
+      "ops": {
+        "repair": {
+          "bodyHours": 3.0,
+          "refinishHours": 4.0,
+          "evidence": "n=3"
+        },
+        "r&i": {
+          "bodyHours": 0.2,
+          "evidence": "default"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=3",
+      "aliases": [
+        "a pillar",
+        "b pillar",
+        "windshield pillar"
+      ],
+      "sided": true
+    },
+    {
+      "id": "pre-repair-scan",
+      "label": "Pre-repair scan",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=98 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 0.5,
+      "fixedCharge": 0,
+      "evidence": "n=98 (hours default)",
+      "aliases": [
+        "pre scan",
+        "diagnostic scan",
+        "pre post scans"
+      ]
+    },
+    {
+      "id": "post-repair-scan",
+      "label": "Post-repair scan",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=93 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 0.5,
+      "fixedCharge": 0,
+      "evidence": "n=93 (hours default)",
+      "aliases": [
+        "post scan"
+      ]
+    },
+    {
+      "id": "adas-calibration",
+      "label": "ADAS calibration",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=12 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 1.0,
+      "fixedCharge": 250,
+      "evidence": "n=12 (hours default)",
+      "aliases": [
+        "camera calibration",
+        "radar calibration",
+        "sensor calibration"
+      ]
+    },
+    {
+      "id": "wheel-alignment",
+      "label": "4-wheel alignment",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "bodyHours": 2.0,
+          "evidence": "n=40"
+        }
+      },
+      "parts": null,
+      "mechHours": 1.9,
+      "fixedCharge": 0,
+      "evidence": "n=40",
+      "aliases": [
+        "alignment"
+      ]
+    },
+    {
+      "id": "airbag-diagnosis",
+      "label": "Airbag / SRS system check",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=16 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 0.5,
+      "fixedCharge": 0,
+      "evidence": "n=16 (hours default)",
+      "aliases": [
+        "srs check"
+      ]
+    },
+    {
+      "id": "frame-setup-pull",
+      "label": "Frame setup & pull",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "bodyHours": 2.0,
+          "refinishHours": 2.5,
+          "evidence": "n=28"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=28",
+      "aliases": [
+        "frame pull",
+        "rough pull",
+        "frame straightening"
+      ]
+    },
+    {
+      "id": "battery-disconnect",
+      "label": "Disconnect / reconnect battery",
+      "area": "any",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "bodyHours": 0.2,
+          "evidence": "n=53"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=53",
+      "aliases": [
+        "battery reset"
+      ]
+    },
+    {
+      "id": "cooling-pressure-test",
+      "label": "Cooling system refill & pressure test",
+      "area": "front",
+      "kind": "procedure",
+      "ops": {
+        "add": {
+          "evidence": "n=12 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 1.0,
+      "fixedCharge": 0,
+      "evidence": "n=12 (hours default)",
+      "aliases": [
+        "coolant refill"
+      ]
+    },
+    {
+      "id": "color-tint",
+      "label": "Color tint / color match",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 0.5,
+          "refinishHours": 0.5,
+          "evidence": "n=104"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=104",
+      "aliases": [
+        "tint",
+        "color match"
+      ]
+    },
+    {
+      "id": "blend-adjacent-panel",
+      "label": "Blend adjacent panel",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "refinishHours": 3.0,
+          "evidence": "n=52"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=52",
+      "aliases": [
+        "blend",
+        "blend panel"
+      ]
+    },
+    {
+      "id": "color-sand-buff",
+      "label": "Color sand & buff / de-nib",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 1.5,
+          "refinishHours": 1.0,
+          "evidence": "n=70"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=70",
+      "aliases": [
+        "sand and buff",
+        "denib"
+      ]
+    },
+    {
+      "id": "flex-additive",
+      "label": "Flex additive",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 0.3,
+          "refinishHours": 0.2,
+          "evidence": "n=67"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 12,
+      "evidence": "n=67",
+      "aliases": [
+        "flex agent"
+      ]
+    },
+    {
+      "id": "hazardous-waste",
+      "label": "Hazardous waste disposal",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "evidence": "n=101 (hours default)"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 8,
+      "evidence": "n=101 (hours default)",
+      "aliases": [
+        "haz waste"
+      ]
+    },
+    {
+      "id": "cover-car",
+      "label": "Cover car for overspray",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 0.4,
+          "evidence": "n=94"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 15,
+      "evidence": "n=94",
+      "aliases": [
+        "masking",
+        "cover vehicle"
+      ]
+    },
+    {
+      "id": "corrosion-protection",
+      "label": "Corrosion protection, seam sealer & adhesives",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 0.5,
+          "evidence": "n=44"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 25,
+      "evidence": "n=44",
+      "aliases": [
+        "cavity wax",
+        "seam sealer"
+      ]
+    },
+    {
+      "id": "clean-for-delivery",
+      "label": "Clean for delivery",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 2.0,
+          "evidence": "n=11"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=11",
+      "aliases": [
+        "detail",
+        "wash"
+      ]
+    },
+    {
+      "id": "feather-prime-block",
+      "label": "Feather, prime & block",
+      "area": "any",
+      "kind": "materials",
+      "ops": {
+        "add": {
+          "bodyHours": 1.0,
+          "refinishHours": 2.0,
+          "evidence": "n=25"
+        }
+      },
+      "parts": null,
+      "mechHours": 0,
+      "fixedCharge": 0,
+      "evidence": "n=25",
+      "aliases": [
+        "prime and block"
+      ]
+    }
+  ]
+}

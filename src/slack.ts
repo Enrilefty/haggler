@@ -3,7 +3,9 @@
 // - private approvals channel: Gio's one-tap Approve / Counter / Deny, plus new-request and won/lost notices.
 // Only the allowlisted owner user, in the approvals channel, can decide. Only ONE backend may hold
 // this app's Socket Mode connection at a time (Slack spreads events across connections).
-import { env } from "./config.ts";
+import { appendFileSync } from "node:fs";
+import { join } from "node:path";
+import { env, STATE_DIR } from "./config.ts";
 import type { Orchestrator, Approval, Request, Offer, RoomEvent } from "./orchestrator.ts";
 import { SHOP_ACTOR } from "./orchestrator.ts";
 
@@ -11,15 +13,20 @@ const money = (n?: number) => (n == null ? "—" : `$${Math.round(n).toLocaleStr
 const round = (n: number, step: number) => Math.round(n / step) * step;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 // plain-text fallback: drop :emoji: codes first, then mrkdwn emphasis (keeps "9:00 AM" intact)
+// Slack section text is capped at 3000 characters.
+const cap = (s: string, n = 2900) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
 const plain = (s: string) => s.replace(/:[a-z0-9_+-]+:/g, "").replace(/[*_]/g, "").trim();
 
 export class SlackOwner {
   private o: Orchestrator;
+  // SLACK_DRY_RUN=1: never touches Slack; every API call is appended to .state/slack-dry.jsonl.
+  private dry = env("SLACK_DRY_RUN") === "1";
   private bot = env("SLACK_BOT_TOKEN");
   private app = env("SLACK_APP_TOKEN");
-  private deal = env("SLACK_DEAL_CHANNEL_ID");
-  private approvals = env("SLACK_DAD_APPROVAL_CHANNEL_ID");
-  private owner = env("SLACK_OWNER_USER_ID");
+  private deal = env("SLACK_DEAL_CHANNEL_ID") || (this.dry ? "DRY-DEAL" : "");
+  private approvals = env("SLACK_DAD_APPROVAL_CHANNEL_ID") || (this.dry ? "DRY-APPROVALS" : "");
+  private owner = env("SLACK_OWNER_USER_ID") || (this.dry ? "DRY-OWNER" : "");
+  dryFile = join(STATE_DIR, "slack-dry.jsonl");
   status = "off";
   lastError = "";
   private ws?: WebSocket;
@@ -27,9 +34,13 @@ export class SlackOwner {
   private stopped = false;
 
   constructor(o: Orchestrator) { this.o = o; }
-  configured() { return !!(this.bot && this.app && this.deal && this.approvals && this.owner); }
+  configured() { return this.dry || !!(this.bot && this.app && this.deal && this.approvals && this.owner); }
 
   private async api(method: string, body: Record<string, unknown>, token = this.bot) {
+    if (this.dry) {
+      try { appendFileSync(this.dryFile, JSON.stringify({ at: new Date().toISOString(), method, body }) + "\n"); } catch { /* best effort */ }
+      return { ok: true, ts: (Date.now() / 1000).toFixed(6), channel: body.channel };
+    }
     for (let attempt = 0; ; attempt++) {
       const r = await fetch(`https://slack.com/api/${method}`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "content-type": "application/json; charset=utf-8" }, body: JSON.stringify(body), signal: AbortSignal.timeout(10_000) });
       const j: any = await r.json().catch(() => ({}));
@@ -44,9 +55,15 @@ export class SlackOwner {
   private post(channel: string, text: string, blocks?: unknown[]): Promise<any> {
     const prev = this.queues.get(channel) ?? Promise.resolve();
     const run = prev.then(async () => {
-      const res = await this.api("chat.postMessage", { channel, text, ...(blocks ? { blocks } : {}), unfurl_links: false, unfurl_media: false })
+      const msg = { channel, text, unfurl_links: false, unfurl_media: false };
+      let res = await this.api("chat.postMessage", { ...msg, ...(blocks ? { blocks } : {}) })
         .catch((e) => { this.lastError = String(e.message); return undefined; });
-      await sleep(1100);
+      // Slack rejects the whole message if it can't fetch an image: resend without image blocks.
+      const noImg = blocks?.filter((b: any) => b?.type !== "image");
+      if (!res && blocks && noImg && noImg.length < blocks.length) {
+        res = await this.api("chat.postMessage", { ...msg, blocks: noImg }).catch((e) => { this.lastError = String(e.message); return undefined; });
+      }
+      await sleep(this.dry ? 20 : 1100);
       return res;
     });
     this.queues.set(channel, run.catch(() => undefined));
@@ -55,11 +72,12 @@ export class SlackOwner {
 
   async start() {
     if (!this.configured()) return;
-    try { await this.api("auth.test", {}); } catch (e: any) { this.status = `error: ${e.message}`; return; }
-    this.o.on("room", (ev: RoomEvent) => { void this.mirror(ev); });
+    if (!this.dry) { try { await this.api("auth.test", {}); } catch (e: any) { this.status = `error: ${e.message}`; return; } }
+    this.o.on("room", (ev: RoomEvent) => { void this.mirror(ev); void this.ownerFeed(ev); });
     this.o.on("approval", (ap: Approval, req: Request, base: Offer) => { void this.sendApproval(ap, req, base); });
     this.o.on("decided", (ap: Approval) => { void this.markDecided(ap); });
     this.o.on("booked", (req: Request, offer: Offer) => { void this.sendOutcome(req, offer); });
+    if (this.dry) { this.status = "dry-run (logging to .state/slack-dry.jsonl)"; return; } // never opens Socket Mode
     await this.connect();
   }
 
@@ -106,6 +124,53 @@ export class SlackOwner {
     if (r?.error) await this.api("chat.postEphemeral", { channel: this.approvals, user: this.owner, text: `Couldn't apply that: ${r.error}` }).catch(() => undefined);
   }
 
+  // ---------- owner point of view (approvals channel) ----------
+  // Image blocks need a public https origin Slack can fetch; without one, photos are skipped.
+  private imageBlocks(req: Request, max = 3) {
+    const origin = this.o.publicOrigin; if (!origin) return [];
+    const c = this.o.cases[req.caseId];
+    return this.o.photoUrls(c).slice(0, max).map((u, i) => ({ type: "image", image_url: `${origin}${u}`, alt_text: `${c.title} — photo ${i + 1}` }));
+  }
+  private damageLines(req: Request, max = 8) {
+    const r = req.damageReport; if (!r) return "";
+    const items = r.items.slice(0, max).map((i) => `• ${i.label}${r.by === "agent" ? ` — ${i.operation} (${i.severity})` : ""}${i.note ? `: ${i.note}` : ""}`);
+    if (r.items.length > max) items.push(`…and ${r.items.length - max} more`);
+    return items.join("\n");
+  }
+  private modeText = (req: Request) => (req.mode === "self_pay" ? "self-pay" : "insurance claim");
+  private async ownerFeed(ev: RoomEvent) {
+    const req = this.o.requests[ev.requestId]; if (!req) return;
+    const c = this.o.cases[req.caseId];
+    const photosNote = this.o.publicOrigin ? [] : [{ type: "context", elements: [{ type: "mrkdwn", text: `${this.o.photoUrls(c).length} photo(s) — open the room to view them.` }] }];
+    if (ev.type === "damage_report") {
+      const r = req.damageReport!;
+      const head = `:inbox_tray: *New request ${req.id}* · ${c.title} · ${this.modeText(req)}`;
+      const blocks: any[] = [
+        { type: "section", text: { type: "mrkdwn", text: `${head}\n${r.by === "agent" ? "The driver's agent looked at the photos" : "Reviewed damage"}: ${r.summary}` } },
+        ...this.imageBlocks(req), ...photosNote,
+        { type: "section", text: { type: "mrkdwn", text: cap(`*What's wrong*\n${this.damageLines(req) || "—"}`) } },
+        { type: "context", elements: [{ type: "mrkdwn", text: "Your agent is building Drive's scope from the photos now." }] },
+      ];
+      await this.post(this.approvals, plain(`New request ${req.id} · ${c.title} · ${r.summary}`), blocks);
+    } else if (ev.type === "system_note" && (ev.payload as any)?.inspection === "unavailable") {
+      await this.post(this.approvals, plain(`New request ${req.id} · ${c.title} · AI photo inspection unavailable`), [
+        { type: "section", text: { type: "mrkdwn", text: `:inbox_tray: *New request ${req.id}* · ${c.title} · ${this.modeText(req)}\nAI photo inspection was unavailable, so no quote went out.` } }, ...this.imageBlocks(req), ...photosNote,
+      ]);
+    } else if (ev.type === "offer_posted" && ev.actor === SHOP_ACTOR.drive && (ev.payload as any)?.version === 1) {
+      const offer = ev.payload as Offer, a = req.assessments.drive;
+      const scope = a
+        ? a.items.slice(0, 12).map((i) => `• ${i.label} — ${i.operation}${i.partType ? ` (${i.partType})` : ""}: ${i.reason}`).join("\n")
+        : offer.items.slice(0, 12).map((i) => `• ${i.label}`).join("\n");
+      const price = req.mode === "self_pay" ? `Quoted *${money(offer.price?.total)}*` : `Job size ~*${money(offer.jobSize)}* · ${(offer.incentives ?? []).map((i) => i.label).join(" + ") || "no incentives"}`;
+      const blocks: any[] = [
+        { type: "section", text: { type: "mrkdwn", text: `:memo: *Your agent quoted ${req.id}* · ${c.title}\n${price} · drop-off ${offer.slot}` } },
+        ...(a?.history?.summary ? [{ type: "context", elements: [{ type: "mrkdwn", text: `From your past estimates: ${a.history.summary}` }] }] : []),
+        { type: "section", text: { type: "mrkdwn", text: cap(`*Drive's scope*\n${scope || "—"}`) } },
+      ];
+      await this.post(this.approvals, plain(`Your agent quoted ${req.id}: ${req.mode === "self_pay" ? money(offer.price?.total) : `job ~${money(offer.jobSize)}`}`), blocks);
+    }
+  }
+
   // ---------- owner approvals ----------
   private presets(ap: Approval, req: Request): number[] {
     if (req.mode === "self_pay") {
@@ -128,8 +193,11 @@ export class SlackOwner {
     const buttons: any[] = [{ type: "button", action_id: "qr_approve", style: "primary", text: { type: "plain_text", text: `Approve ${req.mode === "self_pay" ? money(ap.requested.total) : money(ap.requested.deductibleAssist)}` }, value: val() }];
     this.presets(ap, req).forEach((amt, i) => buttons.push({ type: "button", action_id: `qr_counter_${i + 1}`, text: { type: "plain_text", text: `Counter ${money(amt)}` }, value: val(amt) })); // action_ids must be unique per block
     buttons.push({ type: "button", action_id: "qr_deny", style: "danger", text: { type: "plain_text", text: "Deny" }, value: val() });
+    const dmg = this.damageLines(req, 3);
     const blocks = [
       { type: "section", text: { type: "mrkdwn", text: `:bell: *Approval needed* · ${req.id} · ${c.title} (${req.mode === "self_pay" ? "self-pay" : "insurance"})\nDriver asks *${ask}*. ${lim}` } },
+      ...this.imageBlocks(req, 1),
+      ...(dmg ? [{ type: "section", text: { type: "mrkdwn", text: `*Damage*\n${dmg}` } }] : []),
       { type: "context", elements: [{ type: "mrkdwn", text: `Competing offers:\n${others || "none"}` }] },
       { type: "actions", block_id: `ap_${ap.id}`, elements: buttons },
     ];
@@ -149,7 +217,7 @@ export class SlackOwner {
   }
   private async sendOutcome(req: Request, offer: Offer) {
     const c = this.o.cases[req.caseId];
-    const t = offer.shopId === "drive" ? `:trophy: *You won* · ${c.title}\n${this.o.describeOffer(offer)}\n_Simulated booking — no payment taken._` : `Lost · ${c.title} · driver chose ${SHOP_ACTOR[offer.shopId]} (${req.priority.replace("_", " ")}).`;
+    const t = offer.shopId === "drive" ? `:trophy: *You won* · ${c.title}\n${this.o.describeOffer(offer)}\n_Demo booking — no payment taken._` : `Lost · ${c.title} · driver chose ${SHOP_ACTOR[offer.shopId]} (${req.priority.replace("_", " ")}).`;
     await this.post(this.approvals, plain(t), [{ type: "section", text: { type: "mrkdwn", text: t } }]);
   }
 
@@ -163,6 +231,8 @@ export class SlackOwner {
       case "request_posted": line = `:inbox_tray: *New request ${req.id}* · ${c.title} · ${req.mode === "self_pay" ? "self-pay" : "insurance claim"}`; break;
       case "offer_posted": case "offer_revised": line = `*${ev.actor}* · ${short(ev.text.replace(/\n/g, " — "))}`; break;
       case "scope_amended": if (ev.actor === SHOP_ACTOR.drive) line = `*${ev.actor}* · ${short(ev.text.replace(/\n/g, " "), 400)}`; break;
+      case "damage_report": line = `*Driver's agent* ·${short(ev.text.replace(/\n/g, " "), 400)}`; break;
+      case "assessment_posted": { const a = (ev.payload as any)?.assessment; line = `*${ev.actor}* · scope from the photos: ${short((a?.items ?? []).map((i: any) => `${i.label} (${i.operation})`).join(", "), 400)}`; break; }
       // clarifications: only the owner's own shop, to keep the room readable
       case "clarify_sent": if ((ev.payload as any)?.clarification?.shopId === "drive") line = `*Driver's agent* · ${short(ev.text)}`; break;
       case "clarification_answered": if (ev.actor === SHOP_ACTOR.drive) line = `*${ev.actor}* · ${short(ev.text.replace(/\n/g, " — "))}`; break;

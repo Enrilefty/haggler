@@ -1,0 +1,2211 @@
+{
+  "version": 1,
+  "note": "Mined from Gio Oseguera's Drive Auto Body estimates (anonymized aggregates). Rates are shares of parsed jobs; small samples, not validated accuracy. Payer 'insurance' = insurer named or insurance pay on the estimate; 'self_pay' = SELF PAY label.",
+  "insurance": {
+    "addsByArea": {
+      "front": [
+        {
+          "catalogId": "color-tint",
+          "rate": 0.94,
+          "n": 68,
+          "count": 64,
+          "source": "estimate",
+          "why": "On 64 of 68 front-end insurance estimates Gio wrote color tint / color match. Gio added it on a supplement (not on the first estimate) in 15 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.91,
+          "n": 68,
+          "count": 62,
+          "source": "estimate",
+          "why": "On 62 of 68 front-end insurance estimates Gio wrote cover car for overspray. Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.91,
+          "n": 68,
+          "count": 62,
+          "source": "estimate",
+          "why": "On 62 of 68 front-end insurance estimates Gio wrote pre-repair scan. Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.9,
+          "n": 68,
+          "count": 61,
+          "source": "estimate",
+          "why": "On 61 of 68 front-end insurance estimates Gio wrote hazardous waste disposal. Gio added it on a supplement (not on the first estimate) in 9 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.87,
+          "n": 68,
+          "count": 59,
+          "source": "estimate",
+          "why": "On 59 of 68 front-end insurance estimates Gio wrote post-repair scan. Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "color-sand-buff",
+          "rate": 0.69,
+          "n": 68,
+          "count": 47,
+          "source": "estimate",
+          "why": "On 47 of 68 front-end insurance estimates Gio wrote color sand & buff / de-nib. Gio added it on a supplement (not on the first estimate) in 9 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "fender-liner",
+          "rate": 0.69,
+          "n": 68,
+          "count": 47,
+          "source": "estimate",
+          "why": "On 47 of 68 front-end insurance estimates Gio wrote fender liner. Gio added it on a supplement (not on the first estimate) in 10 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.69,
+          "n": 68,
+          "count": 47,
+          "source": "estimate",
+          "why": "On 47 of 68 front-end insurance estimates Gio wrote flex additive. Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.66,
+          "n": 68,
+          "count": 45,
+          "source": "estimate",
+          "why": "On 45 of 68 front-end insurance estimates Gio wrote air deflectors, shields & ducts. Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.6,
+          "n": 68,
+          "count": 41,
+          "source": "estimate",
+          "why": "On 41 of 68 front-end insurance estimates Gio wrote front bumper brackets & retainers. Gio added it on a supplement (not on the first estimate) in 15 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "aim-headlamps",
+          "rate": 0.59,
+          "n": 68,
+          "count": 40,
+          "source": "estimate",
+          "why": "On 40 of 68 front-end insurance estimates Gio wrote aim headlamps. Gio added it on a supplement (not on the first estimate) in 10 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.59,
+          "n": 68,
+          "count": 40,
+          "source": "estimate",
+          "why": "On 40 of 68 front-end insurance estimates Gio wrote blend adjacent panel. Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.56,
+          "n": 68,
+          "count": 38,
+          "source": "estimate",
+          "why": "On 38 of 68 front-end insurance estimates Gio wrote disconnect / reconnect battery. Gio added it on a supplement (not on the first estimate) in 9 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.55,
+          "n": 29,
+          "count": 16,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.48,
+          "n": 29,
+          "count": 14,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 14 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "wheel-alignment",
+          "rate": 0.44,
+          "n": 68,
+          "count": 30,
+          "source": "estimate",
+          "why": "On 30 of 68 front-end insurance estimates Gio wrote 4-wheel alignment. Gio added it on a supplement (not on the first estimate) in 7 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.41,
+          "n": 29,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.41,
+          "n": 29,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.38,
+          "n": 29,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "corrosion-protection",
+          "rate": 0.37,
+          "n": 68,
+          "count": 25,
+          "source": "estimate",
+          "why": "On 25 of 68 front-end insurance estimates Gio wrote corrosion protection, seam sealer & adhesives. Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-impact-bar",
+          "rate": 0.31,
+          "n": 68,
+          "count": 21,
+          "source": "estimate",
+          "why": "On 21 of 68 front-end insurance estimates Gio wrote front bumper reinforcement (impact bar). Gio added it on a supplement (not on the first estimate) in 5 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "frame-setup-pull",
+          "rate": 0.26,
+          "n": 68,
+          "count": 18,
+          "source": "estimate",
+          "why": "On 18 of 68 front-end insurance estimates Gio wrote frame setup & pull. Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-energy-absorber",
+          "rate": 0.26,
+          "n": 68,
+          "count": 18,
+          "source": "estimate",
+          "why": "On 18 of 68 front-end insurance estimates Gio wrote front energy absorber. Gio added it on a supplement (not on the first estimate) in 5 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "radiator-support",
+          "rate": 0.26,
+          "n": 68,
+          "count": 18,
+          "source": "estimate",
+          "why": "On 18 of 68 front-end insurance estimates Gio wrote radiator support. Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "feather-prime-block",
+          "rate": 0.25,
+          "n": 68,
+          "count": 17,
+          "source": "estimate",
+          "why": "On 17 of 68 front-end insurance estimates Gio wrote feather, prime & block. Gio added it on a supplement (not on the first estimate) in 5 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "headlamp-assembly",
+          "rate": 0.24,
+          "n": 29,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "ac-service",
+          "rate": 0.22,
+          "n": 68,
+          "count": 15,
+          "source": "estimate",
+          "why": "On 15 of 68 front-end insurance estimates Gio wrote a/c evacuate & recharge. Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "hood-hinges-latch",
+          "rate": 0.22,
+          "n": 68,
+          "count": 15,
+          "source": "estimate",
+          "why": "On 15 of 68 front-end insurance estimates Gio wrote hood hinges & latch. Gio added it on a supplement (not on the first estimate) in 5 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "fog-drl-lamp",
+          "rate": 0.21,
+          "n": 29,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "wheel-tire",
+          "rate": 0.21,
+          "n": 29,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "windshield",
+          "rate": 0.21,
+          "n": 29,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "adas-calibration",
+          "rate": 0.14,
+          "n": 29,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-trim",
+          "rate": 0.14,
+          "n": 29,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "quarter-panel",
+          "rate": 0.14,
+          "n": 29,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "roof-trim",
+          "rate": 0.14,
+          "n": 29,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "trunk-liftgate",
+          "rate": 0.14,
+          "n": 29,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "back-glass",
+          "rate": 0.1,
+          "n": 29,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "clean-for-delivery",
+          "rate": 0.1,
+          "n": 29,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "condenser",
+          "rate": 0.1,
+          "n": 29,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "radar-camera",
+          "rate": 0.1,
+          "n": 29,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-brackets",
+          "rate": 0.1,
+          "n": 29,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "cooling-pressure-test",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "radiator",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-door",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-impact-bar",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "suspension-parts",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "tail-lamp",
+          "rate": 0.07,
+          "n": 29,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 29 front-end insurance jobs."
+        }
+      ],
+      "rear": [
+        {
+          "catalogId": "color-tint",
+          "rate": 0.97,
+          "n": 37,
+          "count": 36,
+          "source": "estimate",
+          "why": "On 36 of 37 rear-end insurance estimates Gio wrote color tint / color match. Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.92,
+          "n": 37,
+          "count": 34,
+          "source": "estimate",
+          "why": "On 34 of 37 rear-end insurance estimates Gio wrote post-repair scan. Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.92,
+          "n": 37,
+          "count": 34,
+          "source": "estimate",
+          "why": "On 34 of 37 rear-end insurance estimates Gio wrote pre-repair scan. Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.89,
+          "n": 37,
+          "count": 33,
+          "source": "estimate",
+          "why": "On 33 of 37 rear-end insurance estimates Gio wrote cover car for overspray. Gio added it on a supplement (not on the first estimate) in 7 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.86,
+          "n": 37,
+          "count": 32,
+          "source": "estimate",
+          "why": "On 32 of 37 rear-end insurance estimates Gio wrote hazardous waste disposal. Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "corrosion-protection",
+          "rate": 0.65,
+          "n": 37,
+          "count": 24,
+          "source": "estimate",
+          "why": "On 24 of 37 rear-end insurance estimates Gio wrote corrosion protection, seam sealer & adhesives. Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "color-sand-buff",
+          "rate": 0.62,
+          "n": 37,
+          "count": 23,
+          "source": "estimate",
+          "why": "On 23 of 37 rear-end insurance estimates Gio wrote color sand & buff / de-nib. Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.59,
+          "n": 37,
+          "count": 22,
+          "source": "estimate",
+          "why": "On 22 of 37 rear-end insurance estimates Gio wrote flex additive. Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.54,
+          "n": 37,
+          "count": 20,
+          "source": "estimate",
+          "why": "On 20 of 37 rear-end insurance estimates Gio wrote disconnect / reconnect battery. Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "fender-liner",
+          "rate": 0.51,
+          "n": 37,
+          "count": 19,
+          "source": "estimate",
+          "why": "On 19 of 37 rear-end insurance estimates Gio wrote fender liner. Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-brackets",
+          "rate": 0.43,
+          "n": 37,
+          "count": 16,
+          "source": "estimate",
+          "why": "On 16 of 37 rear-end insurance estimates Gio wrote rear bumper brackets & trim. Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.38,
+          "n": 37,
+          "count": 14,
+          "source": "estimate",
+          "why": "On 14 of 37 rear-end insurance estimates Gio wrote blend adjacent panel. Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.38,
+          "n": 37,
+          "count": 14,
+          "source": "estimate",
+          "why": "On 14 of 37 rear-end insurance estimates Gio wrote air deflectors, shields & ducts. Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "quarter-panel",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-cover",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-impact-bar",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "feather-prime-block",
+          "rate": 0.35,
+          "n": 37,
+          "count": 13,
+          "source": "estimate",
+          "why": "On 13 of 37 rear-end insurance estimates Gio wrote feather, prime & block. Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "frame-setup-pull",
+          "rate": 0.35,
+          "n": 37,
+          "count": 13,
+          "source": "estimate",
+          "why": "On 13 of 37 rear-end insurance estimates Gio wrote frame setup & pull. Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-body-panel",
+          "rate": 0.32,
+          "n": 37,
+          "count": 12,
+          "source": "estimate",
+          "why": "On 12 of 37 rear-end insurance estimates Gio wrote rear body panel / trunk floor. Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "wheel-alignment",
+          "rate": 0.32,
+          "n": 37,
+          "count": 12,
+          "source": "estimate",
+          "why": "On 12 of 37 rear-end insurance estimates Gio wrote 4-wheel alignment."
+        },
+        {
+          "catalogId": "tail-lamp",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "trunk-liftgate",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "radar-camera",
+          "rate": 0.3,
+          "n": 37,
+          "count": 11,
+          "source": "estimate",
+          "why": "On 11 of 37 rear-end insurance estimates Gio wrote front radar / camera sensor. Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.25,
+          "n": 16,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "headlamp-assembly",
+          "rate": 0.25,
+          "n": 16,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.25,
+          "n": 16,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "roof-trim",
+          "rate": 0.25,
+          "n": 16,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "windshield",
+          "rate": 0.25,
+          "n": 16,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "airbag-diagnosis",
+          "rate": 0.24,
+          "n": 37,
+          "count": 9,
+          "source": "estimate",
+          "why": "On 9 of 37 rear-end insurance estimates Gio wrote airbag / srs system check. Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "back-glass",
+          "rate": 0.19,
+          "n": 16,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.19,
+          "n": 16,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.19,
+          "n": 16,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.19,
+          "n": 16,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.12,
+          "n": 16,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.12,
+          "n": 16,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-door",
+          "rate": 0.12,
+          "n": 16,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.12,
+          "n": 16,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 16 rear-end insurance jobs."
+        }
+      ],
+      "left": [
+        {
+          "catalogId": "color-tint",
+          "rate": 0.93,
+          "n": 42,
+          "count": 39,
+          "source": "estimate",
+          "why": "On 39 of 42 left-side insurance estimates Gio wrote color tint / color match. Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.93,
+          "n": 42,
+          "count": 39,
+          "source": "estimate",
+          "why": "On 39 of 42 left-side insurance estimates Gio wrote cover car for overspray. Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.93,
+          "n": 42,
+          "count": 39,
+          "source": "estimate",
+          "why": "On 39 of 42 left-side insurance estimates Gio wrote pre-repair scan. Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.88,
+          "n": 42,
+          "count": 37,
+          "source": "estimate",
+          "why": "On 37 of 42 left-side insurance estimates Gio wrote hazardous waste disposal. Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.86,
+          "n": 42,
+          "count": 36,
+          "source": "estimate",
+          "why": "On 36 of 42 left-side insurance estimates Gio wrote post-repair scan. Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "fender-liner",
+          "rate": 0.74,
+          "n": 42,
+          "count": 31,
+          "source": "estimate",
+          "why": "On 31 of 42 left-side insurance estimates Gio wrote fender liner. Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.69,
+          "n": 42,
+          "count": 29,
+          "source": "estimate",
+          "why": "On 29 of 42 left-side insurance estimates Gio wrote flex additive. Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.67,
+          "n": 42,
+          "count": 28,
+          "source": "estimate",
+          "why": "On 28 of 42 left-side insurance estimates Gio wrote disconnect / reconnect battery. Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "color-sand-buff",
+          "rate": 0.67,
+          "n": 42,
+          "count": 28,
+          "source": "estimate",
+          "why": "On 28 of 42 left-side insurance estimates Gio wrote color sand & buff / de-nib. Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.57,
+          "n": 42,
+          "count": 24,
+          "source": "estimate",
+          "why": "On 24 of 42 left-side insurance estimates Gio wrote air deflectors, shields & ducts. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "corrosion-protection",
+          "rate": 0.52,
+          "n": 42,
+          "count": 22,
+          "source": "estimate",
+          "why": "On 22 of 42 left-side insurance estimates Gio wrote corrosion protection, seam sealer & adhesives. Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.5,
+          "n": 42,
+          "count": 21,
+          "source": "estimate",
+          "why": "On 21 of 42 left-side insurance estimates Gio wrote blend adjacent panel. Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "aim-headlamps",
+          "rate": 0.48,
+          "n": 42,
+          "count": 20,
+          "source": "estimate",
+          "why": "On 20 of 42 left-side insurance estimates Gio wrote aim headlamps. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.45,
+          "n": 42,
+          "count": 19,
+          "source": "estimate",
+          "why": "On 19 of 42 left-side insurance estimates Gio wrote front bumper brackets & retainers. Gio added it on a supplement (not on the first estimate) in 6 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "wheel-alignment",
+          "rate": 0.45,
+          "n": 42,
+          "count": 19,
+          "source": "estimate",
+          "why": "On 19 of 42 left-side insurance estimates Gio wrote 4-wheel alignment. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.43,
+          "n": 14,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "feather-prime-block",
+          "rate": 0.36,
+          "n": 42,
+          "count": 15,
+          "source": "estimate",
+          "why": "On 15 of 42 left-side insurance estimates Gio wrote feather, prime & block. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "frame-setup-pull",
+          "rate": 0.36,
+          "n": 42,
+          "count": 15,
+          "source": "estimate",
+          "why": "On 15 of 42 left-side insurance estimates Gio wrote frame setup & pull."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "quarter-panel",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-brackets",
+          "rate": 0.29,
+          "n": 42,
+          "count": 12,
+          "source": "estimate",
+          "why": "On 12 of 42 left-side insurance estimates Gio wrote rear bumper brackets & trim. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "roof-trim",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "windshield",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-impact-bar",
+          "rate": 0.26,
+          "n": 42,
+          "count": 11,
+          "source": "estimate",
+          "why": "On 11 of 42 left-side insurance estimates Gio wrote front bumper reinforcement (impact bar). Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "hood-hinges-latch",
+          "rate": 0.24,
+          "n": 42,
+          "count": 10,
+          "source": "estimate",
+          "why": "On 10 of 42 left-side insurance estimates Gio wrote hood hinges & latch. Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "radar-camera",
+          "rate": 0.24,
+          "n": 42,
+          "count": 10,
+          "source": "estimate",
+          "why": "On 10 of 42 left-side insurance estimates Gio wrote front radar / camera sensor."
+        },
+        {
+          "catalogId": "ac-service",
+          "rate": 0.21,
+          "n": 42,
+          "count": 9,
+          "source": "estimate",
+          "why": "On 9 of 42 left-side insurance estimates Gio wrote a/c evacuate & recharge."
+        },
+        {
+          "catalogId": "back-glass",
+          "rate": 0.21,
+          "n": 14,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "cooling-pressure-test",
+          "rate": 0.21,
+          "n": 42,
+          "count": 9,
+          "source": "estimate",
+          "why": "On 9 of 42 left-side insurance estimates Gio wrote cooling system refill & pressure test."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.21,
+          "n": 14,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "radiator-support",
+          "rate": 0.21,
+          "n": 42,
+          "count": 9,
+          "source": "estimate",
+          "why": "On 9 of 42 left-side insurance estimates Gio wrote radiator support."
+        },
+        {
+          "catalogId": "rear-bumper-cover",
+          "rate": 0.21,
+          "n": 14,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "fog-drl-lamp",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "headlamp-assembly",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-door",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "tail-lamp",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "trunk-liftgate",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "wheel-tire",
+          "rate": 0.14,
+          "n": 14,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 14 left-side insurance jobs."
+        }
+      ],
+      "right": [
+        {
+          "catalogId": "color-tint",
+          "rate": 0.94,
+          "n": 50,
+          "count": 47,
+          "source": "estimate",
+          "why": "On 47 of 50 right-side insurance estimates Gio wrote color tint / color match. Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.92,
+          "n": 50,
+          "count": 46,
+          "source": "estimate",
+          "why": "On 46 of 50 right-side insurance estimates Gio wrote cover car for overspray. Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.9,
+          "n": 50,
+          "count": 45,
+          "source": "estimate",
+          "why": "On 45 of 50 right-side insurance estimates Gio wrote hazardous waste disposal. Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.88,
+          "n": 50,
+          "count": 44,
+          "source": "estimate",
+          "why": "On 44 of 50 right-side insurance estimates Gio wrote pre-repair scan. Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.86,
+          "n": 50,
+          "count": 43,
+          "source": "estimate",
+          "why": "On 43 of 50 right-side insurance estimates Gio wrote post-repair scan. Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "color-sand-buff",
+          "rate": 0.72,
+          "n": 50,
+          "count": 36,
+          "source": "estimate",
+          "why": "On 36 of 50 right-side insurance estimates Gio wrote color sand & buff / de-nib. Gio added it on a supplement (not on the first estimate) in 8 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "fender-liner",
+          "rate": 0.66,
+          "n": 50,
+          "count": 33,
+          "source": "estimate",
+          "why": "On 33 of 50 right-side insurance estimates Gio wrote fender liner. Gio added it on a supplement (not on the first estimate) in 7 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.64,
+          "n": 50,
+          "count": 32,
+          "source": "estimate",
+          "why": "On 32 of 50 right-side insurance estimates Gio wrote flex additive. Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.62,
+          "n": 50,
+          "count": 31,
+          "source": "estimate",
+          "why": "On 31 of 50 right-side insurance estimates Gio wrote air deflectors, shields & ducts. Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "aim-headlamps",
+          "rate": 0.52,
+          "n": 50,
+          "count": 26,
+          "source": "estimate",
+          "why": "On 26 of 50 right-side insurance estimates Gio wrote aim headlamps. Gio added it on a supplement (not on the first estimate) in 6 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.52,
+          "n": 50,
+          "count": 26,
+          "source": "estimate",
+          "why": "On 26 of 50 right-side insurance estimates Gio wrote disconnect / reconnect battery. Gio added it on a supplement (not on the first estimate) in 8 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.52,
+          "n": 50,
+          "count": 26,
+          "source": "estimate",
+          "why": "On 26 of 50 right-side insurance estimates Gio wrote blend adjacent panel. Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.52,
+          "n": 21,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.5,
+          "n": 50,
+          "count": 25,
+          "source": "estimate",
+          "why": "On 25 of 50 right-side insurance estimates Gio wrote front bumper brackets & retainers. Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "corrosion-protection",
+          "rate": 0.48,
+          "n": 50,
+          "count": 24,
+          "source": "estimate",
+          "why": "On 24 of 50 right-side insurance estimates Gio wrote corrosion protection, seam sealer & adhesives. Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.48,
+          "n": 21,
+          "count": 10,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.48,
+          "n": 21,
+          "count": 10,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "wheel-alignment",
+          "rate": 0.4,
+          "n": 50,
+          "count": 20,
+          "source": "estimate",
+          "why": "On 20 of 50 right-side insurance estimates Gio wrote 4-wheel alignment. Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.38,
+          "n": 21,
+          "count": 8,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 8 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "feather-prime-block",
+          "rate": 0.32,
+          "n": 50,
+          "count": 16,
+          "source": "estimate",
+          "why": "On 16 of 50 right-side insurance estimates Gio wrote feather, prime & block. Gio added it on a supplement (not on the first estimate) in 5 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "headlamp-assembly",
+          "rate": 0.29,
+          "n": 21,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "frame-setup-pull",
+          "rate": 0.28,
+          "n": 50,
+          "count": 14,
+          "source": "estimate",
+          "why": "On 14 of 50 right-side insurance estimates Gio wrote frame setup & pull. Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-energy-absorber",
+          "rate": 0.26,
+          "n": 50,
+          "count": 13,
+          "source": "estimate",
+          "why": "On 13 of 50 right-side insurance estimates Gio wrote front energy absorber. Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-impact-bar",
+          "rate": 0.24,
+          "n": 50,
+          "count": 12,
+          "source": "estimate",
+          "why": "On 12 of 50 right-side insurance estimates Gio wrote front bumper reinforcement (impact bar). Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "quarter-panel",
+          "rate": 0.24,
+          "n": 21,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "wheel-tire",
+          "rate": 0.24,
+          "n": 21,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "ac-service",
+          "rate": 0.2,
+          "n": 50,
+          "count": 10,
+          "source": "estimate",
+          "why": "On 10 of 50 right-side insurance estimates Gio wrote a/c evacuate & recharge. Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "radar-camera",
+          "rate": 0.2,
+          "n": 50,
+          "count": 10,
+          "source": "estimate",
+          "why": "On 10 of 50 right-side insurance estimates Gio wrote front radar / camera sensor. Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "radiator-support",
+          "rate": 0.2,
+          "n": 50,
+          "count": 10,
+          "source": "estimate",
+          "why": "On 10 of 50 right-side insurance estimates Gio wrote radiator support. Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "adas-calibration",
+          "rate": 0.19,
+          "n": 21,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-trim",
+          "rate": 0.19,
+          "n": 21,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "tail-lamp",
+          "rate": 0.19,
+          "n": 21,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "windshield",
+          "rate": 0.19,
+          "n": 21,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "back-glass",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "fog-drl-lamp",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "hood-hinges-latch",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-body-panel",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-brackets",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-cover",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "roof-trim",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "trunk-liftgate",
+          "rate": 0.14,
+          "n": 21,
+          "count": 3,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 3 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "airbag-diagnosis",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "clean-for-delivery",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "condenser",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "radiator",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-door",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "rear-impact-bar",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "suspension-parts",
+          "rate": 0.1,
+          "n": 21,
+          "count": 2,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 2 of 21 right-side insurance jobs."
+        }
+      ],
+      "top": []
+    },
+    "supplementAddsByArea": {
+      "front": [
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.55,
+          "n": 29,
+          "count": 16,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.55,
+          "n": 29,
+          "count": 16,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.55,
+          "n": 29,
+          "count": 16,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 16 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.52,
+          "n": 29,
+          "count": 15,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 15 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "color-tint",
+          "rate": 0.52,
+          "n": 29,
+          "count": 15,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 15 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.48,
+          "n": 29,
+          "count": 14,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 14 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.45,
+          "n": 29,
+          "count": 13,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 13 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.41,
+          "n": 29,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.41,
+          "n": 29,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.38,
+          "n": 29,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.38,
+          "n": 29,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.38,
+          "n": 29,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 29 front-end insurance jobs."
+        }
+      ],
+      "rear": [
+        {
+          "catalogId": "color-tint",
+          "rate": 0.56,
+          "n": 16,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.56,
+          "n": 16,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.56,
+          "n": 16,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.44,
+          "n": 16,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-brackets",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-bumper-cover",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "color-sand-buff",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-impact-bar",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "quarter-panel",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.38,
+          "n": 16,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "rear-body-panel",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "tail-lamp",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        },
+        {
+          "catalogId": "trunk-liftgate",
+          "rate": 0.31,
+          "n": 16,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 16 rear-end insurance jobs."
+        }
+      ],
+      "left": [
+        {
+          "catalogId": "battery-disconnect",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "color-tint",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.5,
+          "n": 14,
+          "count": 7,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 7 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.43,
+          "n": 14,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.43,
+          "n": 14,
+          "count": 6,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 6 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "fender-liner",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "front-door",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.36,
+          "n": 14,
+          "count": 5,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 5 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.29,
+          "n": 14,
+          "count": 4,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 4 of 14 left-side insurance jobs."
+        }
+      ],
+      "right": [
+        {
+          "catalogId": "post-repair-scan",
+          "rate": 0.57,
+          "n": 21,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "color-tint",
+          "rate": 0.57,
+          "n": 21,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "pre-repair-scan",
+          "rate": 0.57,
+          "n": 21,
+          "count": 12,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 12 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "hood",
+          "rate": 0.52,
+          "n": 21,
+          "count": 11,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 11 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-fender",
+          "rate": 0.48,
+          "n": 21,
+          "count": 10,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-brackets",
+          "rate": 0.48,
+          "n": 21,
+          "count": 10,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "door-trim",
+          "rate": 0.48,
+          "n": 21,
+          "count": 10,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 10 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-bumper-cover",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "blend-adjacent-panel",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-lower-shield",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "cover-car",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "side-mirror",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "flex-additive",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "front-grille",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        },
+        {
+          "catalogId": "hazardous-waste",
+          "rate": 0.43,
+          "n": 21,
+          "count": 9,
+          "source": "supplement",
+          "why": "Gio added it on a supplement (not on the first estimate) in 9 of 21 right-side insurance jobs."
+        }
+      ],
+      "top": []
+    },
+    "blendRate": 0.55,
+    "blendN": 80,
+    "partTypeMix": {
+      "oem": 0.33,
+      "aftermarket": 0.5,
+      "used": 0.17
+    },
+    "partTypeN": 359,
+    "panelRepairVsReplace": {
+      "repair": 81,
+      "replace": 381,
+      "repairShare": 0.18
+    },
+    "medianTotal": 8828,
+    "jobs": 86
+  },
+  "self_pay": {
+    "repairInsteadOfReplace": [
+      {
+        "catalogId": "hood",
+        "rate": 1.0,
+        "n": 4,
+        "insuranceRate": 0.4,
+        "insuranceN": 25,
+        "why": "On self-pay jobs Gio repaired the hood 4 of 4 times (insurance: 10 of 25)."
+      },
+      {
+        "catalogId": "rear-door",
+        "rate": 0.6,
+        "n": 5,
+        "insuranceRate": 0.53,
+        "insuranceN": 17,
+        "why": "On self-pay jobs Gio repaired the rear door 3 of 5 times (insurance: 9 of 17)."
+      },
+      {
+        "catalogId": "rear-bumper-cover",
+        "rate": 0.5,
+        "n": 4,
+        "insuranceRate": 0.12,
+        "insuranceN": 25,
+        "why": "On self-pay jobs Gio repaired the rear bumper cover 2 of 4 times (insurance: 3 of 25)."
+      },
+      {
+        "catalogId": "quarter-panel",
+        "rate": 0.4,
+        "n": 5,
+        "insuranceRate": 0.35,
+        "insuranceN": 26,
+        "why": "On self-pay jobs Gio repaired the quarter panel 2 of 5 times (insurance: 9 of 26)."
+      },
+      {
+        "catalogId": "front-door",
+        "rate": 0.25,
+        "n": 4,
+        "insuranceRate": 0.59,
+        "insuranceN": 29,
+        "why": "On self-pay jobs Gio repaired the front door 1 of 4 times (insurance: 17 of 29)."
+      },
+      {
+        "catalogId": "front-bumper-cover",
+        "rate": 0.14,
+        "n": 7,
+        "insuranceRate": 0.13,
+        "insuranceN": 38,
+        "why": "On self-pay jobs Gio repaired the front bumper cover 1 of 7 times (insurance: 5 of 38)."
+      },
+      {
+        "catalogId": "wheel-tire",
+        "rate": 0.0,
+        "n": 8,
+        "insuranceRate": 0.05,
+        "insuranceN": 41,
+        "why": "On self-pay jobs Gio repaired the wheel / tire 0 of 8 times (insurance: 2 of 41)."
+      },
+      {
+        "catalogId": "front-fender",
+        "rate": 0.0,
+        "n": 5,
+        "insuranceRate": 0.33,
+        "insuranceN": 54,
+        "why": "On self-pay jobs Gio repaired the front fender 0 of 5 times (insurance: 18 of 54)."
+      },
+      {
+        "catalogId": "headlamp-assembly",
+        "rate": 0.0,
+        "n": 5,
+        "insuranceRate": 0.0,
+        "insuranceN": 40,
+        "why": "On self-pay jobs Gio repaired the headlamp assembly 0 of 5 times (insurance: 0 of 40)."
+      },
+      {
+        "catalogId": "tail-lamp",
+        "rate": 0.0,
+        "n": 4,
+        "insuranceRate": 0.0,
+        "insuranceN": 21,
+        "why": "On self-pay jobs Gio repaired the tail lamp 0 of 4 times (insurance: 0 of 21)."
+      },
+      {
+        "catalogId": "front-grille",
+        "rate": 0.0,
+        "n": 3,
+        "insuranceRate": 0.03,
+        "insuranceN": 30,
+        "why": "On self-pay jobs Gio repaired the grille 0 of 3 times (insurance: 1 of 30)."
+      },
+      {
+        "catalogId": "front-bumper-trim",
+        "rate": 0.0,
+        "n": 2,
+        "insuranceRate": 0.0,
+        "insuranceN": 14,
+        "why": "On self-pay jobs Gio repaired the front bumper moldings & emblem 0 of 2 times (insurance: 0 of 14)."
+      },
+      {
+        "catalogId": "door-trim",
+        "rate": 0.0,
+        "n": 2,
+        "insuranceRate": 0.04,
+        "insuranceN": 27,
+        "why": "On self-pay jobs Gio repaired the door moldings, handle & trim 0 of 2 times (insurance: 1 of 27)."
+      }
+    ],
+    "partTypeMix": {
+      "oem": 0.54,
+      "aftermarket": 0.37,
+      "used": 0.1
+    },
+    "partTypeN": 41,
+    "panelRepairVsReplace": {
+      "repair": 14,
+      "replace": 48,
+      "repairShare": 0.23
+    },
+    "skips": [
+      {
+        "catalogId": "battery-disconnect",
+        "insuranceRate": 0.56,
+        "selfPayRate": 0.2,
+        "why": "Written on 56% of insurance estimates but 20% of self-pay estimates."
+      },
+      {
+        "catalogId": "front-lower-shield",
+        "insuranceRate": 0.58,
+        "selfPayRate": 0.25,
+        "why": "Written on 58% of insurance estimates but 25% of self-pay estimates."
+      },
+      {
+        "catalogId": "fender-liner",
+        "insuranceRate": 0.62,
+        "selfPayRate": 0.3,
+        "why": "Written on 62% of insurance estimates but 30% of self-pay estimates."
+      },
+      {
+        "catalogId": "aim-headlamps",
+        "insuranceRate": 0.47,
+        "selfPayRate": 0.15,
+        "why": "Written on 47% of insurance estimates but 15% of self-pay estimates."
+      },
+      {
+        "catalogId": "post-repair-scan",
+        "insuranceRate": 0.87,
+        "selfPayRate": 0.55,
+        "why": "Written on 87% of insurance estimates but 55% of self-pay estimates."
+      },
+      {
+        "catalogId": "cover-car",
+        "insuranceRate": 0.87,
+        "selfPayRate": 0.55,
+        "why": "Written on 87% of insurance estimates but 55% of self-pay estimates."
+      },
+      {
+        "catalogId": "pre-repair-scan",
+        "insuranceRate": 0.91,
+        "selfPayRate": 0.6,
+        "why": "Written on 91% of insurance estimates but 60% of self-pay estimates."
+      },
+      {
+        "catalogId": "blend-adjacent-panel",
+        "insuranceRate": 0.51,
+        "selfPayRate": 0.25,
+        "why": "Written on 51% of insurance estimates but 25% of self-pay estimates."
+      },
+      {
+        "catalogId": "flex-additive",
+        "insuranceRate": 0.66,
+        "selfPayRate": 0.4,
+        "why": "Written on 66% of insurance estimates but 40% of self-pay estimates."
+      },
+      {
+        "catalogId": "feather-prime-block",
+        "insuranceRate": 0.27,
+        "selfPayRate": 0.05,
+        "why": "Written on 27% of insurance estimates but 5% of self-pay estimates."
+      },
+      {
+        "catalogId": "front-impact-bar",
+        "insuranceRate": 0.26,
+        "selfPayRate": 0.05,
+        "why": "Written on 26% of insurance estimates but 5% of self-pay estimates."
+      },
+      {
+        "catalogId": "color-sand-buff",
+        "insuranceRate": 0.65,
+        "selfPayRate": 0.45,
+        "why": "Written on 65% of insurance estimates but 45% of self-pay estimates."
+      },
+      {
+        "catalogId": "corrosion-protection",
+        "insuranceRate": 0.44,
+        "selfPayRate": 0.25,
+        "why": "Written on 44% of insurance estimates but 25% of self-pay estimates."
+      },
+      {
+        "catalogId": "frame-setup-pull",
+        "insuranceRate": 0.28,
+        "selfPayRate": 0.1,
+        "why": "Written on 28% of insurance estimates but 10% of self-pay estimates."
+      },
+      {
+        "catalogId": "radiator-support",
+        "insuranceRate": 0.21,
+        "selfPayRate": 0.05,
+        "why": "Written on 21% of insurance estimates but 5% of self-pay estimates."
+      },
+      {
+        "catalogId": "front-bumper-brackets",
+        "insuranceRate": 0.5,
+        "selfPayRate": 0.35,
+        "why": "Written on 50% of insurance estimates but 35% of self-pay estimates."
+      }
+    ],
+    "blendRate": 0.28,
+    "medianTotal": 4082,
+    "jobs": 20
+  },
+  "stats": {
+    "estimates": 205,
+    "uniqueDocuments": 178,
+    "parsedDocuments": 129,
+    "skippedDocuments": {
+      "ocr_first_page_only": 19,
+      "charge_sheet": 15,
+      "other_estimator": 9,
+      "no_line_items": 6
+    },
+    "stageOccurrences": {
+      "estimate_of_record": 9,
+      "preliminary": 130,
+      "supplement": 60,
+      "estimate": 6
+    },
+    "supplements": 60,
+    "selfPay": 35,
+    "jobs": 115,
+    "jobsByPayer": {
+      "insurance": 86,
+      "unknown": 9,
+      "self_pay": 20
+    },
+    "jobsByStage": {
+      "supplement": 33,
+      "preliminary": 78,
+      "estimate_of_record": 4
+    },
+    "jobsWithSupplement": 37,
+    "lineMappingRate": 0.65,
+    "monthRange": [
+      "2024-12",
+      "2026-09"
+    ]
+  }
+}

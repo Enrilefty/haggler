@@ -137,7 +137,10 @@ export function rank(mode: Mode, priority: Priority, inputs: RankInput[]): Ranke
   if (w.price != null) crit.price = norm(inputs.map((i) => i.total ?? 0), false);
   if (w.incentives != null) crit.incentives = norm(inputs.map((i) => i.incentiveValue ?? 0), true);
   if (w.extras != null) crit.extras = norm(inputs.map((i) => i.extrasCount ?? 0), true);
-  crit.reviews = norm(inputs.map((i) => reviewScore(i.rating, i.reviewCount)), true);
+  // Reviews only count when at least two shops have them (demo shops carry no ratings, and one
+  // rated shop shouldn't win "strongest reviews" by default).
+  const rated = inputs.filter((i) => i.rating != null && i.reviewCount != null).length;
+  crit.reviews = rated >= 2 ? norm(inputs.map((i) => reviewScore(i.rating, i.reviewCount)), true) : { scores: inputs.map(() => 1), equal: true };
   crit.completeness = norm(inputs.map((i) => i.comparison.completeness), true);
   crit.turnaround = norm(inputs.map((i) => i.turnaroundDays), false);
   crit.warranty = norm(inputs.map((i) => i.warrantyScore), true);

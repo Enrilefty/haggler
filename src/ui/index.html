@@ -2,195 +2,1160 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1115">
 <title>Quote Room</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%279%27 fill=%27%232A44F0%27/%3E%3Cpath d=%27M9 11.5c0-1.4 1.1-2.5 2.5-2.5h9c1.4 0 2.5 1.1 2.5 2.5v6c0 1.4-1.1 2.5-2.5 2.5H15l-3.6 3v-3c-1.3-.1-2.4-1.2-2.4-2.5z%27 fill=%27white%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F3F4F6; --panel:#FFFFFF; --ink:#0D1424; --muted:#5D6678; --line:#E2E5EB;
-  --accent:#1F4FFF; --accent-soft:#E7EDFF; --ok:#14865B; --ok-soft:#E3F5EC; --warn:#B86E00; --warn-soft:#FFF3DD;
-  --bad:#C93434; --bad-soft:#FDE8E8; --dis:#6B7280; --dis-soft:#EEF0F3; --gold:#F5B300;
-  --display:"Archivo", "Arial Narrow", system-ui, sans-serif; --body:"Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --paper:#F4F2ED; --surface:#FFFFFF; --ink:#0F1115; --ink-2:#2A2E36; --muted:#626874; --faint:#979DA7;
+  --line:#E5E1D8; --line-2:#D6D1C6;
+  --agent:#2A44F0; --agent-ink:#1B31CF; --agent-soft:#ECEFFE; --agent-bright:#6E84FF;
+  --ok:#0E7A4F; --ok-deep:#0B5C3C; --ok-soft:#E3F3EA; --warn:#9C5B00; --warn-soft:#FFF1DA; --bad:#BF3A2B; --bad-soft:#FBE8E4;
+  --gold:#E3A21A; --shopb:#2F6870; --shopc:#94661B;
+  --serif:"Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --sans:"Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --shadow:0 1px 0 rgba(15,17,21,.03), 0 12px 32px -18px rgba(15,17,21,.22);
+  --gut:2rem;
 }
-*{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--body)}
-body.proj{font-size:19px}
-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:var(--ink);color:#fff;flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:12px}
-.brand b{font:800 22px/1 var(--display);letter-spacing:.02em}
-.brand span{color:#AFC1FF;font-size:14px}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:#1E2840;color:#C9D3EA}
-.pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7A8499;margin-right:6px;vertical-align:1px}
+*{box-sizing:border-box}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+html.proj{font-size:18px}
+@media (min-width:1700px){html.proj{font-size:21px}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1rem/1.5 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+img{max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--agent);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem var(--gut);background:var(--ink);color:#fff;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:#fff;background:none;border:0;padding:0;cursor:pointer}
+.brand svg{width:1.6rem;height:1.6rem;flex:none}
+.brand b{font:600 1.05rem/1 var(--sans);letter-spacing:-.01em}
+.brand span{font:400 .85rem/1 var(--sans);color:#99A1B0;margin-left:.2rem}
+.pills{display:flex;gap:.4rem;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:.4rem;font:500 .68rem/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:.42rem .62rem;border-radius:999px;background:#1B1F28;color:#AEB5C2;white-space:nowrap}
+.pill i{width:.45rem;height:.45rem;border-radius:50%;background:#59606D}
 .pill.on i{background:#3BD38A} .pill.fb i{background:var(--gold)}
-main{display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:18px;padding:18px 24px 40px;max-width:1500px;margin:0 auto}
-@media (max-width:980px){main{grid-template-columns:1fr}}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
-h2{font:700 13px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-.col{display:flex;flex-direction:column;gap:16px;min-width:0}
-.cases{display:grid;gap:10px}
-.case{border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:#fff;text-align:left;font:inherit;color:inherit}
-.case.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.case b{font:700 15px/1.25 var(--display);display:block}
-.case small{color:var(--muted)}
-.photos{display:flex;gap:6px;margin-top:8px;overflow-x:auto}
-.photos img{height:64px;border-radius:8px}
-.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:10px;padding:4px;gap:4px}
-.seg button{border:0;border-radius:8px;padding:10px;font:600 14px var(--body);background:transparent;color:var(--muted);cursor:pointer}
-.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(13,20,36,.12)}
-label.f{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px;color:var(--muted)}
-select,input{font:500 15px var(--body);padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
-.go{border:0;border-radius:12px;padding:14px;font:700 16px var(--display);letter-spacing:.02em;background:var(--accent);color:#fff;cursor:pointer}
-.go:disabled{opacity:.5;cursor:default}
-.scope li{margin:4px 0} .scope ul{margin:0;padding-left:18px}
-.note{font-size:12.5px;color:var(--muted)}
-.feed{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;padding-right:4px}
-.msg{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
-.av{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font:700 12px var(--display);color:#fff;background:#3A4560}
-.av.drive{background:var(--accent)} .av.sim{background:#7C6F9C} .av.owner{background:var(--ok)} .av.sys{background:#9AA3B5}
-.msg .who{font-weight:600;font-size:13px} .msg .who time{color:var(--muted);font:400 11px var(--mono);margin-left:6px}
-.msg .txt{white-space:pre-wrap;font-size:14px}
-.msg.owner .txt{background:var(--ok-soft);border:1px solid #BFE6D2;border-radius:10px;padding:8px 10px}
-.msg.exc .txt{background:var(--warn-soft);border:1px solid #F3D9A6;border-radius:10px;padding:8px 10px}
-.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.card.sim{border-style:dashed}
-.card.rec{border:2px solid var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}
-.card .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.card .name{font:800 18px/1.15 var(--display)}
-.badge{font:600 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:5px 7px;border-radius:6px;white-space:nowrap}
-.badge.real{background:var(--accent-soft);color:var(--accent)} .badge.simb{background:#F0ECF8;color:#5E4E8A}
-.badge.recb{background:var(--ok);color:#fff} .badge.clar{background:var(--bad-soft);color:var(--bad)}
-.stars{font-size:13px;color:var(--muted)} .stars b{color:var(--ink)}
-.big{font:800 30px/1 var(--display);letter-spacing:-.01em}
-.big small{font:500 13px var(--body);color:var(--muted);margin-left:6px}
-.inc{display:flex;flex-direction:column;gap:4px;font-weight:600}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px} .kv dt{color:var(--muted)} .kv dd{margin:0}
-.tag{font:600 11px var(--mono);color:var(--ok)}
-.chips{display:flex;flex-wrap:wrap;gap:5px}
-.chip{font-size:11.5px;padding:3px 7px;border-radius:999px;border:1px solid var(--line)}
-.chip.covered{background:var(--ok-soft);border-color:#BFE6D2} .chip.missing_required{background:var(--bad-soft);border-color:#F3C2C2;color:var(--bad)}
-.chip.recommended_elsewhere{background:var(--warn-soft);border-color:#F3D9A6;color:var(--warn)} .chip.disputed{background:var(--dis-soft);color:var(--dis)}
-.tbl{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
-th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} th{font:700 11px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-td.st{font-weight:600} .st.covered{color:var(--ok)} .st.missing_required{color:var(--bad)} .st.recommended_elsewhere{color:var(--warn)} .st.disputed{color:var(--dis)}
-.rank{display:flex;flex-direction:column;gap:10px}
-.rrow{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
-.rrow .n{font:800 20px var(--display);color:var(--muted)} .rrow.rec{border-color:var(--ok);background:var(--ok-soft)}
-.confirm{border:0;border-radius:10px;padding:10px 14px;font:700 14px var(--body);background:var(--ink);color:#fff;cursor:pointer}
-.confirm:disabled{opacity:.35;cursor:default}
-.banner{border-radius:14px;padding:16px;background:var(--ok);color:#fff;font:700 17px var(--display)} .banner small{display:block;font:500 13px var(--body);opacity:.9}
-.guard{font-size:12.5px;color:var(--muted);border-left:3px solid var(--warn);padding:6px 10px;background:#fff;border-radius:6px}
-.empty{color:var(--muted);font-size:14px;padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:12px}
-.status{font:600 12px var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
-.pill.warn{background:#5A3A00;color:#FFE2A8} .pill.warn i{background:var(--gold)}
-.toast{margin-top:10px;font-size:13px;color:var(--bad)} .toast:empty{display:none}
-.policy{font:600 10.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--warn)}
+.pill.warn{background:#4A3005;color:#FFE1A6} .pill.warn i{background:var(--gold)}
+@media (max-width:640px){.brand span{display:none}.pill{font-size:.6rem;padding:.38rem .5rem}}
+
+/* ---------- start view ---------- */
+.start{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-rows:auto 1fr;column-gap:clamp(2rem,5vw,4.5rem);row-gap:0;max-width:86rem;margin:0 auto;padding:3.25rem var(--gut) 4rem;align-items:start}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font:500 .74rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow i{width:.5rem;height:.5rem;border-radius:50%;background:var(--agent)}
+.hero{grid-column:1;grid-row:1}
+.composer{grid-column:2;grid-row:1 / span 2}
+.hero-how{grid-column:1;grid-row:2}
+.hero h1{font:400 clamp(2.7rem,5.4vw,4.9rem)/.97 var(--serif);letter-spacing:-.02em;margin:1rem 0 1.25rem;text-wrap:balance}
+.hero h1 em{font-style:italic;color:var(--agent)}
+.hero .lede{font-size:1.12rem;line-height:1.55;color:var(--ink-2);max-width:31rem;margin:0}
+.how{list-style:none;margin:2.5rem 0 0;padding:0;border-top:1px solid var(--line-2);max-width:32rem}
+.how li{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.5rem;padding:.95rem 0;border-bottom:1px solid var(--line)}
+.how .n{font:500 .74rem var(--mono);color:var(--faint);padding-top:.2rem}
+.how b{font-weight:600;display:block}
+.how span{color:var(--muted);font-size:.93rem}
+.how-note{margin:1.1rem 0 0;font-size:.88rem;color:var(--muted);max-width:32rem}
+.how-note b{color:var(--ink);font-weight:600}
+
+.composer{background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:clip}
+.c-sec{padding:1.5rem 1.75rem;border-top:1px solid var(--line)}
+.c-sec:first-child{border-top:0;padding-top:1.75rem}
+.c-label{display:flex;align-items:baseline;gap:.6rem;font:600 1rem/1.3 var(--sans);margin:0 0 .95rem}
+.c-label .k{font:500 .72rem var(--mono);color:var(--faint)}
+.c-label .opt{font-weight:400;color:var(--muted);font-size:.86rem}
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;min-height:11.5rem;border-radius:20px;background:var(--paper);border:1.5px solid var(--line-2);cursor:pointer;text-align:center;padding:1.5rem 1.25rem;transition:border-color .15s ease, background-color .15s ease}
+.drop:hover,.drop.over{border-color:var(--agent);background:var(--agent-soft)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop svg{width:2.2rem;height:2.2rem;color:var(--ink-2);margin-bottom:.25rem}
+.drop .dt{display:flex;flex-direction:column;align-items:inherit;gap:.3rem}
+.drop b{font-weight:600;font-size:1.02rem}
+.drop .dt span{color:var(--muted);font-size:.86rem;max-width:24rem}
+.drop.compact{min-height:0;flex-direction:row;gap:.75rem;padding:.9rem 1.1rem;justify-content:flex-start;text-align:left}
+.drop.compact svg{width:1.5rem;height:1.5rem;margin:0;flex:none}
+.drop.compact .dt{align-items:flex-start;gap:.1rem}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.4rem,1fr));gap:.6rem;margin-top:.85rem}
+.thumbs:empty{display:none}
+.thumb{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#E7E3DA}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .x{position:absolute;top:.35rem;right:.35rem;width:2rem;height:2rem;border-radius:50%;border:0;background:rgba(15,17,21,.74);color:#fff;display:grid;place-items:center;cursor:pointer}
+.thumb .x::before{content:"";position:absolute;inset:-.4rem}
+.thumb .x svg{width:.85rem;height:.85rem}
+.thumb .cap{position:absolute;left:.45rem;bottom:.4rem;font:500 .66rem var(--mono);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.thumb.busy::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%) #E7E3DA;background-size:220% 100%;animation:shim 1.1s linear infinite}
+.or{display:flex;align-items:center;gap:.75rem;margin:1.35rem 0 .9rem;font-size:.86rem;color:var(--muted)}
+.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.samples{display:grid;grid-auto-flow:column;grid-auto-columns:13.5rem;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.15rem .15rem .4rem;margin:-.15rem}
+.sample{scroll-snap-align:start;border:1.5px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface);text-align:left;padding:0;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s ease, box-shadow .15s ease}
+.sample:hover{border-color:var(--line-2)}
+.sample.sel{border-color:var(--agent);box-shadow:0 0 0 4px var(--agent-soft)}
+.sample .ph{position:relative;aspect-ratio:16/10;background:#DDD8CE}
+.sample .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.sample .ph em{position:absolute;right:.5rem;bottom:.5rem;font:500 .66rem/1 var(--mono);font-style:normal;background:rgba(15,17,21,.72);color:#fff;padding:.32rem .45rem;border-radius:999px}
+.sample .ph .chk{position:absolute;left:.5rem;top:.5rem;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--agent);color:#fff;display:none;place-items:center}
+.sample.sel .ph .chk{display:grid}
+.sample .ph .chk svg{width:.85rem;height:.85rem}
+.sample .meta{padding:.7rem .85rem .85rem}
+.samples.solo{grid-auto-columns:minmax(0,1fr)}
+.samples.solo .sample{flex-direction:row;align-items:stretch}
+.samples.solo .ph{width:42%;flex:none;aspect-ratio:4/3}
+.samples.solo .meta{padding:.9rem 1.1rem;align-self:center}
+.samples.solo b{font-size:1rem}
+.sample .mode{display:inline-block;margin-top:.5rem;font:500 .64rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;padding:.3rem .45rem}
+.sample b{display:block;font-weight:600;font-size:.92rem;line-height:1.25}
+.sample small{display:block;color:var(--muted);font-size:.76rem;margin-top:.2rem;line-height:1.35}
+.veh{display:grid;grid-template-columns:6rem minmax(0,1fr) minmax(0,1fr);gap:.6rem}
+.t{font:500 1rem var(--sans);padding:.78rem .9rem;border:1px solid var(--line-2);border-radius:12px;background:var(--surface);color:var(--ink);width:100%;min-width:0;min-height:2.9rem}
+.t::placeholder{color:var(--faint)}
+.t:focus{outline:none;border-color:var(--agent);box-shadow:0 0 0 3px var(--agent-soft)}
+.veh-note{margin:.6rem 0 0;font-size:.82rem;color:var(--muted)}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.pay button{text-align:left;border:1.5px solid var(--line-2);border-radius:18px;padding:1rem 1.1rem;background:var(--surface);cursor:pointer;transition:border-color .15s ease, box-shadow .15s ease}
+.pay button.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.pay b{display:flex;align-items:center;gap:.55rem;font-weight:600}
+.pay .dot{width:1.05rem;height:1.05rem;border-radius:50%;border:1.5px solid var(--line-2);flex:none;transition:border .15s ease}
+.pay .on .dot{border:5px solid var(--ink)}
+.pay span{display:block;color:var(--muted);font-size:.85rem;margin-top:.35rem;line-height:1.4}
+.prios{display:flex;flex-wrap:wrap;gap:.5rem}
+.prios button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:.55rem 1rem;font-weight:500;font-size:.92rem;cursor:pointer;color:var(--ink-2);min-height:2.6rem;transition:background-color .15s ease,color .15s ease,border-color .15s ease}
+.prios button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.cta{position:sticky;bottom:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);padding:1.1rem 1.75rem calc(1.25rem + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.cta-sum{font-size:.86rem;color:var(--muted);margin:0 0 .7rem;min-height:1.3em}
+.cta-sum b{color:var(--ink);font-weight:600}
+.go{width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;border:0;border-radius:16px;padding:1.05rem 1.25rem;font:600 1.08rem var(--sans);background:var(--agent);color:#fff;cursor:pointer;min-height:3.4rem;transition:transform .12s ease, background-color .15s ease, opacity .15s ease}
+.go:hover{background:var(--agent-ink)} .go:active{transform:scale(.985)}
+.go:disabled{opacity:.42;cursor:not-allowed;transform:none}
+.go svg{width:1.15rem;height:1.15rem}
+.go .spin{width:1.1rem;height:1.1rem;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:rot .7s linear infinite}
+.err{color:var(--bad);font-size:.88rem;margin:.65rem 0 0}
+.err:empty{display:none}
+@media (max-width:1023px){
+  .start{grid-template-columns:minmax(0,1fr);grid-template-rows:none;gap:1.75rem;padding:1.5rem 1rem 2.5rem}
+  .hero,.composer,.hero-how{grid-column:auto;grid-row:auto}
+  .how{margin-top:.5rem}
+}
+@media (max-width:560px){
+  :root{--gut:1rem}
+  .c-sec{padding:1.25rem 1.1rem}
+  .cta{padding:.9rem 1.1rem calc(1rem + env(safe-area-inset-bottom))}
+  .pay{grid-template-columns:1fr}
+  .veh{grid-template-columns:5rem minmax(0,1fr)}
+  .veh .model{grid-column:1 / -1}
+  .samples{grid-auto-columns:13.5rem}
+}
+
+/* ---------- live view ---------- */
+.stage{background:var(--ink);color:#fff}
+.stage-in{max-width:100rem;margin:0 auto;padding:1.6rem var(--gut) 1.4rem}
+.stage-top{display:flex;justify-content:space-between;gap:1rem 2rem;align-items:flex-start}
+.req-meta{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;font:500 .74rem/1 var(--mono);letter-spacing:.04em;color:#9AA2B1}
+.req-meta .c{border:1px solid #2C3240;border-radius:999px;padding:.36rem .66rem;color:#D3D8E2;font:500 .8rem/1.2 var(--sans);letter-spacing:0}
+.narr h1{font:400 clamp(2rem,3.7vw,3.4rem)/1.03 var(--serif);margin:.8rem 0 .45rem;letter-spacing:-.012em;text-wrap:balance}
+.narr h1 em{font-style:italic;color:var(--agent-bright)}
+.narr p{color:#B3BAC7;margin:0;max-width:48rem;font-size:1.02rem}
+.ghost{border:1px solid #3A4151;background:transparent;color:#fff;border-radius:999px;padding:.6rem 1.05rem;font-weight:500;font-size:.9rem;cursor:pointer;min-height:2.6rem;white-space:nowrap;transition:background-color .15s ease,border-color .15s ease}
+.ghost:hover{background:#1B1F28;border-color:#565E70}
+.steps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.45rem;margin:1.6rem 0 0;padding:0;list-style:none}
+.steps li{position:relative;padding-top:.85rem;font:500 .76rem/1.2 var(--sans);color:#666E7D;min-width:0}
+.steps li::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;border-radius:4px;background:#252A35}
+.steps li.done{color:#B9C0CC} .steps li.done::before{background:#B9C0CC}
+.steps li.now{color:#fff} .steps li.now::before{background:var(--agent-bright)}
+.steps li.now.working::before{background:linear-gradient(90deg,var(--agent-bright) 0%,#B3C0FF 50%,var(--agent-bright) 100%);background-size:200% 100%;animation:flow 1.6s linear infinite}
+.steps li.final.now::before{background:#3BD38A}
+.step-now{display:none;margin:.7rem 0 0;font:500 .78rem var(--mono);color:#B9C0CC;letter-spacing:.03em}
+@media (max-width:560px){.stage-top{flex-direction:column;gap:.9rem}.stage-top .ghost{order:2;min-height:2.5rem;padding:.45rem .95rem}}
+@media (max-width:760px){.steps li span{display:none}.steps{gap:.3rem}.step-now{display:block}.stage-in{padding:1.25rem var(--gut) 1.15rem}.narr p{font-size:.95rem}}
+
+.guard{max-width:100rem;margin:0 auto;padding:.8rem var(--gut);display:flex;flex-wrap:wrap;gap:.35rem 1.5rem;font-size:.86rem;color:var(--muted)}
+.guard span{display:flex;gap:.5rem;align-items:flex-start}
+.guard svg{width:1rem;height:1rem;flex:none;margin-top:.15rem;color:var(--warn)}
+.guard-wrap{border-bottom:1px solid var(--line);background:#FAF8F4}
+.guard-wrap:empty{display:none}
+
+.live{display:grid;grid-template-columns:minmax(0,1fr) 23.5rem;gap:1.5rem;max-width:100rem;margin:0 auto;padding:1.5rem var(--gut) 2rem;align-items:start}
+.mainc{display:flex;flex-direction:column;gap:1.75rem;min-width:0}
+.aside{position:sticky;top:1rem;min-width:0}
+@media (max-width:1199px){.live{grid-template-columns:minmax(0,1fr)}.aside{position:static}}
+html.proj .live{grid-template-columns:minmax(0,1fr)}
+html.proj .aside{position:static}
+@media (min-width:1700px){html.proj .live{grid-template-columns:minmax(0,1fr) 25rem}html.proj .aside{position:sticky}}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin:0 0 .85rem;flex-wrap:wrap}
+.sec-h h2{font:600 1.22rem/1.2 var(--sans);letter-spacing:-.01em;margin:0}
+.sec-h .k{font:500 .72rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.sec-h p{margin:0;color:var(--muted);font-size:.88rem}
+.hide{display:none!important}
+
+/* tags & pills */
+.tag{display:inline-flex;align-items:center;gap:.3rem;font:500 .64rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:.34rem .5rem;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);white-space:nowrap;background:var(--surface)}
+.tag.part{color:var(--muted);border-color:var(--line)}
+.tag.sev-hi{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.tag.sev-md{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.tag.sev-lo{background:#EEF0F2;border-color:transparent;color:#4F5661}
+.tag.uniq{background:var(--agent);border-color:var(--agent);color:#fff}
+.tag.miss{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.tag.disp{background:#EEF0F2;border-color:transparent;color:#4F5661}
+.tag.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.tag.later{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+
+/* damage report */
+.report{background:var(--surface);border:1px solid var(--line);border-radius:26px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr)}
+.viewer{background:#0F1115;color:#fff;display:flex;flex-direction:column;min-width:0}
+.viewer figure{margin:0;position:relative}
+.viewer .big{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#1A1D24}
+.viewer figcaption{display:flex;justify-content:space-between;gap:1rem;padding:.75rem 1rem;font-size:.86rem;color:#C8CDD6;border-bottom:1px solid #1F232C}
+.viewer figcaption b{color:#fff;font-weight:600}
+.viewer figcaption span{font:500 .72rem var(--mono);color:#8D95A3;white-space:nowrap}
+.strip{display:flex;gap:.5rem;padding:.75rem 1rem 1rem;overflow-x:auto}
+.strip button{flex:none;width:5rem;aspect-ratio:4/3;border-radius:10px;overflow:hidden;border:2px solid transparent;padding:0;cursor:pointer;background:#1A1D24;opacity:.6;transition:opacity .15s ease,border-color .15s ease}
+.strip button:hover{opacity:.9}
+.strip button.on{border-color:#fff;opacity:1}
+.strip img{width:100%;height:100%;object-fit:cover;display:block}
+.viewer .nophoto{aspect-ratio:4/3;display:grid;place-items:center;color:#8D95A3;font-size:.9rem;padding:2rem;text-align:center}
+.findings{padding:1.4rem 1.5rem 1.5rem;min-width:0;display:flex;flex-direction:column}
+.findings .by{display:inline-flex;align-items:center;gap:.45rem;font:500 .72rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--agent)}
+.findings .by i{width:.45rem;height:.45rem;border-radius:50%;background:var(--agent)}
+.findings h2{font:400 1.95rem/1.08 var(--serif);margin:.55rem 0 .5rem;letter-spacing:-.01em}
+.findings .sum{color:var(--ink-2);margin:0 0 .4rem;font-size:.95rem}
+.findings .vg{color:var(--muted);font-size:.86rem;margin:0 0 .4rem}
+.flist{list-style:none;margin:.75rem 0 0;padding:0;border-top:1px solid var(--line)}
+.flist li{display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.5rem;padding:.7rem 0;border-bottom:1px solid var(--line)}
+.flist .i{font:500 .7rem var(--mono);color:var(--faint);padding-top:.2rem}
+.flist .row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .4rem}
+.flist b{font-weight:600;font-size:.95rem;margin-right:auto}
+.flist p{margin:.25rem 0 0;color:var(--muted);font-size:.84rem;line-height:1.4}
+.skel{height:.85rem;border-radius:6px;background:linear-gradient(100deg,#EEEBE4 30%,#F8F6F2 50%,#EEEBE4 70%);background-size:220% 100%;animation:shim 1.2s linear infinite}
+@media (min-width:901px){.viewer figure{flex:1 1 auto;display:flex;flex-direction:column}.viewer .big{flex:1 1 0;min-height:19rem;aspect-ratio:auto;height:0}}
+@media (max-width:900px){.report{grid-template-columns:minmax(0,1fr)}}
+
+/* negotiation */
+.nego{background:var(--surface);border:1px solid var(--line);border-radius:26px;overflow:hidden}
+.nego-in{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:0}
+.nego-l{padding:1.5rem 1.6rem}
+.nego-l .k{font:500 .72rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--agent)}
+.nego-l blockquote{font:400 1.55rem/1.22 var(--serif);margin:.6rem 0 1.1rem;color:var(--ink);text-wrap:pretty}
+.nego-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
+.nego-steps li{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:.55rem;font-size:.9rem;color:var(--ink-2);align-items:start}
+.nego-steps .d{width:1.5rem;height:1.5rem;border-radius:50%;display:grid;place-items:center;background:#EEF0F2;color:#4F5661;font:600 .62rem var(--mono)}
+.nego-steps .d.you{background:var(--agent);color:#fff} .nego-steps .d.shop{background:var(--ink);color:#fff} .nego-steps .d.owner{background:var(--ok);color:#fff}
+.nego-steps .d.wait{background:var(--warn-soft);color:var(--warn)}
+.nego-steps b{font-weight:600}
+.nego-r{padding:1.5rem 1.6rem;background:var(--paper);border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:.6rem}
+.nego-r .lbl{font:500 .72rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.ba{display:flex;align-items:baseline;flex-wrap:wrap;gap:.25rem .7rem;font:600 2.5rem/1 var(--sans);letter-spacing:-.025em}
+.ba s{color:var(--faint);font-size:1.45rem;font-weight:500;text-decoration-thickness:2px}
+.ba .arrow{font-size:1.3rem;color:var(--faint);font-weight:400}
+.ba small{font:500 .9rem var(--sans);color:var(--muted);letter-spacing:0;flex-basis:100%}
+.state{display:inline-flex;align-items:center;gap:.45rem;font-weight:600;font-size:.9rem;padding:.42rem .75rem;border-radius:999px;align-self:flex-start;background:#EEF0F2;color:#3B414B}
+.state i{width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+.state.wait{background:var(--warn-soft);color:var(--warn)} .state.wait i{animation:pulse 1.2s ease-in-out infinite}
+.state.good{background:var(--ok-soft);color:var(--ok)} .state.no{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:820px){.nego-in{grid-template-columns:minmax(0,1fr)}.nego-r{border-left:0;border-top:1px solid var(--line)}.ba{font-size:2.1rem}}
+
+/* shop lanes */
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(18.5rem,1fr));gap:1rem;align-items:start}
+.lane{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:1.25rem 1.25rem 1.1rem;display:flex;flex-direction:column;gap:1rem;min-width:0;position:relative;transition:border-color .2s ease, box-shadow .2s ease}
+.lane.rec{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
+.lane.booked{border-color:var(--ok-deep);box-shadow:0 0 0 3px var(--ok-soft)}
+.lane-h{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:.75rem;align-items:center}
+.mark{width:2.6rem;height:2.6rem;border-radius:12px;display:grid;place-items:center;font:600 .78rem var(--mono);color:#fff;background:var(--ink)}
+.mark.shop-b{background:var(--shopb)} .mark.shop-c{background:var(--shopc)}
+.lane h3{font:600 1.1rem/1.2 var(--sans);margin:0;letter-spacing:-.01em}
+.rev{font-size:.8rem;color:var(--muted);margin:.15rem 0 0;line-height:1.35}
+.rev b{color:var(--ink);font-weight:600}
+.rev .star{color:var(--gold)}
+.rev a{color:inherit}
+.newbadge{display:inline-block;font:500 .64rem/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;padding:.28rem .45rem;margin-top:.25rem}
+.lstate{display:flex;align-items:center;gap:.45rem;font-size:.82rem;font-weight:500;color:var(--muted)}
+.lstate i{width:.5rem;height:.5rem;border-radius:50%;background:var(--line-2);flex:none}
+.lstate.work i{background:var(--agent);animation:pulse 1.2s ease-in-out infinite}
+.lstate.wait{color:var(--warn)} .lstate.wait i{background:var(--warn);animation:pulse 1.2s ease-in-out infinite}
+.lstate.good{color:var(--ok)} .lstate.good i{background:var(--ok)}
+.ribbon{position:absolute;top:-.7rem;right:1rem;font:600 .68rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;background:var(--ok);color:#fff;padding:.42rem .65rem;border-radius:999px}
+.offer{border-radius:14px;margin:-.35rem -.5rem;padding:.35rem .5rem}
+.offer .price{font:600 2.35rem/1 var(--sans);letter-spacing:-.03em}
+.offer .was{display:flex;align-items:center;gap:.5rem;margin-top:.4rem;font-size:.84rem;color:var(--muted)}
+.offer .was s{text-decoration-thickness:1.5px}
+.offer .delta{font:500 .7rem/1 var(--mono);padding:.3rem .45rem;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
+.offer .delta.up{background:var(--warn-soft);color:var(--warn)}
+.offer .sub{font-size:.8rem;color:var(--muted);margin-top:.45rem;line-height:1.4}
+.incs{display:flex;flex-direction:column;gap:.4rem}
+.inc{display:flex;align-items:center;gap:.55rem;font-weight:600;font-size:1.02rem;line-height:1.25}
+.inc svg{width:1.05rem;height:1.05rem;color:var(--ok);flex:none}
+.inc.none{color:var(--muted);font-weight:500}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.4rem .9rem;font-size:.86rem;margin:0;padding:.85rem 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts dt{color:var(--muted)} .facts dd{margin:0;font-weight:500;min-width:0}
+.grounded{border-radius:14px;background:var(--agent-soft);padding:.75rem .85rem;font-size:.84rem;color:var(--ink-2);line-height:1.45}
+.grounded b{display:block;font:500 .68rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--agent);margin-bottom:.3rem}
+.found h4{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;font:600 .9rem/1.2 var(--sans);margin:0 0 .45rem}
+.found h4{flex-wrap:wrap}
+.found h4 .ht{font:inherit;color:inherit;white-space:nowrap}
+.found h4 span:not(.ht){font:500 .7rem var(--mono);color:var(--muted);margin-left:auto}
+.finds{list-style:none;margin:0;padding:0}
+.finds li{padding:.6rem .55rem;margin:0 -.55rem;border-top:1px solid var(--line)}
+.finds li:first-child{border-top-color:transparent}
+.finds li.uniq{background:var(--agent-soft);border-radius:12px;border-top-color:transparent}
+.finds li.uniq + li{border-top-color:transparent}
+.finds .ft{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .35rem}
+.finds b{font-weight:600;font-size:.9rem;margin-right:auto;line-height:1.3}
+.finds p{margin:.25rem 0 0;color:var(--muted);font-size:.8rem;line-height:1.4}
+.more{margin-top:.35rem;border:0;background:none;color:var(--agent);font-weight:600;font-size:.84rem;cursor:pointer;padding:.45rem 0;min-height:2.5rem}
+.gaps{font-size:.8rem;color:var(--muted);margin:.5rem 0 0;line-height:1.45}
+.gaps b{color:var(--ink-2);font-weight:600}
+.clar{border-radius:14px;background:var(--paper);padding:.75rem .85rem;font-size:.84rem;line-height:1.45;color:var(--ink-2)}
+.clar > b{display:block;font-weight:600;margin-bottom:.3rem}
+.clar ul{list-style:none;margin:0;padding:0}
+.clar li{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.35rem 0;border-top:1px solid var(--line)}
+.clar li:first-child{border-top:0}
+.clar li span:first-child{min-width:0}
+.lane .wait-body{display:flex;flex-direction:column;gap:.55rem;padding:.25rem 0 .5rem}
+.lane .wait-body .skel:nth-child(2){width:80%} .lane .wait-body .skel:nth-child(3){width:60%}
+
+/* decision */
+.decide{background:var(--surface);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+.pick{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:1.25rem 2rem;padding:1.75rem 1.9rem;background:linear-gradient(180deg,var(--ok-soft),rgba(227,243,234,.25) 85%)}
+.pick .k{display:inline-flex;align-items:center;gap:.45rem;font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ok)}
+.pick .k i{width:.5rem;height:.5rem;border-radius:50%;background:var(--ok)}
+.pick h2{font:400 clamp(2.1rem,3.4vw,2.9rem)/1.02 var(--serif);margin:.55rem 0 .55rem;letter-spacing:-.015em}
+.pick .why{color:var(--ink-2);margin:0;font-size:1rem;max-width:36rem}
+.pick .vs{margin:.75rem 0 0;font-size:.92rem;color:var(--ok-deep);font-weight:500}
+.pick-r{display:flex;flex-direction:column;justify-content:center;gap:.85rem}
+.pick-r .amount{font:600 2.7rem/1 var(--sans);letter-spacing:-.03em}
+.pick-r .amount small{display:block;font:500 .84rem/1.4 var(--sans);color:var(--muted);letter-spacing:0;margin-top:.35rem}
+.confirm{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:14px;padding:.95rem 1.3rem;font:600 1rem var(--sans);background:var(--ink);color:#fff;cursor:pointer;min-height:3.1rem;transition:transform .12s ease, opacity .15s ease, background-color .15s ease}
+.confirm:hover{background:#262A33} .confirm:active{transform:scale(.985)}
+.confirm:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.confirm.main{background:var(--ok);font-size:1.05rem}
+.confirm.main:hover{background:var(--ok-deep)}
+.confirm.sm{padding:.65rem 1rem;min-height:2.6rem;font-size:.9rem;background:var(--surface);color:var(--ink);border:1px solid var(--line-2)}
+.confirm.sm:hover{background:var(--paper)}
+.hold{font-size:.84rem;color:var(--muted)}
+.others{list-style:none;margin:0;padding:0}
+.others li{display:grid;grid-template-columns:2rem minmax(0,1fr) auto auto;gap:1rem;align-items:center;padding:1rem 1.9rem;border-top:1px solid var(--line)}
+.others .n{font:500 .8rem var(--mono);color:var(--faint)}
+.others b{font-weight:600}
+.others p{margin:.1rem 0 0;font-size:.84rem;color:var(--muted)}
+.others .amt{font:600 1.15rem var(--sans);letter-spacing:-.01em;text-align:right}
+.toast{margin:.75rem 0 0;padding:.8rem 1.1rem;font-size:.9rem;color:var(--bad);background:var(--bad-soft);border-radius:14px}
+.toast:empty{display:none}
+@media (max-width:820px){.pick{grid-template-columns:minmax(0,1fr);padding:1.4rem 1.25rem}.others li{grid-template-columns:1.5rem minmax(0,1fr) auto;padding:.9rem 1.25rem;gap:.75rem}.others .amt{display:none}}
+
+.booked{border-radius:28px;background:var(--ok-deep);color:#fff;padding:1.9rem;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1.5rem 2.5rem;box-shadow:var(--shadow)}
+.booked .k{display:inline-flex;align-items:center;gap:.5rem;font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#A9E6C8}
+.booked .k svg{width:1rem;height:1rem}
+.booked h2{font:400 clamp(2.1rem,3.6vw,3rem)/1.02 var(--serif);margin:.55rem 0 .6rem}
+.booked p{margin:0;color:#CFEBDD}
+.booked dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.55rem 1.1rem;margin:0;font-size:.95rem}
+.booked dt{color:#A9E6C8} .booked dd{margin:0;font-weight:600}
+.booked ol{margin:1rem 0 0;padding-left:1.15rem;color:#CFEBDD;font-size:.92rem}
+.booked ol li{margin:.2rem 0}
+@media (max-width:820px){.booked{grid-template-columns:minmax(0,1fr);padding:1.4rem 1.25rem}}
+
+/* who found what */
+.mx-wrap{overflow-x:auto;border-top:1px solid var(--line-2)}
+table.mx{width:100%;border-collapse:collapse;min-width:34rem;font-size:.88rem}
+.mx th,.mx td{padding:.62rem .7rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.mx thead th{font:500 .68rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.mx th:first-child,.mx td:first-child{position:sticky;left:0;background:var(--paper);padding-left:0;min-width:11rem}
+.mx td.c,.mx th.c{text-align:center}
+.mx .extra{font:500 .64rem var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--agent);margin-left:.35rem;white-space:nowrap}
+@media (max-width:640px){.mx .extra{display:block;margin:.2rem 0 0}}
+.mk{display:inline-grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%}
+.mk svg{width:.8rem;height:.8rem}
+.mk.yes{background:var(--ok-soft);color:var(--ok)}
+.mk.agent{background:var(--agent-soft);color:var(--agent)}
+.mk.no{color:var(--faint)}
+.mk.miss{background:var(--bad-soft);color:var(--bad)}
+.mk.disp{background:#EEF0F2;color:#4F5661;font:600 .72rem var(--mono)}
+.mx-key{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:.7rem 0 0;font-size:.8rem;color:var(--muted)}
+.mx-key span{display:inline-flex;align-items:center;gap:.4rem}
+.mx-key .mk{width:1.2rem;height:1.2rem}
+
+/* the room (activity) */
+.room{background:var(--surface);border:1px solid var(--line);border-radius:24px;display:flex;flex-direction:column;max-height:calc(100vh - 2rem);min-height:16rem}
+@media (max-width:1199px){.room{max-height:30rem}}
+html.proj .room{max-height:34rem}
+.room-h{padding:1rem 1.15rem .85rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.75rem}
+.room-h h2{font:600 1.02rem/1.2 var(--sans);margin:0}
+.room-h span{font:500 .7rem var(--mono);color:var(--muted);letter-spacing:.04em}
+.live-dot{display:inline-block;width:.45rem;height:.45rem;border-radius:50%;background:#3BD38A;margin-right:.35rem;animation:pulse 1.6s ease-in-out infinite}
+.feed{overflow-y:auto;padding:.4rem 1.15rem 1rem;flex:1;overscroll-behavior:contain}
+.feed .empty{color:var(--muted);font-size:.9rem;padding:1.5rem 0;text-align:center}
+.ev{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.65rem;padding:.6rem 0;position:relative}
+.ev + .ev::before{content:"";position:absolute;left:1rem;top:-.6rem;height:1.2rem;width:1px;background:var(--line)}
+.av{width:2rem;height:2rem;border-radius:10px;display:grid;place-items:center;font:600 .58rem var(--mono);letter-spacing:.02em;color:#fff;background:#5B6272;position:relative;z-index:1}
+.av.you{background:var(--agent)} .av.drive{background:var(--ink)} .av.owner{background:var(--ok)} .av.shop-b{background:var(--shopb)} .av.shop-c{background:var(--shopc)} .av.sys{background:#A3A9B3}
+.ev .who{display:flex;gap:.45rem;align-items:baseline;font-size:.82rem;font-weight:600;min-width:0}
+.ev .who .kind{font:500 .6rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+.ev time{font:400 .66rem var(--mono);color:var(--faint);margin-left:auto;white-space:nowrap}
+.ev .txt{margin-top:.15rem;font-size:.85rem;line-height:1.45;color:var(--ink-2);cursor:pointer}
+.ev .txt > span{white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.ev .txt.open > span{-webkit-line-clamp:unset;display:block}
+.ev.owner .txt{background:var(--ok-soft);border-radius:10px;padding:.5rem .65rem;color:#0B4B32}
+.ev.exc .txt{background:var(--warn-soft);border-radius:10px;padding:.5rem .65rem;color:#6B3F00}
+.ev.ask .txt{background:var(--agent-soft);border-radius:10px;padding:.5rem .65rem;color:#17257F}
+.ev.enter{animation:evIn .24s cubic-bezier(.2,.7,.2,1) both}
+
+.foot{max-width:100rem;margin:0 auto;padding:.5rem var(--gut) 2.5rem;color:var(--faint);font-size:.8rem}
+.foot.start-foot{max-width:86rem}
+
+.notfound{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:2rem;text-align:center;color:var(--muted)}
+
+/* motion */
+.enter{animation:rise .32s cubic-bezier(.2,.7,.2,1) both}
+.flash{animation:flash 1.1s ease-out 1}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes evIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes flash{0%{background-color:rgba(14,122,79,.16)}100%{background-color:transparent}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes shim{from{background-position:120% 0}to{background-position:-120% 0}}
+@keyframes flow{from{background-position:200% 0}to{background-position:0 0}}
+@keyframes rot{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+
+body[data-view="start"] #live,body[data-view="start"] #liveFoot{display:none}
+body[data-view="live"] #start,body[data-view="live"] #startFoot{display:none}
 </style>
 </head>
-<body>
-<header>
-  <div class="brand"><b>QUOTE ROOM</b><span>Send your agent instead.</span></div>
-  <div class="pills" id="pills"></div>
+<body data-view="start">
+<header class="bar">
+  <button class="brand" id="home" type="button" aria-label="Quote Room home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#2A44F0"/><path d="M9 11.5c0-1.4 1.1-2.5 2.5-2.5h9c1.4 0 2.5 1.1 2.5 2.5v6c0 1.4-1.1 2.5-2.5 2.5H15l-3.6 3v-3h0c-1.3-.1-2.4-1.2-2.4-2.5v-6z" fill="#fff"/><circle cx="13.2" cy="14.5" r="1.3" fill="#2A44F0"/><circle cx="18.8" cy="14.5" r="1.3" fill="#2A44F0"/></svg>
+    <b>Quote Room</b><span>Your agent, at the body shops</span>
+  </button>
+  <div class="pills" id="pills" aria-label="System status"></div>
 </header>
-<main>
-  <section class="col">
-    <div class="panel" id="setup">
-      <h2>Your repair</h2>
-      <div class="cases" id="cases"></div>
-      <div style="height:12px"></div>
-      <div class="seg" id="modeSeg"><button data-m="self_pay" class="on">Paying myself</button><button data-m="insurance">Insurance claim</button></div>
-      <div style="height:12px"></div>
-      <label class="f">What matters most<select id="prio"></select></label>
-      <div style="height:14px"></div>
-      <button class="go" id="go">Get offers</button>
-      <p class="note">Your agent posts one request. Each shop's agent answers under its own rules and asks its owner before making an exception.</p>
+
+<!-- ======================= START ======================= -->
+<main id="start" class="start">
+  <section class="hero">
+    <span class="eyebrow"><i></i>For drivers</span>
+    <h1>Snap the damage. <em>Your agent</em> gets the shops competing.</h1>
+    <p class="lede">Add a few photos. Your AI agent inspects them, sends the job to local body shops, questions the gaps between their estimates, pushes for a better deal, and brings back one pick for you to confirm.</p>
+  </section>
+  <section class="composer" aria-label="Start a request">
+    <div class="c-sec">
+      <p class="c-label"><span class="k">01</span>Photos of the damage</p>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*" multiple aria-label="Add photos of the damage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.6l1.4-2h7l1.4 2h1.6A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>
+        <span class="dt"><b id="dropTitle">Drop photos here, or tap to add</b>
+        <span id="dropSub">Up to 8. Wide shots plus close-ups work best. Photos are shrunk on your device and location data is stripped before sending.</span></span>
+      </label>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="or">No photos handy? Try a sample</div>
+      <div class="samples" id="samples"><div class="sample" aria-hidden="true"><div class="ph"></div><div class="meta"><div class="skel" style="width:80%"></div></div></div></div>
     </div>
-    <div class="panel scope" id="scopeP" hidden><h2>Proposed scope</h2><div id="scope"></div></div>
-    <div class="panel"><h2>The room <span class="status" id="st"></span></h2><div class="feed" id="feed"><div class="empty">Offers and negotiation appear here live.</div></div></div>
+    <div class="c-sec" id="vehSec">
+      <p class="c-label"><span class="k">02</span>Vehicle <span class="opt">optional, helps the shops price parts</span></p>
+      <div class="veh">
+        <input class="t" id="vYear" inputmode="numeric" maxlength="4" placeholder="Year" aria-label="Vehicle year" autocomplete="off">
+        <input class="t" id="vMake" placeholder="Make" aria-label="Vehicle make" autocomplete="off">
+        <input class="t model" id="vModel" placeholder="Model" aria-label="Vehicle model" autocomplete="off">
+      </div>
+      <p class="veh-note hide" id="vehNote"></p>
+    </div>
+    <div class="c-sec">
+      <p class="c-label"><span class="k">03</span>Who's paying?</p>
+      <div class="pay" id="pay" role="radiogroup" aria-label="Who's paying">
+        <button type="button" data-m="insurance" role="radio"><b><i class="dot"></i>Insurance claim</b><span>Shops compete with incentives. Your insurer handles the bill.</span></button>
+        <button type="button" data-m="self_pay" role="radio"><b><i class="dot"></i>Paying myself</b><span>Shops compete on price. Your agent pushes it down.</span></button>
+      </div>
+    </div>
+    <div class="c-sec">
+      <p class="c-label"><span class="k">04</span>What matters most</p>
+      <div class="prios" id="prios" role="radiogroup" aria-label="What matters most"></div>
+    </div>
+    <div class="cta">
+      <p class="cta-sum" id="ctaSum"></p>
+      <button class="go" id="go" type="button" disabled></button>
+      <p class="err" id="composeErr" role="alert"></p>
+    </div>
   </section>
-  <section class="col">
-    <div id="booked"></div>
-    <div class="panel"><h2>Offers</h2><div class="offers" id="offers"><div class="empty">No offers yet.</div></div></div>
-    <div class="panel"><h2>Scope comparison</h2><div class="tbl" id="cmp"><div class="empty">Shops' scopes are compared here.</div></div></div>
-    <div class="panel"><h2>Ranked for you</h2><div class="rank" id="rank"><div class="empty">Ranking appears after the shops answer and the one negotiation round.</div></div><div class="toast" id="toast"></div><div id="guards" style="margin-top:12px;display:flex;flex-direction:column;gap:6px"></div></div>
-  </section>
+  <div class="hero-how">
+      <ol class="how">
+        <li><span class="n">01</span><div><b>Your agent inspects the photos</b><span>It writes a damage report: every panel, what it likely needs, how bad it is.</span></div></li>
+        <li><span class="n">02</span><div><b>Each shop's agent inspects them too</b><span>Every shop builds its own estimate in its own style. Nobody copies your agent's list.</span></div></li>
+        <li><span class="n">03</span><div><b>Your agent questions the gaps</b><span>If one shop found damage the others missed, it asks them to explain.</span></div></li>
+        <li><span class="n">04</span><div><b>One ask, answered by the owner</b><span>When an ask is beyond a shop agent's limits, the owner approves, counters or declines.</span></div></li>
+        <li><span class="n">05</span><div><b>You pick</b><span>A ranked list with a plain-language reason. Nothing is booked until you confirm.</span></div></li>
+      </ol>
+      <p class="how-note"><b>Drive Auto Body's agent</b> works from its owner's own past estimates, so it scopes a job the way Gio would.</p>
+  </div>
 </main>
+<p class="foot start-foot" id="startFoot">Bayline Collision and QuickFix Auto Body are demo shops in this prototype; Drive Auto Body is a real shop.</p>
+
+<!-- ======================= LIVE ======================= -->
+<div id="live">
+  <section class="stage">
+    <div class="stage-in">
+      <div class="stage-top">
+        <div class="narr">
+          <div class="req-meta" id="reqMeta"></div>
+          <h1 id="narrH">Opening your room</h1>
+          <p id="narrP">Your agent is getting set up.</p>
+        </div>
+        <button class="ghost" id="newReq" type="button">New request</button>
+      </div>
+      <ol class="steps" id="steps" aria-label="Progress"></ol>
+      <p class="step-now" id="stepNow"></p>
+    </div>
+  </section>
+  <div class="guard-wrap" id="guards"></div>
+  <div class="live">
+    <div class="mainc">
+      <section id="decisionWrap" class="hide" aria-live="polite">
+        <div id="decision"></div>
+        <p class="toast" id="toast" role="alert"></p>
+      </section>
+      <section id="negoWrap" class="hide"><div class="sec-h"><h2>Negotiation</h2><span class="k">One ask per request</span></div><div id="nego"></div></section>
+      <section id="damageWrap"><div id="damage"></div></section>
+      <section>
+        <div class="sec-h"><h2>The shops</h2><p id="lanesSub">Each shop's agent looks at your photos on its own.</p></div>
+        <div class="lanes" id="lanes"></div>
+      </section>
+      <section id="mxWrap" class="hide">
+        <div class="sec-h"><h2>Who found what</h2><span class="k">Scope check</span></div>
+        <div class="mx-wrap" id="mx"></div>
+        <div class="mx-key"><span><i class="mk agent"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></i>In your agent's report</span><span><i class="mk yes"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></i>In the shop's estimate</span><span><i class="mk disp">?</i>Disputed, confirm at inspection</span><span><i class="mk miss">!</i>Missing a required item</span></div>
+      </section>
+    </div>
+    <aside class="aside">
+      <section class="room" aria-label="The room">
+        <div class="room-h"><h2><span class="live-dot" id="liveDot"></span>The room</h2><span id="roomCount">0 messages</span></div>
+        <div class="feed" id="feed" aria-live="polite"><div class="empty">Messages between your agent and the shops show up here.</div></div>
+      </section>
+    </aside>
+  </div>
+  <p class="foot" id="liveFoot">Bayline Collision and QuickFix Auto Body are demo shops in this prototype; Drive Auto Body is a real shop.</p>
+</div>
+
 <script>
-const qs = new URLSearchParams(location.search); if (qs.has("big") || location.pathname.startsWith("/room")) document.body.classList.add("proj");
+"use strict";
+// ---------- boot / routing ----------
+const qs = new URLSearchParams(location.search);
+const ROOM = location.pathname.startsWith("/room");
+const BIG = qs.has("big");
+if (BIG || ROOM) document.documentElement.classList.add("proj");
 const pathId = (location.pathname.match(/^\/room\/([\w-]+)/) || [])[1];
-let cases = [], caseId = null, mode = "self_pay", reqId = pathId || qs.get("r"), after = 0, last = null;
-const shown = new Map(); // element id -> last html, so live polling never rebuilds unchanged panels
-function setHTML(id, html){ if (shown.get(id) === html) return; shown.set(id, html); $(id).innerHTML = html; }
-const PRIO = { self_pay: [["best_value","Best value"],["lowest_price","Lowest price"],["fastest","Fastest"],["best_reviewed","Best reviewed"]], insurance: [["best_value","Best value"],["best_incentives","Best incentives"],["fastest","Fastest"],["best_reviewed","Best reviewed"]] };
+let reqId = pathId || qs.get("r") || null, after = 0, last = null, polling = false, notFound = false;
+
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
-const money = (n) => n == null ? "—" : "$" + Math.round(n).toLocaleString("en-US");
-function setPrio(){ $("prio").innerHTML = PRIO[mode].map(([v,l]) => `<option value="${v}">${l}</option>`).join(""); }
-document.querySelectorAll("#modeSeg button").forEach((b) => b.onclick = () => { mode = b.dataset.m; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x === b)); setPrio(); });
-setPrio();
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const money = (n) => n == null || !Number.isFinite(Number(n)) ? "—" : "$" + Math.round(Number(n)).toLocaleString("en-US");
+const clean = (s) => String(s ?? "").replace(/\s*\(simulated[^)]*\)/gi, "").replace(/Driver's agent/g, "Your agent").replace(/\bthe driver's agent\b/gi, "your agent");
+const JSON_H = { "content-type": "application/json" };
+const shown = new Map(); // element id -> last html, so live polling never rebuilds unchanged panels
+// The comparison key ignores one-time entrance classes, so the follow-up render (without them) is a no-op.
+function setHTML(id, html){ const key = html.replace(/ (enter|flash)(?=["\s])/g, ""); if (shown.get(id) === key) return false; shown.set(id, key); $(id).innerHTML = html; return true; }
+const seen = new Set(); // one-time entrance animation keys
+function once(key){ if (seen.has(key)) return ""; seen.add(key); return " enter"; }
+
+const PRIO = { self_pay: [["best_value","Best value"],["lowest_price","Lowest price"],["fastest","Fastest"],["best_reviewed","Best reviewed"]], insurance: [["best_value","Best value"],["best_incentives","Best incentives"],["fastest","Fastest"],["best_reviewed","Best reviewed"]] };
+const prioLabel = (mode, p) => (PRIO[mode] || PRIO.self_pay).find(([v]) => v === p)?.[1] || String(p || "").replace(/_/g, " ");
+const PHASES = [["inspecting","Inspect"],["quoting","Shops quote"],["clarifying","Clarify"],["negotiating","Negotiate"],["ranking","Rank"],["ready","You pick"],["booked","Booked"]];
+const OPS = { replace:"Replace", repair:"Repair", blend:"Blend", refinish:"Refinish", "r&i":"Remove & reinstall", ri:"Remove & reinstall", align:"Align", calibrate:"Calibrate", scan:"Scan", inspect:"Inspect", aim:"Aim" };
+const opLabel = (o) => OPS[String(o || "").toLowerCase()] || (o ? String(o).charAt(0).toUpperCase() + String(o).slice(1) : "");
+const PARTS = { "CAPA":"CAPA certified", "A/M":"Aftermarket", "AM":"Aftermarket", "LKQ":"Used", "OEM":"OEM", oem:"OEM", aftermarket:"Aftermarket", used:"Used", capa:"CAPA certified", reman:"Remanufactured" };
+const partLabel = (p) => p ? (PARTS[p] || PARTS[String(p).toLowerCase()] || String(p)) : "";
+const ICON = {
+  check: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>',
+  x: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  arrow: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>',
+  gift: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12v7H4zM3 7h14v3H3zM10 7v10M10 7c-1-3-5-3-4 0M10 7c1-3 5-3 4 0"/></svg>',
+  info: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 9v5M10 6.3v.2"/></svg>',
+  done: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.3l2.3 2.3 4.7-5"/></svg>',
+};
+
+// ---------- status pills ----------
 async function status(){ try{ const s = await (await fetch("/api/status")).json();
   const sl = s.slack || {}, slackUp = sl.status === "ready" || sl.status === "connected", slackWarn = String(sl.status || "").startsWith("WARNING");
-  const z = s.zoowork.ready ? "on" : (s.integrations.zoowork ? "fb" : ""), bd = s.band.status === "ready" ? "on" : "", t = slackWarn ? "warn" : slackUp || s.telegram.ownerConnected ? "on" : (s.integrations.telegram || sl.configured ? "fb" : "");
-  $("pills").innerHTML = `<span class="pill ${z}"><i></i>ZooWork ${s.zoowork.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}"><i></i>BAND room</span><span class="pill ${t}" title="${esc(sl.status || "")}"><i></i>Owner alerts${slackUp || slackWarn ? " · Slack" : ""}${slackWarn ? " · 2 listeners!" : ""}</span>`; }catch{} }
-async function loadCases(){ cases = await (await fetch("/api/cases")).json(); caseId = caseId || cases[0]?.id;
-  $("cases").innerHTML = cases.map((c) => `<button class="case ${c.id === caseId ? "sel" : ""}" data-c="${c.id}"><b>${esc(c.title)}</b><small>${esc(c.source)}</small>${c.photos?.length ? `<div class="photos">${c.photos.map((p) => `<img src="/photos/${esc(p)}" alt="">`).join("")}</div>` : `<div class="note" style="margin-top:6px">${esc(c.photoNote)}</div>`}</button>`).join("");
-  document.querySelectorAll(".case").forEach((b) => b.onclick = () => { caseId = b.dataset.c; const c = cases.find((x) => x.id === caseId); mode = c.defaultMode; document.querySelectorAll("#modeSeg button").forEach((x) => x.classList.toggle("on", x.dataset.m === mode)); setPrio(); loadCases(); });
+  const z = s.zoowork?.ready ? "on" : (s.integrations?.zoowork ? "fb" : ""), bd = s.band?.status === "ready" ? "on" : "";
+  const t = slackWarn ? "warn" : slackUp || s.telegram?.ownerConnected ? "on" : (s.integrations?.telegram || sl.configured ? "fb" : "");
+  $("pills").innerHTML = `<span class="pill ${z}" title="${esc(s.zoowork?.lastError || "")}"><i></i>ZooWork ${s.zoowork?.ready ? "agents" : "(fallback)"}</span><span class="pill ${bd}" title="${esc(s.band?.lastError || "")}"><i></i>BAND room</span><span class="pill ${t}" title="${esc(sl.status || "")}"><i></i>Owner alerts${slackUp || slackWarn ? " · Slack" : ""}${slackWarn ? " · 2 listeners!" : ""}</span>`; }catch{} }
+
+// =====================================================================
+// START: composer
+// =====================================================================
+const S = { mode: "insurance", prio: "best_value", photos: [], pick: null, cases: [], samples: [], busy: false, loading: 0, veh: null, vehFromPick: false };
+const MAX_PHOTOS = 8;
+let photoSeq = 0;
+const sentPreviews = {}; // requestId -> local data URLs, a fallback if the server photo can't load
+
+function photoSrc(p, c){
+  const s = String(p || "");
+  if (/^(\/|https?:|data:|blob:)/.test(s)) return s;
+  return (c && (c.dynamic || /^photo-/.test(c.id || ""))) ? "/uploads/" + s : "/photos/" + s;
 }
-function resetPanels(){
-  after = 0; last = null; shown.clear();
-  $("feed").innerHTML = '<div class="empty">Offers and negotiation appear here live.</div>';
-  $("booked").innerHTML = ""; $("st").textContent = ""; $("scopeP").hidden = true; $("toast").textContent = "";
-  $("offers").innerHTML = '<div class="empty">No offers yet.</div>';
-  $("cmp").innerHTML = '<div class="empty">Shops\' scopes are compared here.</div>';
-  $("rank").innerHTML = '<div class="empty">Ranking appears after the shops answer and the one negotiation round.</div>';
-  $("guards").innerHTML = "";
+function captionFor(p, i, c){
+  const base = String(p || "").split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+  if (!base || /^(data|blob)/.test(String(p)) || /^[0-9a-f-]{8,}$/i.test(base) || /^photo-/.test(base) || /^img/i.test(base)) return `Photo ${i + 1}`;
+  const vehicleWord = c?.vehicle?.model ? String(c.vehicle.model).split(" ")[0].toLowerCase() : "";
+  let t = base.toLowerCase().replace(vehicleWord ? new RegExp("^" + vehicleWord + "[-_]?") : /^$/, "").replace(/^(sample|case)[-_]?/, "");
+  t = t.replace(/[-_]+/g, " ").replace(/\blt\b/g, "left").replace(/\brt\b/g, "right").replace(/\d+$/, "").trim();
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : `Photo ${i + 1}`;
 }
-$("go").onclick = async () => { $("go").disabled = true; reqId = null; resetPanels();
-  const r = await (await fetch("/api/requests", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ caseId, mode, priority: $("prio").value }) })).json();
-  reqId = r.requestId; history.replaceState(null, "", (location.pathname.startsWith("/room") ? "/room/" + reqId : "/?r=" + reqId) + (qs.has("big") ? (location.pathname.startsWith("/room") ? "?big=1" : "&big=1") : "")); };
-function avatar(actor){ if (actor === "Drive Auto Body") return ["DA","drive"]; if (actor === "Driver's agent") return ["YOU",""]; if (actor.startsWith("Owner")) return ["GO","owner"]; if (actor.startsWith("Bayline")) return ["BC","sim"]; if (actor.startsWith("QuickFix")) return ["QF","sim"]; if (actor.startsWith("Quote")) return ["QR","sys"]; return ["YOU",""]; }
-let polling = false;
+const slotText = (t) => clean(t).replace(/^Tomorrow(?=\s)/, "tomorrow");
+const vehicleText = (v) => v ? [v.year, v.make, v.model].filter(Boolean).join(" ") : "";
+
+function renderPay(){ document.querySelectorAll("#pay button").forEach((b) => { const on = b.dataset.m === S.mode; b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false"); }); }
+function renderPrios(){
+  if (!PRIO[S.mode].some(([v]) => v === S.prio)) S.prio = "best_value";
+  $("prios").innerHTML = PRIO[S.mode].map(([v, l]) => `<button type="button" role="radio" aria-checked="${v === S.prio}" class="${v === S.prio ? "on" : ""}" data-p="${v}">${l}</button>`).join("");
+}
+function renderThumbs(){
+  $("thumbs").innerHTML = S.photos.map((p, i) => p.url
+    ? `<div class="thumb"><img src="${p.url}" alt="Your photo ${i + 1}"><span class="cap">${i + 1}</span><button class="x" type="button" data-rm="${p.id}" aria-label="Remove photo ${i + 1}">${ICON.x}</button></div>`
+    : `<div class="thumb busy" aria-label="Preparing photo"></div>`).join("");
+  const n = S.photos.filter((p) => p.url).length;
+  $("drop").classList.toggle("compact", S.photos.length > 0);
+  $("dropTitle").textContent = S.photos.length ? (S.photos.length >= MAX_PHOTOS ? `${MAX_PHOTOS} photos added (the max)` : "Add more photos") : "Drop photos here, or tap to add";
+  $("dropSub").textContent = S.photos.length ? `${n} of ${MAX_PHOTOS} ready · location data stripped` : "Up to 8. Wide shots plus close-ups work best. Photos are shrunk on your device and location data is stripped before sending.";
+}
+function renderSamples(){
+  const tiles = [
+    ...S.cases.map((c) => ({ kind: "case", id: c.id, title: c.title, photos: (c.photos || []).map((p) => photoSrc(p, c)), sub: c.source ? "From a real Drive Auto Body estimate. Plates blurred." : vehicleText(c.vehicle), mode: c.defaultMode })),
+    ...S.samples.map((s) => ({ kind: "sample", id: s.id, title: s.title, photos: (s.photos || []).map((p) => photoSrc(p, s)), sub: s.credit ? "Photo: " + s.credit : vehicleText(s.vehicle), mode: s.defaultMode })),
+  ];
+  $("samples").classList.toggle("solo", tiles.length === 1);
+  if (!tiles.length){ $("samples").innerHTML = `<p class="hold" style="margin:0">No samples on this server. Add your own photos above.</p>`; return; }
+  $("samples").innerHTML = tiles.map((t) => { const sel = S.pick && S.pick.kind === t.kind && S.pick.id === t.id;
+    return `<button type="button" class="sample ${sel ? "sel" : ""}" data-kind="${t.kind}" data-id="${esc(t.id)}" aria-pressed="${sel}"><span class="ph">${t.photos[0] ? `<img src="${esc(t.photos[0])}" alt="" loading="lazy">` : ""}${t.photos.length > 1 ? `<em>${t.photos.length} photos</em>` : ""}<span class="chk">${ICON.check}</span></span><span class="meta"><b>${esc(clean(t.title))}</b><small>${esc(t.sub || "")}</small>${t.mode ? `<span class="mode">${t.mode === "insurance" ? "Insurance claim" : "Self-pay"} sample</span>` : ""}</span></button>`; }).join("");
+}
+function pickedItem(){ if (!S.pick) return null; return S.pick.kind === "case" ? S.cases.find((c) => c.id === S.pick.id) : S.samples.find((s) => s.id === S.pick.id); }
+function renderVeh(){
+  const it = pickedItem();
+  ["vYear","vMake","vModel"].forEach((id) => { $(id).disabled = !!it; });
+  $("vehNote").classList.toggle("hide", !it);
+  if (it){ const v = it.vehicle || {}; $("vYear").value = v.year || ""; $("vMake").value = v.make || ""; $("vModel").value = v.model || ""; S.vehFromPick = true; $("vehNote").textContent = "Set by the sample. Add your own photos to enter a different vehicle."; }
+  else if (S.vehFromPick){ S.vehFromPick = false; S.veh = S.veh || {}; $("vYear").value = S.veh.year || ""; $("vMake").value = S.veh.make || ""; $("vModel").value = S.veh.model || ""; }
+}
+function renderCta(){
+  const ready = S.photos.filter((p) => p.url).length, it = pickedItem();
+  const src = it ? `<b>${esc(clean(it.title))}</b>` : ready ? `<b>${ready} photo${ready > 1 ? "s" : ""}</b>` : "Add a photo or pick a sample";
+  $("ctaSum").innerHTML = it || ready ? `Sending ${src} · ${S.mode === "insurance" ? "Insurance claim" : "Paying myself"} · ${prioLabel(S.mode, S.prio)}` : src;
+  const go = $("go");
+  go.disabled = S.busy || S.loading > 0 || (!it && !ready);
+  go.innerHTML = S.busy ? `<span class="spin" aria-hidden="true"></span>Sending your agent…` : S.loading > 0 ? "Preparing photos…" : `Send my agent ${ICON.arrow}`;
+}
+function renderComposer(){ renderPay(); renderPrios(); renderThumbs(); renderSamples(); renderVeh(); renderCta(); }
+
+async function loadCases(){
+  try {
+    const d = await (await fetch("/api/cases")).json();
+    const list = Array.isArray(d) ? d : (d.cases || []);
+    S.cases = list.filter((c) => !c.sample && (c.photos || []).length && !/accord/i.test(c.id || ""));
+    S.samples = [...(Array.isArray(d) ? [] : (d.samples || [])), ...list.filter((c) => c.sample && (c.photos || []).length)];
+  } catch { S.cases = []; S.samples = []; }
+  renderSamples(); renderVeh(); renderCta();
+}
+
+// photo intake: decode -> resize to <=1280px -> JPEG 0.82 (canvas re-encode also drops EXIF/GPS)
+async function decode(file){
+  if (window.createImageBitmap){ try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch {} }
+  return await new Promise((res, rej) => { const u = URL.createObjectURL(file); const im = new Image();
+    im.onload = () => { URL.revokeObjectURL(u); res(im); }; im.onerror = () => { URL.revokeObjectURL(u); rej(new Error("decode")); }; im.src = u; });
+}
+async function toJpeg(file){
+  const img = await decode(file);
+  const w0 = img.width || img.naturalWidth, h0 = img.height || img.naturalHeight;
+  if (!w0 || !h0) throw new Error("decode");
+  const k = Math.min(1, 1280 / Math.max(w0, h0)), w = Math.max(1, Math.round(w0 * k)), h = Math.max(1, Math.round(h0 * k));
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h); cx.drawImage(img, 0, 0, w, h);
+  if (img.close) img.close();
+  let q = 0.82, url = cv.toDataURL("image/jpeg", q);
+  while (url.length * 0.75 > 1.45e6 && q > 0.5){ q -= 0.1; url = cv.toDataURL("image/jpeg", q); }
+  return url;
+}
+async function addFiles(files){
+  $("composeErr").textContent = "";
+  const imgs = [...files].filter((f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic|heif|gif|bmp|avif)$/i.test(f.name));
+  if (!imgs.length){ $("composeErr").textContent = "Those don't look like photos. Try JPEG or PNG images."; return; }
+  const room = MAX_PHOTOS - S.photos.length;
+  if (room <= 0){ $("composeErr").textContent = `That's the max of ${MAX_PHOTOS} photos. Remove one to add another.`; return; }
+  const take = imgs.slice(0, room);
+  if (imgs.length > room) $("composeErr").textContent = `Added ${room}. The limit is ${MAX_PHOTOS} photos.`;
+  S.pick = null; // your own photos win over a sample
+  const slots = take.map((f) => ({ id: "p" + (++photoSeq), url: "", name: f.name, file: f }));
+  S.photos.push(...slots); S.loading += slots.length; renderComposer();
+  const failed = [];
+  await Promise.all(slots.map(async (s) => {
+    try { s.url = await toJpeg(s.file); } catch { failed.push(s.name); S.photos = S.photos.filter((x) => x !== s); }
+    finally { delete s.file; S.loading--; renderThumbs(); renderCta(); }
+  }));
+  if (failed.length) $("composeErr").textContent = `Couldn't read ${failed.join(", ")}. Try a JPEG or PNG (some phones save HEIC, which this browser can't open).`;
+  renderComposer();
+}
+$("file").addEventListener("change", (e) => { const f = e.target.files; if (f && f.length) addFiles(f); e.target.value = ""; });
+const drop = $("drop");
+["dragenter","dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","dragend"].forEach((t) => drop.addEventListener(t, () => drop.classList.remove("over")));
+drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("over"); if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); });
+document.addEventListener("dragover", (e) => { if (document.body.dataset.view === "start") e.preventDefault(); });
+document.addEventListener("drop", (e) => { if (document.body.dataset.view === "start" && !drop.contains(e.target)){ e.preventDefault(); if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files); } });
+$("thumbs").addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (!b) return; S.photos = S.photos.filter((p) => p.id !== b.dataset.rm); $("composeErr").textContent = ""; renderComposer(); });
+$("samples").addEventListener("click", (e) => { const b = e.target.closest(".sample[data-id]"); if (!b) return;
+  const same = S.pick && S.pick.kind === b.dataset.kind && S.pick.id === b.dataset.id;
+  S.pick = same ? null : { kind: b.dataset.kind, id: b.dataset.id };
+  const it = pickedItem(); if (it?.defaultMode && PRIO[it.defaultMode]) S.mode = it.defaultMode;
+  if (!same && S.photos.length) $("composeErr").textContent = "Using the sample. Your photos stay here if you switch back.";
+  else $("composeErr").textContent = "";
+  renderComposer(); });
+$("pay").addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (!b) return; S.mode = b.dataset.m; renderPay(); renderPrios(); renderCta(); });
+$("prios").addEventListener("click", (e) => { const b = e.target.closest("[data-p]"); if (!b) return; S.prio = b.dataset.p; renderPrios(); renderCta(); });
+$("vYear").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4); });
+["vYear","vMake","vModel"].forEach((id) => $(id).addEventListener("input", () => { if (!S.vehFromPick) S.veh = { year: $("vYear").value, make: $("vMake").value, model: $("vModel").value }; }));
+
+class Friendly extends Error {}
+const FRIENDLY = {
+  offer_not_current: "That offer just changed. Confirm the updated one.",
+  offers_not_final_yet: "Hold on, your agent is still negotiating.",
+  already_booked: "This request is already booked.",
+  too_many_images: `Too many photos. The limit is ${MAX_PHOTOS}.`,
+  image_too_large: "One of the photos is too large. Try a smaller one.",
+  unknown_case: "That sample isn't available on this server.",
+  unknown_sample: "That sample isn't available on this server.",
+  upload_too_large: "Those photos are too large to send together. Try fewer photos.",
+  upload_limit_reached: "This demo has hit its upload limit for now. Tap a sample instead.",
+  images_required: "Add at least one photo first.",
+};
+const friendly = (e) => !e ? "" : FRIENDLY[e] || (/^at_most_\d+_images$/.test(e) ? `Too many photos. The limit is ${MAX_PHOTOS}.` : /^image \d+/.test(e) ? `Photo ${e.match(/\d+/)[0]} couldn't be read. Try a JPEG or PNG.` : "");
+function readVehicle(){ const y = Number($("vYear").value), make = $("vMake").value.trim(), model = $("vModel").value.trim();
+  const v = {}; if (y >= 1950 && y <= 2100) v.year = y; if (make) v.make = make.slice(0, 40); if (model) v.model = model.slice(0, 60); return Object.keys(v).length ? v : undefined; }
+async function postJson(url, body){
+  let res; try { res = await fetch(url, { method: "POST", headers: JSON_H, body: JSON.stringify(body) }); }
+  catch { throw new Friendly("Can't reach the Quote Room server. Check the connection and try again."); }
+  let d = {}; try { d = await res.json(); } catch {}
+  return { res, d };
+}
+async function sendAgent(){
+  if (S.busy) return;
+  const err = $("composeErr"); err.textContent = "";
+  const it = pickedItem(), photos = S.photos.filter((p) => p.url);
+  if (!it && !photos.length){ err.textContent = "Add a photo or pick a sample first."; return; }
+  S.busy = true; renderCta();
+  try {
+    let caseId, previews;
+    if (!it){
+      const { res, d } = await postJson("/api/uploads", { images: photos.map((p) => p.url), vehicle: readVehicle() });
+      if (res.status === 404 && (d.error === "not_found" || !d.error)) throw new Friendly("Photo upload isn't switched on on this server yet. Tap the sample to watch a full run.");
+      if (res.status === 413) throw new Friendly("Those photos are too large to send together. Try fewer photos.");
+      if (!res.ok || d.error || !d.caseId) throw new Friendly(friendly(d.error) || "Your photos didn't upload. Try again, or use a sample.");
+      caseId = d.caseId; previews = photos.map((p) => p.url);
+    } else if (S.pick.kind === "sample"){
+      const { res, d } = await postJson("/api/uploads", { sampleId: it.id });
+      if (res.status === 404 && (d.error === "not_found" || !d.error)) throw new Friendly("Samples need the photo pipeline, which isn't switched on here yet. Try the Elantra.");
+      if (!res.ok || d.error || !d.caseId) throw new Friendly(friendly(d.error) || "Couldn't open that sample. Try another.");
+      caseId = d.caseId;
+    } else caseId = it.id;
+    const { res, d } = await postJson("/api/requests", { caseId, mode: S.mode, priority: S.prio });
+    if (!res.ok || d.error || !d.requestId) throw new Friendly(friendly(d.error) || "Your agent couldn't open a room just now. Try again.");
+    if (previews) sentPreviews[d.requestId] = previews;
+    openRequest(d.requestId);
+  } catch (e) {
+    err.textContent = e instanceof Friendly ? e.message : "Something went wrong sending your agent. Try again.";
+  } finally { S.busy = false; renderCta(); }
+}
+$("go").addEventListener("click", sendAgent);
+
+// =====================================================================
+// LIVE: room view
+// =====================================================================
+let galleryIdx = 0;
+const expanded = new Set();
+const askAt = {};
+let roomCount = 0;
+
+function roomUrl(id){
+  const base = ROOM ? (id ? "/room/" + id : "/room") : (id ? "/?r=" + id : "/");
+  const big = BIG ? ((base.includes("?") ? "&" : "?") + "big=1") : "";
+  return base + big;
+}
+function setView(v){ document.body.dataset.view = v; }
+function resetLive(){
+  after = 0; last = null; notFound = false; shown.clear(); seen.clear(); expanded.clear(); galleryIdx = 0; roomCount = 0;
+  for (const k of Object.keys(askAt)) delete askAt[k];
+  $("feed").innerHTML = '<div class="empty">Messages between your agent and the shops show up here.</div>';
+  $("roomCount").textContent = "0 messages";
+  ["decision","nego","damage","lanes","mx","guards","steps","toast"].forEach((id) => { $(id).innerHTML = ""; });
+  ["decisionWrap","negoWrap","mxWrap"].forEach((id) => $(id).classList.add("hide"));
+  $("reqMeta").innerHTML = ""; $("narrH").textContent = "Opening your room"; $("narrP").textContent = "Your agent is getting set up."; $("stepNow").textContent = "";
+}
+function openRequest(id){
+  reqId = id; resetLive(); setView("live");
+  history.replaceState(null, "", roomUrl(id));
+  window.scrollTo({ top: 0 });
+  poll();
+}
+function goHome(){
+  reqId = null; resetLive(); setView("start");
+  history.replaceState(null, "", roomUrl(null));
+  window.scrollTo({ top: 0 });
+}
+$("newReq").addEventListener("click", goHome);
+$("home").addEventListener("click", goHome);
+
+// ---------- names ----------
+function shopName(r, s){ const i = r?.shopsInfo?.[s]; return clean(i?.display || i?.name || s); }
+function isDemo(r, s){ const i = r?.shopsInfo?.[s] || {}; return i.demo === true || (i.demo == null && (i.simulated || i.profile?.simulated)); }
+function shopKey(s){ return s === "drive" ? "drive" : s === "shop-b" ? "shop-b" : s === "shop-c" ? "shop-c" : "other"; }
+function initials(name){ return String(name || "?").split(/\s+/).filter((w) => /^[A-Za-z]/.test(w)).slice(0, 2).map((w) => w[0]).join("").toUpperCase() || "?"; }
+function ownerOf(r, s){ return s === "drive" ? "Gio" : "the owner"; }
+function actorOf(a){
+  const s = clean(a);
+  if (/^(Driver's agent|Your agent)$/i.test(String(a))) return { name: "Your agent", ini: "YOU", cls: "you" };
+  if (/^Owner/i.test(a)) return { name: s, ini: "GIO", cls: "owner" };
+  if (/^Drive/i.test(a)) return { name: "Drive Auto Body", ini: "DA", cls: "drive" };
+  if (/^Bayline/i.test(a)) return { name: "Bayline Collision", ini: "BC", cls: "shop-b" };
+  if (/^QuickFix/i.test(a)) return { name: "QuickFix Auto Body", ini: "QF", cls: "shop-c" };
+  if (/^Quote Room/i.test(a)) return { name: "Quote Room", ini: "QR", cls: "sys" };
+  return { name: s, ini: initials(s), cls: "" };
+}
+const KIND = { request_posted:"Request", damage_report:"Damage report", assessment_posted:"Estimate", scope_amended:"Scope", offer_posted:"Offer", offer_revised:"Revised", clarify_sent:"Question", clarification_answered:"Answer", ask_sent:"Ask", exception_requested:"Needs owner", owner_decision:"Decision", ranking_ready:"Ranking", ready:"Ready", booked:"Booked", system_note:"Note" };
+
+// ---------- derived data (graceful when the backend lacks v2 fields) ----------
+const assistOf = (o) => (o?.incentives || []).find((i) => i.kind === "deductible_assist")?.value || 0;
+const incTotal = (o) => (o?.incentives || []).reduce((s, i) => s + (Number(i.value) || 0), 0);
+function splitLabel(label){ const s = clean(label); const i = s.indexOf(":"); return i > 0 ? [s.slice(0, i).trim(), s.slice(i + 1).trim()] : [s, ""]; }
+function sevFromOp(op){ op = String(op || "").toLowerCase(); return op === "replace" ? "severe" : op === "repair" ? "moderate" : "minor"; }
+function sevClass(s){ s = String(s || "").toLowerCase(); return /sev|high|major|heavy|struct/.test(s) ? "sev-hi" : /mod|med/.test(s) ? "sev-md" : "sev-lo"; }
+function sevText(s){ const c = sevClass(s); return c === "sev-hi" ? "Severe" : c === "sev-md" ? "Moderate" : (s ? String(s).charAt(0).toUpperCase() + String(s).slice(1) : "Minor"); }
+function labelOf(r, id, fallback){ const raw = r.case?.labels?.[id] || fallback || id; return splitLabel(raw)[0]; }
+function damageOf(r){
+  const dr = r.damageReport;
+  if (dr && (dr.items || []).length) return { ...dr, items: dr.items.map((i) => ({ ...i, label: i.label ? splitLabel(i.label)[0] : labelOf(r, i.id) })) };
+  const b = r.case?.baseline || [];
+  if (!b.length) return dr || null;
+  return { summary: r.case.reviewNote || "", by: "sample", items: b.map((i) => { const [l, rest] = splitLabel(i.label); return { id: i.id, label: l, operation: i.operation, severity: sevFromOp(i.operation), note: rest ? rest.charAt(0).toUpperCase() + rest.slice(1) : "" }; }) };
+}
+function assessOf(r, s){
+  // What the shop found on its own (its assessment, or its first offer), plus anything it added later when asked.
+  const a = r.assessments?.[s], list = r.offers?.[s] || [], o = r.latest?.[s] || list[list.length - 1], first = list[0];
+  const lines = Object.fromEntries((o?.price?.lines || []).map((l) => [l.itemId, l]));
+  const why = Object.fromEntries([...(first?.amendments || []), ...(o?.amendments || [])].map((m) => [m.itemId, m.reason]));
+  let items;
+  if (a && (a.items || []).length) items = a.items.map((i) => ({ ...i, label: i.label ? splitLabel(i.label)[0] : labelOf(r, i.id), partType: i.partType || lines[i.id]?.partType }));
+  else if (first) items = (first.items || []).map((i) => ({ id: i.id, label: labelOf(r, i.id, i.label), operation: i.operation, partType: lines[i.id]?.partType, reason: why[i.id] || "" }));
+  else return a || null;
+  for (const i of first?.items || []) if (!items.some((x) => x.id === i.id)) items.push({ id: i.id, label: labelOf(r, i.id, i.label), operation: i.operation, partType: lines[i.id]?.partType, reason: why[i.id] || "" });
+  for (const i of o?.items || []) if (!items.some((x) => x.id === i.id)) items.push({ id: i.id, label: labelOf(r, i.id, i.label), operation: i.operation, partType: lines[i.id]?.partType, reason: why[i.id] || "", later: true });
+  return { by: a?.by || "fallback", notes: a?.notes || "", history: a?.history, items };
+}
+function phaseOf(r){
+  if (r.booking || r.status === "booked") return "booked";
+  if (r.status === "ready_for_confirmation") return "ready";
+  if (r.phase && PHASES.some(([p]) => p === r.phase)) return r.phase;
+  if ((r.ranking || []).length) return "ranking";
+  if ((r.asks || []).length || r.status === "awaiting_owner" || r.status === "negotiating") return "negotiating";
+  if ((r.clarifications || []).length) return "clarifying";
+  const quoted = Object.keys(r.latest || {}).length;
+  if (quoted && quoted >= (r.shops || []).length) return "clarifying";
+  if (quoted || r.damageReport || (r.case?.baseline || []).length) return "quoting";
+  return "inspecting";
+}
+function photosOf(r){
+  const c = r.case || {}; const list = (c.photos || []).map((p, i) => ({ src: photoSrc(p, c), alt: sentPreviews[r.id]?.[i] || "", cap: captionFor(p, i, c) }));
+  if (!list.length && sentPreviews[r.id]) return sentPreviews[r.id].map((u, i) => ({ src: u, alt: "", cap: `Photo ${i + 1}` }));
+  return list;
+}
+
+// ---------- render: stage ----------
+const stopped = (r) => r.status === "inspection_unavailable";
+function narrate(r, phase){
+  if (stopped(r)) return ["Your agent couldn't <em>inspect</em> these photos", "AI photo inspection is unavailable right now, so no shop was contacted. Try again in a minute, or start over with a sample."];
+  const pend = (r.approvals || []).find((a) => a.status === "pending");
+  const n = (r.shops || []).length, quoted = Object.keys(r.latest || {}).length;
+  if (pend && phase !== "ready" && phase !== "booked") return [`Waiting on <em>${esc(ownerOf(r, pend.shopId))}</em>`, `${esc(shopName(r, pend.shopId))}'s agent can't go that far on its own, so it asked the owner. Your agent is holding its place.`];
+  switch (phase){
+    case "inspecting": return ["Your agent is <em>inspecting</em> your photos", "It's marking every damaged panel and what it likely needs."];
+    case "quoting": return [quoted ? `${quoted} of ${n} estimates are in` : "The shops are <em>building estimates</em>", `${n} shops are looking at the same photos. Each one decides for itself what needs fixing.`];
+    case "clarifying": return ["Your agent is <em>checking the gaps</em>", "Where one shop found damage the others didn't, it asks them to explain before comparing prices."];
+    case "negotiating": return ["Your agent is <em>negotiating</em>", "One ask, to the shop most likely to move. Owners answer anything beyond their agent's limits."];
+    case "ranking": return ["Comparing <em>every offer</em>", `Ranked by what you said matters most: ${esc(prioLabel(r.mode, r.priority).toLowerCase())}.`];
+    case "ready": return ["Your offers are <em>ready</em>", "Your agent made a pick. Nothing is booked until you confirm."];
+    case "booked": { const b = r.booking; return [`You're booked with <em>${esc(b ? shopName(r, b.shopId) : "the shop")}</em>`, "The shop confirms the final details when you drop the car off."]; }
+  }
+  return ["Opening your room", ""];
+}
+function renderStage(r, phase){
+  const v = r.case?.vehicle || r.damageReport?.vehicleGuess;
+  const title = clean(r.case?.title || vehicleText(v) || "Your car");
+  setHTML("reqMeta", `<span>${esc(r.id)}</span><span class="c">${esc(title)}</span><span class="c">${r.mode === "insurance" ? "Insurance claim" : "Paying myself"} · ${esc(prioLabel(r.mode, r.priority))}</span>`);
+  const [h, p] = narrate(r, phase);
+  setHTML("narrH", h); setHTML("narrP", p);
+  const idx = PHASES.findIndex(([k]) => k === phase), working = phase !== "ready" && phase !== "booked" && !stopped(r);
+  setHTML("steps", PHASES.map(([k, l], i) => `<li class="${i < idx ? "done" : i === idx ? "now" + (working ? " working" : "") : ""}${k === "booked" ? " final" : ""}"><span>${l}</span></li>`).join(""));
+  setHTML("stepNow", `Step ${idx + 1} of ${PHASES.length} · ${PHASES[idx]?.[1] || ""}`);
+  $("liveDot").style.visibility = working ? "visible" : "hidden";
+  setHTML("guards", (r.guardrails || []).length ? `<div class="guard">${r.guardrails.map((g) => `<span>${ICON.info}${esc(g)}</span>`).join("")}</div>` : "");
+}
+
+// ---------- render: damage report ----------
+function renderDamage(r, phase){
+  const photos = photosOf(r), dr = damageOf(r);
+  if (galleryIdx >= photos.length) galleryIdx = 0;
+  const cur = photos[galleryIdx];
+  const viewer = photos.length
+    ? `<figure><img class="big" src="${esc(cur.src)}" alt="${esc(cur.cap)}"${cur.alt ? ` data-alt="${esc(cur.alt)}" onerror="this.onerror=null;this.src=this.dataset.alt"` : ""}><figcaption><b>${esc(cur.cap)}</b><span>Photo ${galleryIdx + 1} of ${photos.length}</span></figcaption></figure>${photos.length > 1 ? `<div class="strip">${photos.map((p, i) => `<button type="button" class="${i === galleryIdx ? "on" : ""}" data-g="${i}" aria-label="Show ${esc(p.cap)}"><img src="${esc(p.src)}" alt=""${p.alt ? ` data-alt="${esc(p.alt)}" onerror="this.onerror=null;this.src=this.dataset.alt"` : ""}></button>`).join("")}</div>` : ""}`
+    : `<div class="nophoto">${esc(r.case?.photoNote || "No photos on this request.")}</div>`;
+  let right;
+  if (dr && (dr.items || []).length){
+    const byAgent = dr.by === "agent";
+    right = `<span class="by"><i></i>${byAgent ? "Inspected by your agent" : "Sample damage report"}</span><h2>${dr.items.length} thing${dr.items.length === 1 ? "" : "s"} need${dr.items.length === 1 ? "s" : ""} work</h2>${dr.summary ? `<p class="sum">${esc(clean(dr.summary))}</p>` : ""}${dr.vehicleGuess ? `<p class="vg">Vehicle: ${esc(typeof dr.vehicleGuess === "string" ? dr.vehicleGuess : vehicleText(dr.vehicleGuess))}</p>` : ""}<ol class="flist">${dr.items.map((i, n) => `<li><span class="i">${String(n + 1).padStart(2, "0")}</span><div><div class="row"><b>${esc(i.label)}</b>${i.operation ? `<span class="tag">${esc(opLabel(i.operation))}</span>` : ""}${i.severity ? `<span class="tag ${sevClass(i.severity)}">${esc(sevText(i.severity))}</span>` : ""}</div>${i.note ? `<p>${esc(clean(i.note))}</p>` : ""}</div></li>`).join("")}</ol>`;
+  } else if (dr && dr.summary){
+    right = `<span class="by"><i></i>Damage report</span><h2>Inspection note</h2><p class="sum">${esc(clean(dr.summary))}</p>`;
+  } else if (stopped(r)) {
+    right = `<span class="by"><i></i>Your agent</span><h2>Inspection unavailable</h2><p class="sum">The photos arrived, but the AI inspection couldn't run, so there's no damage report and no shop was contacted.</p><div style="margin-top:1rem"><button class="confirm" type="button" data-home="1">Start over</button></div>`;
+  } else {
+    right = `<span class="by"><i></i>Your agent</span><h2>Inspecting your photos…</h2><p class="sum">Looking for every damaged panel, what it needs, and anything that's probably hiding behind it.</p><div style="display:flex;flex-direction:column;gap:.7rem;margin-top:1rem"><div class="skel" style="width:90%"></div><div class="skel" style="width:72%"></div><div class="skel" style="width:84%"></div><div class="skel" style="width:60%"></div></div>`;
+  }
+  setHTML("damage", `<div class="report${once("damage")}"><div class="viewer">${viewer}</div><div class="findings">${right}</div></div>`);
+}
+$("damage").addEventListener("click", (e) => { if (e.target.closest("[data-home]")) return goHome(); const b = e.target.closest("[data-g]"); if (!b || !last) return; galleryIdx = Number(b.dataset.g) || 0; renderDamage(last, phaseOf(last)); });
+
+// ---------- render: negotiation ----------
+function offerAt(list, at){ if (!list?.length) return undefined; if (!at) return list[0]; let o = list[0]; for (const x of list) if (String(x.at) <= String(at)) o = x; return o; }
+function renderNego(r){
+  const ask = (r.asks || [])[0];
+  if (!ask){ $("negoWrap").classList.add("hide"); setHTML("nego", ""); return; }
+  $("negoWrap").classList.remove("hide");
+  const s = ask.shopId, list = r.offers?.[s] || [], latest = r.latest?.[s] || list[list.length - 1];
+  const ap = (r.approvals || []).find((a) => a.askId === ask.id);
+  const before = (ap && list.find((o) => o.version === ap.baseOfferVersion)) || offerAt(list, askAt[ask.id]) || latest;
+  const name = shopName(r, s), owner = ownerOf(r, s), ins = r.mode === "insurance";
+  const val = (o) => ins ? assistOf(o) : o?.price?.total;
+  const target = ins ? ask.target?.deductibleAssist : ask.target?.total;
+  const out = ask.outcome || (ap ? ap.status : "");
+  const pending = ap?.status === "pending" || (!out && !ap);
+  const OUT = { approved: [`${owner} approved`, "good"], countered: [`${owner} countered`, "good"], denied: [`${owner} said no`, "no"], expired: ["No answer in time", ""], held: ["Shop held its offer", ""], revised: ["Shop's agent matched it", "good"] };
+  const [stTxt, stCls] = ap?.status === "pending" ? [`Waiting on ${owner}`, "wait"] : OUT[out] || (pending ? [`Waiting on ${name}`, "wait"] : ["Answered", ""]);
+  const steps = [`<li><span class="d you">YOU</span><span><b>Your agent asked ${esc(name)}</b> for ${ins ? `${money(target)} toward your deductible` : money(target)}.</span></li>`];
+  if (ap) steps.push(`<li><span class="d shop">${esc(initials(name))}</span><span><b>${esc(name)}'s agent</b> couldn't go that far on its own${s === "drive" ? `, so it asked ${esc(owner)}` : ", so it checked the shop's rules"}.</span></li>`);
+  if (ap?.status === "pending") steps.push(`<li><span class="d wait">…</span><span><b>Waiting on ${esc(owner)}.</b>${s === "drive" ? " The request is on his phone with your photos." : ""}</span></li>`);
+  else if (ap) steps.push(`<li><span class="d ${ap.decidedVia === "rule" ? "shop" : "owner"}">${ap.decidedVia === "rule" ? esc(initials(name)) : "GIO"}</span><span><b>${ap.status === "approved" ? `${esc(owner)} approved it` : ap.status === "countered" ? `${esc(owner)} countered` : ap.status === "denied" ? `${esc(owner)} declined` : "No answer in time"}</b>${/^(slack|telegram)$/i.test(ap.decidedVia || "") ? ` <span class="hold">via ${esc(ap.decidedVia.charAt(0).toUpperCase() + ap.decidedVia.slice(1))}</span>` : ""}${ap.counter?.extra ? `. ${esc(ap.counter.extra)}` : ""}.</span></li>`);
+  else if (out === "revised") steps.push(`<li><span class="d shop">${esc(initials(name))}</span><span><b>Within its limits</b>, so the shop's agent revised the offer on its own.</span></li>`);
+  else if (out) steps.push(`<li><span class="d shop">${esc(initials(name))}</span><span><b>${esc(OUT[out]?.[0] || "Answered")}</b>.</span></li>`);
+  const bv = val(before), av = val(latest), moved = bv != null && av != null && bv !== av;
+  const right = ins
+    ? `<span class="lbl">Toward your deductible</span><div class="ba num">${moved ? `<s>${money(bv)}</s><span class="arrow">→</span>` : ""}<span>${money(av)}</span><small>${moved ? `Up ${money(av - bv)} from the shop's first offer. Paid by the shop, never billed to insurance.` : pending ? `Asked for ${money(target)}.` : "Unchanged."}</small></div>`
+    : `<span class="lbl">${esc(name)}'s price</span><div class="ba num">${moved ? `<s>${money(bv)}</s><span class="arrow">→</span>` : ""}<span>${money(av)}</span><small>${moved ? `${money(bv - av)} off, negotiated by your agent.` : pending ? `Asked for ${money(target)}.` : "Unchanged."}</small></div>`;
+  setHTML("nego", `<div class="nego${once("nego")}"><div class="nego-in"><div class="nego-l"><span class="k">Your agent → ${esc(name)}</span><blockquote>“${esc(clean(ask.text))}”</blockquote><ol class="nego-steps">${steps.join("")}</ol></div><div class="nego-r"><span class="state ${stCls}"><i></i>${esc(stTxt)}</span>${right}</div></div></div>`);
+}
+
+// ---------- render: shop lanes ----------
+function reviewsHtml(r, s){
+  const p = r.shopsInfo?.[s]?.profile || {};
+  if (!isDemo(r, s) && p.rating) return `<p class="rev"><span class="star">★</span> <b>${esc(p.rating)}</b> · ${esc(p.reviewCount)} Google reviews${(p.themes || []).length ? ` · ${esc(p.themes.slice(0, 2).join(", "))}` : ""}${p.source?.url ? ` · <a href="${esc(p.source.url)}" target="_blank" rel="noopener">source</a>` : ""}</p>`;
+  if (isDemo(r, s)) return `<span class="newbadge">New on Quote Room</span>`;
+  return `<p class="rev">Reviews coming soon</p>`;
+}
+function laneState(r, s, phase){
+  const o = r.latest?.[s], a = r.assessments?.[s];
+  if (r.booking?.shopId === s) return ["Booked", "good"];
+  const ap = (r.approvals || []).find((x) => x.shopId === s && x.status === "pending");
+  if (ap) return [`Asking ${ownerOf(r, s)}`, "wait"];
+  if ((r.clarifications || []).some((c) => c.shopId === s && c.status === "open")) return ["Answering your agent", "work"];
+  if ((r.asks || []).some((x) => x.shopId === s && !x.outcome)) return ["Considering your ask", "work"];
+  if (!o && stopped(r)) return ["Not contacted", ""];
+  if (!o) return a ? ["Pricing its estimate", "work"] : [phase === "inspecting" ? "Waiting for your agent's report" : "Inspecting your photos", "work"];
+  if (o.createdBy === "owner") return [`Approved by ${ownerOf(r, s)}`, "good"];
+  return [o.version > 1 ? "Estimate updated" : "Estimate in", ""];
+}
+function renderLanes(r, phase){
+  const shops = r.shops || [];
+  if (!shops.length){ setHTML("lanes", ""); return; }
+  const ins = r.mode === "insurance", ready = r.status === "ready_for_confirmation" || !!r.booking;
+  const A = Object.fromEntries(shops.map((s) => [s, assessOf(r, s)]));
+  const have = shops.filter((s) => A[s]?.items?.length);
+  const foundBy = {}; // independent finds only: what each shop saw before your agent asked anything
+  for (const s of have) for (const i of A[s].items) if (!i.later) (foundBy[i.id] ||= new Set()).add(s);
+  const dr = damageOf(r), drIds = new Set((dr?.items || []).map((i) => i.id));
+  const rk = Object.fromEntries((r.ranking || []).map((x, i) => [x.shopId, { ...x, pos: i }]));
+  const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c]));
+  const quotedAll = shops.every((s) => r.latest?.[s]);
+  setHTML("lanesSub", quotedAll ? (ins ? "Same photos, three independent estimates. Shops compete with incentives they pay for." : "Same photos, three independent estimates and prices.") : "Each shop's agent looks at your photos on its own.");
+  const order = ready && (r.ranking || []).length ? [...shops].sort((x, y) => (rk[x]?.pos ?? 9) - (rk[y]?.pos ?? 9)) : shops;
+  setHTML("lanes", order.map((s) => {
+    const name = shopName(r, s), o = r.latest?.[s], a = A[s], list = r.offers?.[s] || [];
+    const [st, stc] = laneState(r, s, phase);
+    const rec = ready && rk[s]?.recommended, booked = r.booking?.shopId === s;
+    const head = `<div class="lane-h"><span class="mark ${shopKey(s)}">${esc(initials(name))}</span><div><h3>${esc(name)}</h3>${reviewsHtml(r, s)}</div></div><div class="lstate ${stc}"><i></i>${esc(st)}</div>`;
+    if (!o && !a?.items?.length){
+      return `<article class="lane${once("lane-" + s)}">${head}${stopped(r) ? `<p class="gaps" style="margin:0">Nothing was sent to this shop.</p>` : `<div class="wait-body"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>`}</article>`;
+    }
+    let offer = "";
+    if (o){
+      const first = list[0];
+      if (!ins){
+        const f0 = first?.price?.total, d = f0 != null && o.price?.total != null ? o.price.total - f0 : 0;
+        const was = d < 0 ? `<div class="was"><s class="num">${money(f0)}</s><span class="delta">${money(-d)} off</span></div>` : d > 0 ? `<div class="was"><span class="num">First quote ${money(f0)}</span><span class="delta up">+${money(d)} for items it missed</span></div>` : "";
+        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="price num">${money(o.price?.total)}</div>${was}${(o.incentives || []).length ? `<div class="incs" style="margin-top:.6rem">${o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("")}</div>` : ""}<div class="sub">Preliminary price${o.createdBy === "owner" ? `, approved by ${esc(ownerOf(r, s))}` : ""}. Final details confirmed at inspection.</div></div>`;
+      } else {
+        const firstA = assistOf(first), nowA = assistOf(o);
+        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="incs">${(o.incentives || []).length ? o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("") : `<span class="inc none">No incentives offered</span>`}</div>${nowA > firstA ? `<div class="was"><s class="num">${money(firstA)} toward deductible</s><span class="delta">+${money(nowA - firstA)}</span></div>` : ""}<div class="sub">Shop's preliminary estimate ${money(o.jobSize)}, subject to your insurer's process.</div></div>`;
+      }
+    } else offer = `<div class="lstate work"><i></i>Pricing what it found…</div>`;
+    const facts = o ? `<dl class="facts"><dt>Drop-off</dt><dd>${esc(clean(o.slot))}</dd><dt>Turnaround</dt><dd>${esc(o.turnaroundDays)} days</dd><dt>Warranty</dt><dd>${esc(clean(o.warranty))}</dd></dl>` : "";
+    const hist = a?.history?.summary ? `<div class="grounded"><b>Grounded in Gio's past estimates</b>${esc(a.history.summary)}${a.history.jobs ? ` <span class="hold">(${esc(a.history.jobs)} similar jobs)</span>` : ""}</div>` : "";
+    let found = "";
+    if (a?.items?.length){
+      const others = have.filter((x) => x !== s);
+      const isUniq = (i) => !i.later && others.length > 0 && foundBy[i.id]?.size === 1;
+      const rank = (i) => isUniq(i) ? 0 : i.later ? 2 : 1;
+      const items = a.items.map((i, n) => ({ ...i, n })).sort((x, y) => rank(x) - rank(y) || x.n - y.n);
+      const LIM = 6, open = expanded.has(s), showN = open ? items.length : Math.min(LIM, items.length);
+      const rows = items.slice(0, showN).map((i) => {
+        const uniq = isUniq(i), extra = !uniq && !i.later && drIds.size && !drIds.has(i.id);
+        return `<li class="${uniq ? "uniq" : ""}"><div class="ft"><b>${esc(i.label)}</b>${i.operation ? `<span class="tag">${esc(opLabel(i.operation))}</span>` : ""}${i.partType ? `<span class="tag part">${esc(partLabel(i.partType))}</span>` : ""}${uniq ? `<span class="tag uniq">Others missed</span>` : i.later ? `<span class="tag later">Added when asked</span>` : extra ? `<span class="tag">Beyond the report</span>` : ""}</div>${i.reason ? `<p>${esc(clean(i.reason))}</p>` : ""}</li>`;
+      }).join("");
+      const nUniq = items.filter(isUniq).length;
+      const missing = [...drIds].filter((id) => !items.some((i) => i.id === id));
+      const asked = new Set((r.clarifications || []).filter((c) => c.shopId === s).map((c) => c.itemId));
+      const disputed = (o?.disputed || []).filter((id) => !asked.has(id)).map((id) => labelOf(r, id));
+      const req = (cmp[s]?.missingRequired || []).map((id) => labelOf(r, id));
+      found = `<div class="found"><h4><span class="ht">What it found</span><span>${items.length} item${items.length === 1 ? "" : "s"}${nUniq ? ` · ${nUniq} others missed` : ""}</span></h4><ul class="finds">${rows}</ul>${items.length > LIM ? `<button class="more" type="button" data-more="${esc(s)}">${open ? "Show fewer" : `Show all ${items.length}`}</button>` : ""}${req.length ? `<p class="gaps"><span class="tag miss">Missing</span> <b>${esc(req.join(", "))}</b>, needed for a complete repair.</p>` : ""}${disputed.length ? `<p class="gaps"><b>Disputes:</b> ${esc(disputed.join(", "))}. To be confirmed at inspection.</p>` : ""}${!req.length && missing.length && missing.length < drIds.size ? `<p class="gaps"><b>Left out:</b> ${esc(missing.map((id) => (dr.items.find((x) => x.id === id) || {}).label || labelOf(r, id)).join(", "))}.</p>` : ""}${a.notes ? `<p class="gaps">${esc(clean(a.notes))}</p>` : ""}</div>`;
+    }
+    const cl = (r.clarifications || []).filter((c) => c.shopId === s);
+    const CL = { open: ["Waiting", "tag"], added: ["Added", "tag ok"], disputed: ["Disputed", "tag disp"], timeout: ["No answer", "tag"] };
+    const clars = cl.length ? `<div class="clar"><b>Your agent asked about ${cl.length} item${cl.length === 1 ? "" : "s"} another shop found</b><ul>${cl.map((c) => { const [t, k] = CL[c.status] || [c.status, "tag"]; return `<li><span>${esc(labelOf(r, c.itemId))}</span><span class="${k}">${esc(t)}</span></li>`; }).join("")}</ul>${cl.some((c) => c.status === "disputed") ? `<p class="gaps" style="margin-top:.4rem">Disputed items get confirmed at inspection.</p>` : ""}</div>` : "";
+    return `<article class="lane${rec ? " rec" : ""}${booked ? " booked" : ""}${once("lane-" + s)}">${booked ? `<span class="ribbon">Booked</span>` : rec ? `<span class="ribbon">Your agent's pick</span>` : ""}${head}${offer}${facts}${hist}${found}${clars}</article>`;
+  }).join(""));
+}
+$("lanes").addEventListener("click", (e) => { const b = e.target.closest("[data-more]"); if (!b || !last) return; const s = b.dataset.more; expanded.has(s) ? expanded.delete(s) : expanded.add(s); renderLanes(last, phaseOf(last)); });
+
+// ---------- render: who found what ----------
+function renderMatrix(r){
+  const shops = (r.shops || []).filter((s) => r.latest?.[s] || r.assessments?.[s]?.items?.length);
+  if (shops.length < 2){ $("mxWrap").classList.add("hide"); setHTML("mx", ""); return; }
+  $("mxWrap").classList.remove("hide");
+  const dr = damageOf(r), A = Object.fromEntries(shops.map((s) => [s, assessOf(r, s)]));
+  const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c]));
+  const rows = []; const add = (id, label) => { if (!rows.some((x) => x.id === id)) rows.push({ id, label }); };
+  (dr?.items || []).forEach((i) => add(i.id, i.label));
+  shops.forEach((s) => (A[s]?.items || []).forEach((i) => add(i.id, i.label)));
+  const drIds = new Set((dr?.items || []).map((i) => i.id));
+  const cell = (s, id) => {
+    const st = cmp[s]?.statuses?.[id], has = (A[s]?.items || []).some((i) => i.id === id), disp = (r.latest?.[s]?.disputed || []).includes(id);
+    if (has || st === "covered") return `<span class="mk yes" title="Included">${ICON.check}</span>`;
+    if (disp || st === "disputed") return `<span class="mk disp" title="Disputed, confirm at inspection">?</span>`;
+    if (st === "missing_required") return `<span class="mk miss" title="Missing a required item">!</span>`;
+    return `<span class="mk no" title="Not included">—</span>`;
+  };
+  setHTML("mx", `<table class="mx"><thead><tr><th>Item</th><th class="c">Your agent</th>${shops.map((s) => `<th class="c">${esc(shopName(r, s))}</th>`).join("")}</tr></thead><tbody>${rows.map((x) => `<tr><td>${esc(x.label)}${drIds.has(x.id) ? "" : `<span class="extra">found by a shop</span>`}</td><td class="c">${drIds.has(x.id) ? `<span class="mk agent" title="In your agent's report">${ICON.check}</span>` : `<span class="mk no">—</span>`}</td>${shops.map((s) => `<td class="c">${cell(s, x.id)}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
+}
+
+// ---------- render: decision ----------
+function renderDecision(r){
+  const wrap = $("decisionWrap");
+  if (r.booking){
+    const b = r.booking, o = (r.offers?.[b.shopId] || []).find((x) => x.id === b.offerId) || r.latest?.[b.shopId] || {};
+    const name = shopName(r, b.shopId);
+    wrap.classList.remove("hide");
+    setHTML("decision", `<div class="booked${once("booked")}"><div><span class="k">${ICON.done}Confirmed</span><h2>Drop-off ${esc(slotText(o.slot || "is set"))}.</h2><p>No payment is taken here. ${r.mode === "insurance" ? "Your insurer handles the claim; the shop pays for its own incentives." : "You pay the shop directly after the repair."}</p><ol><li>Drop the car off ${esc(slotText(o.slot || "at the agreed time"))}.</li><li>The shop inspects it and confirms the final scope${r.mode === "insurance" ? " with your insurer" : ""}.</li><li>Your agent keeps this room as your record of what was offered.</li></ol></div><dl><dt>Shop</dt><dd>${esc(name)}</dd>${r.mode === "self_pay" ? `<dt>Price</dt><dd class="num">${money(o.price?.total)}</dd>` : `<dt>Incentives</dt><dd>${(o.incentives || []).map((i) => esc(clean(i.label))).join(" + ") || "None"}</dd>`}<dt>Drop-off</dt><dd>${esc(clean(o.slot))}</dd><dt>Turnaround</dt><dd>${esc(o.turnaroundDays)} days</dd><dt>Warranty</dt><dd>${esc(clean(o.warranty))}</dd><dt>Reference</dt><dd>${esc(r.id)} · offer v${esc(o.version)}</dd></dl></div>`);
+    return;
+  }
+  if (!(r.ranking || []).length){ wrap.classList.add("hide"); setHTML("decision", ""); return; }
+  wrap.classList.remove("hide");
+  const ready = r.status === "ready_for_confirmation", ins = r.mode === "insurance";
+  const ranked = r.ranking.filter((x) => r.latest?.[x.shopId]);
+  const top = ranked.find((x) => x.recommended) || ranked[0];
+  const to = r.latest[top.shopId], rest = ranked.filter((x) => x !== top);
+  let vs = "";
+  if (!ins){
+    const others = rest.map((x) => r.latest[x.shopId]?.price?.total).filter((n) => n != null);
+    if (others.length){ const lo = Math.min(...others); const t = to.price?.total;
+      vs = t <= lo ? `${money(lo - t)} less than the next-lowest offer.` : `${money(t - lo)} more than the lowest offer, for a more complete repair.`; }
+  } else {
+    const mine = incTotal(to), others = rest.map((x) => incTotal(r.latest[x.shopId]));
+    if (others.length){ const hi = Math.max(...others); vs = mine > hi ? `${money(mine - hi)} more in shop-paid extras than the next best offer.` : mine === hi ? "Matches the best incentives in the room." : ""; }
+  }
+  const why = clean(top.why || "").replace(/^Recommended:\s*/i, "");
+  const amount = ins
+    ? `<div class="amount" style="font-size:1.5rem;line-height:1.3">${(to.incentives || []).map((i) => esc(clean(i.label))).join("<br>") || "No incentives"}<small>Shop's preliminary estimate ${money(to.jobSize)}, subject to your insurer's process.</small></div>`
+    : `<div class="amount num">${money(to.price?.total)}<small>Drop-off ${esc(clean(to.slot))} · ${esc(to.turnaroundDays)}-day turnaround</small></div>`;
+  const btn = (x, o, main) => `<button class="confirm${main ? " main" : " sm"}" type="button" ${ready ? "" : "disabled"} data-o="${esc(o.id)}" data-v="${esc(o.version)}">${main ? `Confirm ${esc(shopName(r, x.shopId))}` : "Confirm"}</button>`;
+  setHTML("decision", `<div class="decide${once("decide")}"><div class="pick"><div><span class="k"><i></i>${top.recommended ? "Your agent recommends" : "Top of the list"}</span><h2>${esc(shopName(r, top.shopId))}</h2><p class="why">${esc(why ? why.charAt(0).toUpperCase() + why.slice(1) + "." : `Ranked first for ${prioLabel(r.mode, r.priority).toLowerCase()}.`)}</p>${vs ? `<p class="vs">${esc(vs)}</p>` : ""}</div><div class="pick-r">${amount}${btn(top, to, true)}${ready ? "" : `<span class="hold">Your agent is wrapping up. Confirm unlocks in a moment.</span>`}</div></div><ol class="others">${rest.map((x, i) => { const o = r.latest[x.shopId]; return `<li><span class="n">${String(i + 2).padStart(2, "0")}</span><div><b>${esc(shopName(r, x.shopId))}</b><p>${esc(clean(x.why || "").replace(/^Recommended:\s*/i, "")) || (x.eligible === false ? "Missing part of the repair." : "&nbsp;")}</p></div><span class="amt num">${ins ? (o.incentives || []).length ? money(incTotal(o)) + " extras" : "No extras" : money(o.price?.total)}</span>${btn(x, o, false)}</li>`; }).join("")}</ol></div>`);
+}
+$("decision").addEventListener("click", async (ev) => {
+  const b = ev.target.closest(".confirm"); if (!b || b.disabled || !reqId) return;
+  const id = reqId; document.querySelectorAll("#decision .confirm").forEach((x) => { x.disabled = true; });
+  $("toast").textContent = "";
+  let res = {};
+  try { res = await (await fetch(`/api/requests/${id}/confirm`, { method: "POST", headers: JSON_H, body: JSON.stringify({ offerId: b.dataset.o, version: Number(b.dataset.v) }) })).json(); }
+  catch { res = { error: "network" }; }
+  if (id !== reqId) return;
+  shown.delete("decision"); // rebuild buttons with the server's current state
+  if (res.error){ const t2 = $("toast"); if (t2) t2.textContent = FRIENDLY[res.error] || (res.error === "network" ? "Couldn't reach the server. Try again." : "That didn't go through. Try again."); }
+  poll();
+});
+
+// ---------- feed ----------
+function appendEvents(events){
+  if (!events.length) return;
+  const feed = $("feed"), nearBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 80;
+  if (feed.querySelector(".empty")) feed.innerHTML = "";
+  let html = "";
+  for (const e of events){
+    after = Math.max(after, e.seq || 0);
+    if (e.type === "ask_sent" && e.payload?.ask?.id) askAt[e.payload.ask.id] = e.at;
+    const a = actorOf(e.actor || ""), cls = e.type === "owner_decision" ? "owner" : e.type === "exception_requested" ? "exc" : e.type === "ask_sent" ? "ask" : "";
+    const tm = e.at ? new Date(e.at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }) : "";
+    html += `<div class="ev ${cls} enter"><span class="av ${a.cls}">${esc(a.ini)}</span><div><div class="who">${esc(a.name)}${KIND[e.type] ? `<span class="kind">${KIND[e.type]}</span>` : ""}<time>${esc(tm)}</time></div><div class="txt" title="Tap to expand"><span>${esc(clean(e.text))}</span></div></div></div>`;
+    roomCount++;
+  }
+  feed.insertAdjacentHTML("beforeend", html);
+  $("roomCount").textContent = `${roomCount} message${roomCount === 1 ? "" : "s"}`;
+  if (nearBottom || events.length === roomCount) feed.scrollTop = feed.scrollHeight;
+}
+$("feed").addEventListener("click", (e) => { const t = e.target.closest(".txt"); if (t) t.classList.toggle("open"); });
+
+// ---------- render orchestration ----------
+function safe(fn){ try { fn(); } catch (e) { console.error(e); } }
+function render(r){
+  const phase = phaseOf(r);
+  safe(() => renderStage(r, phase));
+  safe(() => renderDecision(r));
+  safe(() => renderNego(r));
+  safe(() => renderDamage(r, phase));
+  safe(() => renderLanes(r, phase));
+  safe(() => renderMatrix(r));
+}
+function renderNotFound(id){
+  if (notFound) return; notFound = true;
+  $("narrH").textContent = "We couldn't find that room";
+  $("narrP").textContent = `Request ${id} isn't on this server (it may have restarted). Start a new one.`;
+  $("liveDot").style.visibility = "hidden";
+  setHTML("damage", `<div class="notfound">This room is closed or expired. <button class="confirm sm" type="button" id="nfNew" style="margin-left:.5rem">Start a new request</button></div>`);
+  $("nfNew")?.addEventListener("click", goHome);
+}
 async function poll(){
   if (!reqId || polling) return; polling = true;
   try { await pollOnce(); } catch {} finally { polling = false; }
 }
 async function pollOnce(){
   const id = reqId;
-  const f = await (await fetch(`/api/requests/${id}/feed?after=${after}`)).json();
+  const fr = await fetch(`/api/requests/${encodeURIComponent(id)}/feed?after=${after}`);
   if (id !== reqId) return;
-  for (const e of f.events){ after = Math.max(after, e.seq); const [ini, cls] = avatar(e.actor);
-    const kind = e.type === "owner_decision" ? "owner" : e.type === "exception_requested" ? "exc" : "";
-    if ($("feed").querySelector(".empty")) $("feed").innerHTML = "";
-    $("feed").insertAdjacentHTML("beforeend", `<div class="msg ${kind}"><div class="av ${cls}">${ini}</div><div><div class="who">${esc(e.actor)}<time>${new Date(e.at).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" })}</time></div><div class="txt">${esc(e.text)}</div></div></div>`);
-    $("feed").scrollTop = $("feed").scrollHeight; }
-  const r = await (await fetch(`/api/requests/${id}`)).json(); if (r.error || id !== reqId) return; last = r; render(r);
+  const f = await fr.json().catch(() => ({ events: [] }));
+  if (id !== reqId) return;
+  appendEvents(f.events || []);
+  const res = await fetch(`/api/requests/${encodeURIComponent(id)}`);
+  if (id !== reqId) return;
+  if (res.status === 404){ renderNotFound(id); return; }
+  const r = await res.json();
+  if (id !== reqId || !r || r.error) return;
+  last = r; render(r);
 }
-function render(r){
-  $("st").textContent = r.status.replaceAll("_"," "); $("scopeP").hidden = false;
-  setHTML("scope", `<ul>${r.case.baseline.map((i) => `<li>${esc(i.label)}</li>`).join("")}</ul><p class="note">${esc(r.case.reviewNote)}</p>`);
-  const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c])), rankMap = Object.fromEntries((r.ranking || []).map((x, i) => [x.shopId, { ...x, pos: i }]));
-  const shops = r.shops.filter((s) => r.latest[s]);
-  setHTML("offers", shops.length ? shops.map((s) => { const o = r.latest[s], info = r.shopsInfo[s], c = cmp[s], rk = rankMap[s];
-    const prof = info.profile.rating ? `<div class="stars"><b>★ ${info.profile.rating}</b> · ${info.profile.reviewCount} reviews${info.profile.themes?.length ? " · " + esc(info.profile.themes.join(", ")) : ""}${info.profile.source ? ` · <a href="${esc(info.profile.source.url)}" target="_blank" rel="noopener">source</a>` : ""}</div>` : `<div class="stars">${info.simulated ? "Simulated profile" : "Reviews: " + esc(info.profile.status || "pending")}</div>`;
-    const head = r.mode === "self_pay" ? `<div class="big">${money(o.price?.total)}<small>v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</small></div>${(o.incentives || []).map((i) => `<div class="tag">+ ${esc(i.label)}</div>`).join("")}`
-      : `<div class="inc">${(o.incentives || []).length ? o.incentives.map((i) => `<span>🎁 ${esc(i.label)}</span>`).join("") : "<span>No incentives offered</span>"}${info.incentiveStatus && !info.simulated ? `<span class="policy">Incentives: ${esc(info.incentiveStatus)}</span>` : ""}<span class="note">Shop's preliminary estimate, subject to your insurer's process: ${money(o.jobSize)} · v${o.version}${o.createdBy === "owner" ? " · owner-approved" : ""}</span></div>`;
-    const chips = c ? Object.entries(c.statuses).map(([id, st]) => `<span class="chip ${st}" title="${st.replaceAll("_"," ")}">${esc(r.case.labels[id] || id)}</span>`).join("") : "";
-    return `<div class="card ${info.simulated ? "sim" : ""} ${rk?.recommended ? "rec" : ""}"><div class="top"><div><div class="name">${esc(info.name)}</div>${prof}</div><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">${info.simulated ? '<span class="badge simb">Simulated</span>' : '<span class="badge real">Real shop</span>'}${rk?.recommended ? '<span class="badge recb">Recommended</span>' : ""}${c && !c.eligible ? '<span class="badge clar">Needs clarification</span>' : ""}</div></div>${head}<dl class="kv"><dt>Drop-off</dt><dd>${esc(o.slot)}</dd><dt>Turnaround</dt><dd>${o.turnaroundDays} days</dd><dt>Warranty</dt><dd>${esc(o.warranty)}</dd></dl><div class="chips">${chips}</div></div>`; }).join("") : '<div class="empty">Waiting for shops…</div>');
-  if (r.comparison?.length){ const ids = Object.keys(r.comparison[0].statuses); const L = { covered:"✓ Included", missing_required:"✗ Missing — needs clarification", recommended_elsewhere:"⚠ Not included (recommended by another shop)", disputed:"? Disputed — confirm at inspection" };
-    setHTML("cmp", `<table><thead><tr><th>Item</th>${shops.map((s) => `<th>${esc(r.shopsInfo[s].display || r.shopsInfo[s].name)}</th>`).join("")}</tr></thead><tbody>${ids.map((id) => `<tr><td>${esc(r.case.labels[id] || id)}${r.case.baseline.some((b) => b.id === id) ? "" : ' <span class="note">(added by a shop)</span>'}</td>${shops.map((s) => { const st = cmp[s]?.statuses[id]; return `<td class="st ${st}">${L[st] || "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`); }
-  if (r.ranking?.length){ const ready = r.status === "ready_for_confirmation";
-    setHTML("rank", r.ranking.map((x, i) => { const o = r.latest[x.shopId]; return `<div class="rrow ${x.recommended ? "rec" : ""}"><div class="n">${i + 1}</div><div><b>${esc(r.shopsInfo[x.shopId].display || r.shopsInfo[x.shopId].name)}</b> ${r.mode === "self_pay" ? "· " + money(o.price?.total) : ""}<div class="note">${esc(x.why || "")}</div></div><button class="confirm" ${ready && !r.booking ? "" : "disabled"} data-o="${o.id}" data-v="${o.version}">Confirm</button></div>`; }).join("")); }
-  setHTML("guards", (r.guardrails || []).map((g) => `<div class="guard">${esc(g)}</div>`).join(""));
-  if (r.status === "ready_for_confirmation" || r.booking) $("go").disabled = false;
-  if (r.booking){ const o = r.latest[r.booking.shopId]; setHTML("booked", `<div class="banner">Booked with ${esc(r.shopsInfo[r.booking.shopId].display || r.shopsInfo[r.booking.shopId].name)} · ${r.mode === "self_pay" ? money(o.price?.total) : (o.incentives || []).map((i) => esc(i.label)).join(" + ")} · drop-off ${esc(o.slot)}<small>Simulated booking — no payment taken. Final details are confirmed at inspection.</small></div>`); $("go").disabled = false; }
-}
-// one delegated handler: survives re-renders, no alert() popups mid-demo
-const FRIENDLY = { offer_not_current: "That offer just changed — confirm the updated one.", offers_not_final_yet: "Hold on — the shops are still negotiating.", already_booked: "Already booked." };
-$("rank").addEventListener("click", async (ev) => { const b = ev.target.closest(".confirm"); if (!b || b.disabled) return; b.disabled = true;
-  const res = await (await fetch(`/api/requests/${reqId}/confirm`, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ offerId: b.dataset.o, version: Number(b.dataset.v) }) })).json();
-  $("toast").textContent = res.error ? (FRIENDLY[res.error] || res.error) : ""; if (res.error) { shown.delete("rank"); poll(); } });
-loadCases(); status(); setInterval(status, 5000); setInterval(poll, 1000); poll();
+
+// ---------- go ----------
+renderComposer(); loadCases(); status(); setInterval(status, 5000);
+if (reqId){ setView("live"); poll(); }
+setInterval(() => { if (!notFound) poll(); }, 1000);
 </script>
 </body>
 </html>

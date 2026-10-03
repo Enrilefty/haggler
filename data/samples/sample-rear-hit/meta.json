@@ -1,0 +1,12 @@
+{
+  "id": "sample-rear-hit",
+  "title": "Rear corner hit, Suzuki Reno",
+  "vehicle": {
+    "make": "Suzuki",
+    "model": "Reno"
+  },
+  "photos": [
+    "/samples/sample-rear-hit/rear-right.jpg"
+  ],
+  "credit": "Pujanak, Public domain, Wikimedia Commons"
+}

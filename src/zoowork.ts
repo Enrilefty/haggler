@@ -6,18 +6,31 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { env, STATE_DIR } from "./config.ts";
 import type { Orchestrator, Ctx } from "./orchestrator.ts";
-import { SHOP_ACTOR, GUARDRAIL_INSURANCE } from "./orchestrator.ts";
+import { GUARDRAIL_INSURANCE } from "./orchestrator.ts";
 
 const obj = (properties: Record<string, unknown>, required: string[] = []) => ({ type: "object", properties, required });
 const num = { type: "number" }, str = { type: "string" };
 
+const damageItem = obj({ id: str, operation: str, severity: { type: "string", enum: ["minor", "moderate", "severe"] }, note: str }, ["id", "operation", "severity"]);
+const scopeLine = obj({ id: str, operation: str, partType: { type: "string", enum: ["oem", "aftermarket", "used", "capa"] }, reason: str }, ["id", "operation", "reason"]);
+const INSPECT = { name: "inspect_photos", description: "Look at the customer's photos for this request. Returns the photos as images plus the damage catalog (ids, labels, areas, kinds, valid operations). Shops also get the customer's agent's damage report.", input_schema: obj({}) };
+
 const SHOP_TOOLS = [
-  { name: "review_and_quote", description: "Review the posted scope under this shop's rules (accept or amend with reasons), price it with the shop's own rate card (self-pay) or size the job and offer the shop's autonomous incentives (insurance), and post the offer to the room. Numbers come from the engine; never type prices yourself.", input_schema: obj({}) },
-  { name: "respond_clarification", description: "Answer a clarification the driver's agent asked about one item. The server applies this shop's policy (add the item and reprice, or mark it disputed). Optionally include a one-line message.", input_schema: obj({ clarificationId: str, message: str }, ["clarificationId"]) },
+  INSPECT,
+  { name: "submit_assessment", description: "Post YOUR shop's scope for a photo request: one line per catalog id with an operation (one of that item's ops), optional partType (your parts policy applies), and a short reason tied to what you see or to your shop's experience. The server prices it with your shop's rate card, catalog labor hours and part prices, and posts your offer. Never type prices. Unknown ids are rejected with the valid list.", input_schema: obj({ items: { type: "array", items: scopeLine }, notes: str }, ["items"]) },
+  { name: "review_and_quote", description: "For the sample request with a person-reviewed scope (no photo assessment needed): review the posted scope under this shop's rules and post the offer. Numbers come from the engine; never type prices yourself.", input_schema: obj({}) },
+  { name: "respond_clarification", description: "Answer a clarification the driver's agent asked about one item. For photo requests pass decision \"add\" (include it; the server reprices) or \"dispute\" (not needed from the photos), plus a one-line message. For the sample request the server applies the shop's policy.", input_schema: obj({ clarificationId: str, decision: { type: "string", enum: ["add", "dispute"] }, message: str }, ["clarificationId"]) },
   { name: "revise_offer", description: "Improve your offer within your own authority. Self-pay: pass total (must be at or above your autonomous limit). Insurance: pass deductibleAssist (must be within your tier cap).", input_schema: obj({ total: num, deductibleAssist: num, message: str }) },
   { name: "request_exception", description: "Ask the owner to approve something beyond your authority (self-pay: a total below your autonomous limit; insurance: deductible assistance above your cap). This waits for the owner's decision and returns approved, countered or denied.", input_schema: obj({ total: num, deductibleAssist: num, reason: str }, ["reason"]), timeoutMs: 240_000 },
 ];
+const DRIVE_TOOLS = [
+  SHOP_TOOLS[0],
+  { name: "get_gio_history", description: "Drive Auto Body only. Search Gio's anonymized past estimates for similar jobs (by damaged areas and catalog ids, same payer type) and get the playbook mined from them: items Gio adds on insurance jobs and how often, where he repairs instead of replacing on cash jobs, and his part-type mix. Call this before submit_assessment.", input_schema: obj({ areas: { type: "array", items: str }, catalogIds: { type: "array", items: str } }) },
+  ...SHOP_TOOLS.slice(1),
+];
 const BUYER_TOOLS = [
+  INSPECT,
+  { name: "post_damage_report", description: "Post your damage report for the customer's photos: a one-sentence summary, vehicleGuess if you can tell, and one item per damaged part using catalog ids only (operation from that item's ops, severity minor|moderate|severe, a short note of what you see). Shops quote against this report.", input_schema: obj({ summary: str, vehicleGuess: str, items: { type: "array", items: damageItem } }, ["summary", "items"]) },
   { name: "get_offers", description: "Get the latest offer from each shop plus the scope comparison (covered / missing_required / disputed / recommended_elsewhere).", input_schema: obj({}) },
   { name: "clarify_item", description: "Ask one shop to clarify one item (at most once per item). Use for items marked missing_required or recommended_elsewhere.", input_schema: obj({ shopId: str, itemId: str, question: str }, ["shopId", "itemId", "question"]) },
   { name: "ask_shop", description: "The single negotiation ask. Self-pay: target total. Insurance: target deductibleAssist. Cite only real numbers from the room.", input_schema: obj({ shopId: str, total: num, deductibleAssist: num, message: str }, ["shopId", "message"]) },
@@ -25,24 +38,38 @@ const BUYER_TOOLS = [
   { name: "present_for_confirmation", description: "Present the ranked offers to the driver. Never books; the driver must confirm.", input_schema: obj({ summary: str }) },
 ];
 
-const BUYER_PERSONA = `You are the driver's agent in Quote Room, a marketplace where body shops' agents compete for a repair.
-- Work only through your tools. Compare only what shops actually posted. When negotiating, cite only real numbers or terms from the room; never invent a competing offer.
-- Clarify before recommending: if an offer is missing a required item, or another shop recommended an item this offer lacks, use clarify_item (once per item).
+const BUYER_PERSONA = `You are the customer's own AI agent in Quote Room. Your customer snapped photos of their damaged car; you shop the repair to local body shops, negotiate, and let the customer pick. You work for the customer, not for any shop.
+- Photos first: call inspect_photos and really look. Then post_damage_report with catalog ids only: what is damaged, the likely operation (repair if it is a dent or scuff that can be fixed, replace if it is torn, cracked, crushed or broken), severity, and a short plain note of what you see. List what you can see; mention implied hidden damage in a note rather than guessing a part. Never price anything.
+- Compare only what shops actually posted. When negotiating, cite only real numbers or terms from the room; never invent a competing offer.
+- Clarify before recommending: if an offer is missing an item from your report, or another shop recommended an item this offer lacks, use clarify_item (once per item).
 - One negotiation round: exactly one ask_shop call, aimed where it could change the ranking. Self-pay: ask about price. Insurance: ask about incentives (deductibleAssist), never repair price.
-- Never book. Rank with rank_offers, then present_for_confirmation and wait for the driver.
-- Say that final repair details are confirmed at inspection. Insurance mode: never estimate the driver's out-of-pocket amount; the only allowed wording is: "${GUARDRAIL_INSURANCE}"
+- Never book. Rank with rank_offers, then present_for_confirmation and wait for the customer.
+- Say that final repair details are confirmed at inspection. Insurance mode: never estimate the customer's out-of-pocket amount; the only allowed wording is: "${GUARDRAIL_INSURANCE}"
 After tool calls, reply with ONE short sentence. Only quote prices that the latest tool results returned.`;
 
-const shopPersona = (name: string, simulated: boolean) => `You are the quoting agent for ${name}${simulated ? " (a simulated demo shop)" : ""}. You answer repair requests under this shop's rules only.
-- To quote: call review_and_quote. It reviews the scope under this shop's rules and prices it with this shop's own numbers. Never type prices yourself.
-- If asked to clarify an item: call respond_clarification with the clarification id (optionally a one-line message).
-- If the driver's agent asks for more: if it's within your authority use revise_offer; if it's beyond your authority call request_exception with a one-line reason and wait for the owner.
-- Compete on fit, completeness, turnaround, parts, warranty and reviews, not just price. Be brief, professional and plain-spoken. After tool calls reply with one short sentence, no tables. Never offer anything the owner hasn't authorized.`;
+const COMMON_SHOP = `- If asked to clarify an item: call respond_clarification with the clarification id; on photo requests also pass decision "add" or "dispute" the way your shop would, with a one-line message.
+- If the customer's agent asks for more: if it's within your authority use revise_offer; if it's beyond your authority call request_exception with a one-line reason and wait for the owner.
+- For the sample request with a person-reviewed scope, call review_and_quote instead of submit_assessment.
+- Be brief, professional and plain-spoken. After tool calls reply with one short sentence, no tables. Never type prices; the server prices your scope. Never offer anything the owner hasn't authorized.`;
+
+const DRIVE_PERSONA = `You are the estimating agent for Drive Auto Body, a real collision shop run by its owner, Gio. You estimate the way Gio does: he is known for finding everything on insurance jobs and for the cheapest sound fix on cash jobs.
+- On a photo request: FIRST call get_gio_history (areas and catalog ids from the customer's report) to see how Gio wrote similar jobs. Then inspect_photos and look yourself. Then submit_assessment.
+- Insurance jobs: be thorough like Gio. Include the visible damage, the hidden damage he historically finds behind that kind of impact (impact bar, absorber, brackets, radiator support, sensors), blends on adjacent panels, pre/post scans and calibrations, and the materials lines he adds. Every line needs a reason tied to the photos or to Gio's history (cite the history pattern in plain words, e.g. "Gio adds this on most front-end hits").
+- Cash (self-pay) jobs: the cheapest fix that is still sound. get_gio_history returns cashOptions with your own price to repair vs replace with a used/aftermarket part for each reported item: take the cheaper one (replace with a used or aftermarket part when repair labor costs more, repair when the part costs more), set partType "used" or "aftermarket", and skip non-essential operations. Never cut anything safety-related.
+${COMMON_SHOP}`;
+const BAYLINE_PERSONA = `You are the estimating agent for Bayline Collision, an OEM-only shop known for thorough, by-the-book repairs (a demo shop in this prototype).
+- On a photo request: inspect_photos, look yourself, then submit_assessment. Follow factory repair procedures: replace damaged panels with new OEM parts rather than repairing heavy damage, include the hidden parts behind the impact and the required scans/calibrations, and give an OEM-procedure reason per line. Always partType "oem".
+${COMMON_SHOP}`;
+const QUICKFIX_PERSONA = `You are the estimating agent for QuickFix Auto Body, a fast, budget-minded shop (a demo shop in this prototype).
+- On a photo request: inspect_photos, look yourself, then submit_assessment with only what is visibly damaged. Repair where possible, aftermarket parts (partType "aftermarket"), no hidden items or extra procedures unless the photos clearly show they are needed. Short reasons.
+${COMMON_SHOP}`;
+const shopPersona = (id: string) => (id === "drive" ? DRIVE_PERSONA : id === "shop-b" ? BAYLINE_PERSONA : QUICKFIX_PERSONA);
+const shopTools = (id: string) => (id === "drive" ? DRIVE_TOOLS : SHOP_TOOLS);
 
 type Binding = { agentKey: string; agentId: string; sessionId?: string; cursor?: string; ctx: Ctx };
 
 export class ZooWorkRuntime {
-  zc = createZooworkClient({ apiKey: env("ZOOWORK_API_KEY"), fetch: (u: string, i?: RequestInit) => fetch(u, { ...i, signal: i?.signal ?? AbortSignal.timeout(30_000) }) });
+  zc = createZooworkClient({ apiKey: env("ZOOWORK_API_KEY"), fetch: (u: string, i?: RequestInit) => fetch(u, { ...i, signal: i?.signal ?? AbortSignal.timeout(60_000) }) }); // 60s: inspect_photos results carry images
   agents: Record<string, string> = {};
   model?: string;
   ready = false;
@@ -63,7 +90,7 @@ export class ZooWorkRuntime {
       if (existsSync(this.agentsFile)) stored = JSON.parse(readFileSync(this.agentsFile, "utf8"));
       const defs: [string, any][] = [
         ["buyer", { name: "quote-room-buyer", persona: BUYER_PERSONA, tools: BUYER_TOOLS }],
-        ...this.o.shops.map((s) => [`shop:${s.id}`, { name: `quote-room-${s.id}`, persona: shopPersona(s.name, s.isSimulated), tools: SHOP_TOOLS }] as [string, any]),
+        ...this.o.shops.map((s) => [`shop:${s.id}`, { name: `quote-room-${s.id}`, persona: shopPersona(s.id), tools: shopTools(s.id) }] as [string, any]),
       ];
       for (const [key, d] of defs) {
         const hash = hashStr(JSON.stringify([d.persona, d.tools, this.model]));
@@ -132,8 +159,11 @@ export class ZooWorkRuntime {
         const call: any = customToolUse(ev);
         if (call?.phase === "requested" && !handled.has(call.callId)) {
           handled.add(call.callId);
-          const value = await this.dispatch(b.ctx, call.name ?? call.toolName, call.input ?? {});
-          await this.zc.resolveCustomToolCall(b.agentId, call.callId, { content: [{ type: "json", value }], resolvedBy: `quote-room:${agentKey}` } as any);
+          const value: any = await this.dispatch(b.ctx, call.name ?? call.toolName, call.input ?? {});
+          // Handlers that return { __content } (inspect_photos) send image blocks + a json block;
+          // everything else is one json block.
+          const content = value && Array.isArray(value.__content) ? value.__content : [{ type: "json", value }];
+          await this.zc.resolveCustomToolCall(b.agentId, call.callId, { content, resolvedBy: `quote-room:${agentKey}` } as any);
         }
         if (isRunFinished(ev)) { finished = true; break; }
       }
