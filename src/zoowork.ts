@@ -42,7 +42,7 @@ const shopPersona = (name: string, simulated: boolean) => `You are the quoting a
 type Binding = { agentKey: string; agentId: string; sessionId?: string; cursor?: string; ctx: Ctx };
 
 export class ZooWorkRuntime {
-  zc = createZooworkClient({ apiKey: env("ZOOWORK_API_KEY") });
+  zc = createZooworkClient({ apiKey: env("ZOOWORK_API_KEY"), fetch: (u: string, i?: RequestInit) => fetch(u, { ...i, signal: i?.signal ?? AbortSignal.timeout(30_000) }) });
   agents: Record<string, string> = {};
   model?: string;
   ready = false;
@@ -78,7 +78,7 @@ export class ZooWorkRuntime {
         }
         await this.zc.startAgent(this.agents[key]).catch(() => undefined);
       }
-      for (const id of Object.values(this.agents)) await this.zc.waitUntilRunning(id);
+      for (const id of Object.values(this.agents)) await this.zc.waitUntilRunning(id, { timeoutMs: 120_000 });
       this.ready = true;
       return { ok: true, model: this.model, agents: Object.keys(this.agents) };
     } catch (e: any) {

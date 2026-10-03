@@ -184,25 +184,30 @@ export class Orchestrator extends EventEmitter {
     const { shopId } = this.assertShop(ctx); const req = this.requests[ctx.requestId]; const base = this.latest(req, shopId)!;
     if (this.closed(req)) return { error: "negotiation_closed" };
     if (!base) return { error: "quote_first" };
+    // Once the owner has decided on this shop's ask, the agent can't contradict that decision.
+    const openAsk = req.asks.find((a) => a.shopId === shopId && !a.outcome);
+    if (req.asks.some((a) => a.shopId === shopId && Object.values(this.approvals).some((ap) => ap.askId === a.id && ap.status !== "pending"))) return { error: "owner_already_decided" };
     const lim = this.limits(req, shopId);
     if (req.mode === "self_pay") {
       const total = Math.round(Number(args.total));
       if (!(total > 0)) return { error: "total_required" };
       if (total < (lim.autonomousLimit as number)) return { error: "beyond_authority", autonomousLimit: lim.autonomousLimit, hint: "Call request_exception to ask the owner." };
-      if (total > (base.price?.total ?? Infinity)) return { error: "revision_must_not_raise_price" };
+      if (total >= (base.price?.total ?? 0)) return { error: "revision_must_lower_price", currentTotal: base.price?.total };
       const next = this.pushOffer(req, shopId, { ...base, price: { ...base.price!, total }, createdBy: base.createdBy, note: "revised within authority", approvalId: undefined });
       this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Revised within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
-      this.askAnswered(req, shopId, "revised");
-      return { ok: true, offer: this.offerView(next) };
+      // A partial move leaves the ask open, so the owner is still asked for the rest.
+      if (openAsk && total <= (openAsk.target.total ?? -Infinity)) this.askAnswered(req, shopId, "revised");
+      return { ok: true, offer: this.offerView(next), askStillOpen: !!openAsk && !openAsk.outcome };
     }
     const assist = Math.round(Number(args.deductibleAssist));
     if (!(assist >= 0)) return { error: "deductibleAssist_required" };
     if (assist > (lim.deductibleCap as number)) return { error: "beyond_authority", deductibleCap: lim.deductibleCap, hint: "Call request_exception to ask the owner." };
+    if (assist <= currentAssist(base)) return { error: "revision_must_raise_assist", currentAssist: currentAssist(base) };
     const incentives = setAssist(base.incentives ?? [], assist);
     const next = this.pushOffer(req, shopId, { ...base, incentives, note: "incentive within authority", approvalId: undefined });
     this.log(req.id, "offer_revised", SHOP_ACTOR[shopId], `${args.message || "Within my authority."}\nOffer v${next.version}: ${this.describeOffer(next)}`, next, ["buyer"]);
-    this.askAnswered(req, shopId, "revised");
-    return { ok: true, offer: this.offerView(next) };
+    if (openAsk && assist >= (openAsk.target.deductibleAssist ?? Infinity)) this.askAnswered(req, shopId, "revised");
+    return { ok: true, offer: this.offerView(next), askStillOpen: !!openAsk && !openAsk.outcome };
   }
 
   // Exception: creates an Approval bound to the driver's open ask, the request/shop, the base offer
@@ -255,7 +260,7 @@ export class Orchestrator extends EventEmitter {
     if (ap.status !== "pending") return;
     const req = this.requests[ap.requestId];
     ap.status = "expired"; ap.decidedAt = now(); ap.decidedVia = via;
-    if (note && !req.booking) this.log(req.id, "owner_decision", "Owner (Gio)", note, { approval: ap });
+    if (note && !req.booking) this.log(req.id, "owner_decision", "Quote Room", note, { approval: ap });
     this.finishApproval(req, ap);
   }
   private finishApproval(req: Request, ap: Approval) {
@@ -375,6 +380,7 @@ export class Orchestrator extends EventEmitter {
     if (!req.negotiationDone) return { error: "negotiation_still_running" };
     if (!req.ranking) this.tool_rank_offers(ctx);
     req.status = "ready_for_confirmation";
+    for (const ap of Object.values(this.approvals)) if (ap.requestId === req.id && ap.status === "pending") this.expire(ap, "request_closed");
     const top = req.ranking?.find((r) => r.recommended) ?? req.ranking?.find((r) => r.eligible) ?? req.ranking?.[0];
     const offer = top ? this.latest(req, top.shopId) : undefined;
     const pick = offer ? `Top pick for "${req.priority.replace("_", " ")}": ${SHOP_ACTOR[offer.shopId]} — ${this.describeOffer(offer)}. ` : "";

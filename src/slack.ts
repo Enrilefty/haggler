@@ -95,7 +95,8 @@ export class SlackOwner {
       return;
     }
     let v: any = {}; try { v = JSON.parse(action.value ?? "{}"); } catch { return; }
-    const ap = this.o.approvals[v.apId]; if (!ap) return;
+    const ap = this.o.approvals[v.apId];
+    if (!ap) { await this.api("chat.postEphemeral", { channel: this.approvals, user: this.owner, text: "That tap reached a Quote Room server that doesn't know this approval — another server is connected to this Slack app. Stop it and tap again." }).catch(() => undefined); return; }
     const req = this.o.requests[ap.requestId];
     const aid = String(action.action_id ?? "");
     const decision = aid === "qr_approve" ? "approve" : aid.startsWith("qr_counter") ? "counter" : aid === "qr_deny" ? "deny" : undefined;
@@ -141,7 +142,7 @@ export class SlackOwner {
     const what = ap.status === "countered" ? `Countered at ${req.mode === "self_pay" ? money(ap.counter?.total) : money(ap.counter?.deductibleAssist) + " toward the deductible"}`
       : ap.status === "approved" ? "Approved" : ap.status === "denied" ? "Denied"
       : ap.decidedVia === "timeout" ? "Expired — no answer in time, current offer held"
-      : ap.decidedVia === "request_closed" ? "Closed — the driver already booked" : "Expired — the offer changed";
+      : ap.decidedVia === "request_closed" ? (req.booking ? "Closed — the driver already booked" : "Closed — offers were already presented to the driver") : "Expired — the offer changed";
     const icon = ap.status === "expired" ? ":hourglass:" : ":white_check_mark:";
     const via = ap.status === "expired" ? "" : ` (via ${ap.decidedVia})`;
     await this.api("chat.update", { channel: this.approvals, ts, text: `${what} · ${ap.requestId}`, blocks: [{ type: "section", text: { type: "mrkdwn", text: `${icon} *${what}* · ${ap.requestId}${via}` } }] }).catch((e) => { this.lastError = String(e.message); });
