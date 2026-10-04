@@ -55,13 +55,35 @@ button{font:inherit;color:inherit}
 .hero h1{font:400 clamp(2.7rem,5.4vw,4.9rem)/.97 var(--serif);letter-spacing:-.02em;margin:1rem 0 1.25rem;text-wrap:balance}
 .hero h1 em{font-style:italic;color:var(--agent)}
 .hero .lede{font-size:1.12rem;line-height:1.55;color:var(--ink-2);max-width:31rem;margin:0}
-.how{list-style:none;margin:2.5rem 0 0;padding:0;border-top:1px solid var(--line-2);max-width:32rem}
-.how li{display:grid;grid-template-columns:2.4rem minmax(0,1fr);gap:.5rem;padding:.95rem 0;border-bottom:1px solid var(--line)}
-.how .n{font:500 .74rem var(--mono);color:var(--faint);padding-top:.2rem}
-.how b{font-weight:600;display:block}
-.how span{color:var(--muted);font-size:.93rem}
-.how-note{margin:1.1rem 0 0;font-size:.88rem;color:var(--muted);max-width:32rem}
-.how-note b{color:var(--ink);font-weight:600}
+/* photo fan: the whole idea at a glance */
+.fan{position:relative;height:clamp(15rem,24vw,21rem);margin:1.6rem 0 0;max-width:34rem}
+.ph{position:absolute;margin:0;width:56%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#D9D4C9;border:5px solid #fff;box-shadow:0 18px 40px -20px rgba(15,17,21,.55),0 2px 6px rgba(15,17,21,.08);animation:fanIn .55s cubic-bezier(.2,.7,.2,1) both}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph.p1{left:0;top:9%;transform:rotate(-7deg);--r:-7deg;animation-delay:.05s}
+.ph.p3{right:0;top:4%;transform:rotate(6deg);--r:6deg;animation-delay:.12s}
+.ph.p2{left:20%;top:18%;width:60%;transform:rotate(-1deg);--r:-1deg;z-index:2;animation-delay:.18s}
+.chip{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:.55rem;background:#fff;border-radius:999px;padding:.4rem .9rem .4rem .4rem;box-shadow:0 12px 28px -14px rgba(15,17,21,.5),0 0 0 1px rgba(15,17,21,.05);white-space:nowrap;animation:chipIn .4s cubic-bezier(.2,.7,.2,1) both}
+.chip small{display:block;font:500 .6rem/1.1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip b{display:block;font:600 1.12rem/1.15 var(--sans);letter-spacing:-.015em}
+.chip b em{font:500 .78rem var(--sans);font-style:normal;color:var(--ok)}
+.chip.ok{background:var(--ok-deep);color:#fff}.chip.ok small{color:#A9E6C8}.chip.ok b em{color:#A9E6C8}
+.chip.c1{left:-2%;top:2%;animation-delay:.55s}
+.chip.c2{right:-2%;bottom:4%;animation-delay:.85s}
+.chip.c3{left:6%;bottom:-2%;animation-delay:.7s}
+.chip.c3 b{font:400 1.05rem/1.15 var(--serif);font-style:italic;letter-spacing:0}
+.mk2{width:2.1rem;height:2.1rem;border-radius:50%;display:grid;place-items:center;font:600 .6rem var(--mono);font-style:normal;color:#fff;background:var(--ink);flex:none}
+.mk2.shop-b{background:var(--shopb)}.mk2.you{background:var(--agent)}.mk2.drive{background:#fff;color:var(--ok-deep)}
+@keyframes fanIn{from{opacity:0;transform:translateY(14px) rotate(0deg) scale(.96)}to{opacity:1;transform:rotate(var(--r))}}
+@keyframes chipIn{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+.flow{list-style:none;margin:2.4rem 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:34rem;position:relative}
+.flow li{display:flex;flex-direction:column;gap:.15rem;position:relative;padding-right:.75rem}
+.flow li + li::before{content:"";position:absolute;left:-.25rem;top:1.25rem;width:calc(100% - 3.4rem);transform:translateX(-100%);height:0;border-top:1.5px dashed var(--line-2)}
+.flow .g{width:2.6rem;height:2.6rem;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line-2);color:var(--ink);margin-bottom:.45rem}
+.flow li:nth-child(2) .g{background:var(--agent);border-color:var(--agent);color:#fff}
+.flow li:nth-child(3) .g{background:var(--ok);border-color:var(--ok);color:#fff}
+.flow .g svg{width:1.25rem;height:1.25rem}
+.flow b{font-weight:600;font-size:.98rem}
+.flow span:not(.g){font-size:.8rem;color:var(--muted)}
 
 .composer{background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:clip}
 .c-sec{padding:1.5rem 1.75rem;border-top:1px solid var(--line)}
@@ -118,8 +140,11 @@ button{font:inherit;color:inherit}
 @media (max-width:1023px){
   .start{grid-template-columns:minmax(0,1fr);grid-template-rows:none;gap:1.75rem;padding:1.5rem 1rem 2.5rem}
   .hero,.composer,.hero-how{grid-column:auto;grid-row:auto}
-  .how{margin-top:.5rem}
+  .flow{margin-top:.25rem}
+  .fan{height:clamp(13rem,52vw,19rem);margin-top:1.1rem}
+  .hero h1{margin-bottom:.7rem}
 }
+@media (max-width:560px){.chip.c3{left:auto;right:-1%;top:-4%;bottom:auto}.chip.c2{bottom:-3%}.chip{padding-right:.75rem}.chip b{font-size:1rem}}
 @media (max-width:560px){
   :root{--gut:1rem}
   .c-sec{padding:1.25rem 1.1rem}
@@ -394,6 +419,84 @@ html.proj .room{max-height:34rem}
 .ev.ask .txt{background:var(--agent-soft);border-radius:10px;padding:.5rem .65rem;color:#17257F}
 .ev.enter{animation:evIn .24s cubic-bezier(.2,.7,.2,1) both}
 
+/* offer board */
+.board{background:var(--surface);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:var(--shadow)}
+.board-h{display:flex;justify-content:space-between;gap:1rem;padding:.85rem 1.4rem;border-bottom:1px solid var(--line)}
+.board-h .k{font:500 .7rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.board ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr))}
+.board li{display:grid;grid-template-columns:3rem minmax(0,1fr);grid-template-rows:auto auto;gap:.2rem .85rem;padding:1.15rem 1.4rem 1.25rem;border-left:1px solid var(--line);position:relative;min-width:0}
+.board li:first-child{border-left:0}
+.board li.lead{background:linear-gradient(180deg,var(--ok-soft),rgba(227,243,234,.2))}
+.board li.lead::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--ok)}
+.board .mark{width:3rem;height:3rem;border-radius:14px;font-size:.82rem;grid-row:1 / span 2}
+.board .bm{display:flex;flex-wrap:wrap;align-items:center;gap:.15rem .5rem;min-width:0}
+.board .bm b{font:600 1rem/1.2 var(--sans);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.board .bm .lstate{flex-basis:100%;font-size:.78rem}
+.btag{font:600 .6rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;background:var(--ok);color:#fff;padding:.3rem .45rem;border-radius:999px}
+.bv{grid-column:2;display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .5rem;margin-top:.35rem;min-width:0}
+.bn{font:600 2.6rem/1 var(--sans);letter-spacing:-.035em;border-radius:10px}
+.bd{font:600 .74rem/1 var(--mono);padding:.32rem .5rem;border-radius:999px;background:var(--ok-soft);color:var(--ok);align-self:center}
+.bd.up{background:var(--warn-soft);color:var(--warn)}
+.bv small{flex-basis:100%;font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bsk{display:block;width:7rem;height:2.3rem;border-radius:10px}
+html.proj .bn{font-size:3rem}
+@media (max-width:560px){.board li{border-left:0;border-top:1px solid var(--line);padding:1rem 1.1rem}.board li:first-child{border-top:0}.bn{font-size:2.2rem}.board .mark{width:2.6rem;height:2.6rem}.board li{grid-template-columns:2.6rem minmax(0,1fr)}}
+/* damage findings as chips */
+.sevbar{display:flex;gap:3px;height:.6rem;border-radius:999px;overflow:hidden;margin:.35rem 0 .5rem}
+.sevbar span{display:block;min-width:.6rem}
+.sevbar .sev-hi,.sevkey .sev-hi i,.fchips .sev-hi i{background:var(--bad)}
+.sevbar .sev-md,.sevkey .sev-md i,.fchips .sev-md i{background:var(--gold)}
+.sevbar .sev-lo,.sevkey .sev-lo i,.fchips .sev-lo i{background:#A3A9B3}
+.sevkey{display:flex;flex-wrap:wrap;gap:.3rem 1rem;font:500 .74rem var(--mono);color:var(--muted);margin-bottom:.9rem}
+.sevkey span{display:inline-flex;align-items:center;gap:.4rem}
+.sevkey i{width:.55rem;height:.55rem;border-radius:50%}
+.fchips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.45rem}
+.fchips li{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem .7rem .45rem .55rem;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:.86rem;max-width:100%}
+.fchips li.sev-hi{background:var(--bad-soft);border-color:transparent}
+.fchips li.sev-md{background:var(--warn-soft);border-color:transparent}
+.fchips i{width:.55rem;height:.55rem;border-radius:50%;flex:none}
+.fchips b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fchips span{font:500 .66rem var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);white-space:nowrap}
+.findings .sum.clamp{margin:.9rem 0 0;font-size:.86rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp b{display:inline;margin:0 .4rem 0 0}
+.fp span{margin-right:.6rem}
+/* negotiation rows */
+.nrow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) minmax(0,1fr);gap:1rem 1.5rem;align-items:center;padding:1.15rem 1.6rem;border-top:1px solid var(--line)}
+.nego-top + .nrow{border-top:0}
+.nwho{display:grid;grid-template-columns:2.6rem minmax(0,1fr);gap:.7rem;align-items:center;min-width:0}
+.nwho b{font-weight:600}
+.nq{margin:.15rem 0 0;font:italic 400 1rem/1.25 var(--serif);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chain{display:flex;align-items:flex-start;min-width:0}
+.cn{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:0 1 6.5rem;min-width:0;text-align:center}
+.cn small{font-size:.72rem;line-height:1.25;color:var(--muted)}
+.cn .d{width:2.3rem;height:2.3rem;border-radius:50%;display:grid;place-items:center;background:#EEF0F2;color:#4F5661;font:600 .62rem var(--mono);position:relative}
+.cn .d.you{background:var(--agent);color:#fff}.cn .d.shop{background:var(--ink);color:#fff}.cn .d.owner{background:var(--ok);color:#fff}
+.cn .d.wait{box-shadow:0 0 0 3px var(--warn-soft),0 0 0 4.5px var(--gold)}
+.cn .d.yes::after,.cn .d.nope::after{position:absolute;right:-.3rem;bottom:-.25rem;width:1.05rem;height:1.05rem;border-radius:50%;display:grid;place-items:center;font:700 .62rem/1 var(--sans);color:#fff;border:2px solid #fff}
+.cn .d.yes::after{content:"✓";background:var(--ok)}
+.cn .d.nope::after{content:"✕";background:var(--bad)}
+.ca{flex:1 1 1.5rem;min-width:1rem;height:0;border-top:1.5px dashed var(--line-2);margin-top:1.15rem;position:relative}
+.ca::after{content:"";position:absolute;right:-1px;top:-4.5px;border:4px solid transparent;border-left:6px solid var(--line-2);border-right:0}
+.nba{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;min-width:0}
+.nba .lbl{font:500 .66rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.nba .ba{font-size:2.1rem}
+.nba .ba s{font-size:1.2rem}
+.nba .ba .up-good{color:var(--ok)}
+.nba small{font-size:.8rem;color:var(--muted)}
+.nba .cx{margin:0;font-size:.8rem;color:var(--ok-deep)}
+.nba .state{font-size:.8rem;padding:.34rem .65rem;margin-top:.2rem}
+@media (max-width:980px){.nrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.nwho{grid-column:1 / -1}}
+@media (max-width:560px){.nrow{grid-template-columns:minmax(0,1fr);padding:1rem 1.15rem}.nba{flex-direction:row;flex-wrap:wrap;align-items:center;gap:.3rem .6rem}.nba .lbl{flex-basis:100%}}
+/* shop lane facts as icon strip */
+.facts2{display:flex;flex-wrap:wrap;gap:.35rem .5rem}
+.facts2 span{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;font-weight:500;color:var(--ink-2);background:var(--paper);border-radius:999px;padding:.32rem .6rem .32rem .5rem;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.facts2 svg{width:.9rem;height:.9rem;color:var(--muted);flex:none}
+/* feed: latest few by default */
+.feed:not(.all) .ev:nth-last-child(n+7){display:none}
+.feed-all{margin-left:auto;border:0;background:var(--agent-soft);color:var(--agent);font:600 .74rem var(--sans);border-radius:999px;padding:.35rem .7rem;cursor:pointer;min-height:2rem;white-space:nowrap}
+.feed-all:hover{background:#DDE3FD}
+
 .notfound{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:2rem;text-align:center;color:var(--muted)}
 
 /* motion */
@@ -427,7 +530,15 @@ body[data-view="live"] #start{display:none}
   <section class="hero">
     <span class="eyebrow"><i></i>For drivers</span>
     <h1>Snap the damage. <em>Your agent</em> gets the shops competing.</h1>
-    <p class="lede">Add a few photos. Your AI agent inspects them, sends the job to local body shops, questions the gaps between their estimates, pushes for a better deal, and brings back one pick for you to confirm.</p>
+    <p class="lede">Local shops bid on your repair. You just pick.</p>
+    <div class="fan" aria-hidden="true">
+      <figure class="ph p1"><img src="/samples/sample-rear-hit/rear-right.jpg" alt=""></figure>
+      <figure class="ph p3"><img src="/samples/sample-side-door/passenger-door.jpg" alt=""></figure>
+      <figure class="ph p2"><img src="/samples/sample-front-corner/front-left.jpg" alt=""></figure>
+      <span class="chip c1"><i class="mk2 shop-b">BC</i><span><small>First quote</small><b class="num">$2,656</b></span></span>
+      <span class="chip c2 ok"><i class="mk2 drive">DA</i><span><small>Owner approved</small><b class="num">$3,250 <em>+ free rental</em></b></span></span>
+      <span class="chip c3"><i class="mk2 you">YOU</i><span><small>Your agent</small><b>“Can you beat that?”</b></span></span>
+    </div>
   </section>
   <section class="composer" aria-label="Start a request">
     <div class="c-sec">
@@ -436,12 +547,12 @@ body[data-view="live"] #start{display:none}
         <input type="file" id="file" accept="image/*" multiple aria-label="Add photos of the damage">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.6l1.4-2h7l1.4 2h1.6A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg>
         <span class="dt"><b id="dropTitle">Drop photos here, or tap to add</b>
-        <span id="dropSub">Up to 8. Wide shots plus close-ups work best. Photos are shrunk on your device and location data is stripped before sending.</span></span>
+        <span id="dropSub">Up to 8 · wide + close-up · location data stripped</span></span>
       </label>
       <div class="thumbs" id="thumbs"></div>
     </div>
     <div class="c-sec" id="vehSec">
-      <p class="c-label"><span class="k">02</span>Vehicle <span class="opt">optional, helps the shops price parts</span></p>
+      <p class="c-label"><span class="k">02</span>Vehicle <span class="opt">optional</span></p>
       <div class="veh">
         <input class="t" id="vYear" inputmode="numeric" maxlength="4" placeholder="Year" aria-label="Vehicle year" autocomplete="off">
         <input class="t" id="vMake" placeholder="Make" aria-label="Vehicle make" autocomplete="off">
@@ -451,8 +562,8 @@ body[data-view="live"] #start{display:none}
     <div class="c-sec">
       <p class="c-label"><span class="k">03</span>Who's paying?</p>
       <div class="pay" id="pay" role="radiogroup" aria-label="Who's paying">
-        <button type="button" data-m="insurance" role="radio"><b><i class="dot"></i>Insurance claim</b><span>Shops compete with incentives. Your insurer handles the bill.</span></button>
-        <button type="button" data-m="self_pay" role="radio"><b><i class="dot"></i>Paying myself</b><span>Shops compete on price. Your agent pushes it down.</span></button>
+        <button type="button" data-m="insurance" role="radio"><b><i class="dot"></i>Insurance claim</b><span>Shops compete on perks</span></button>
+        <button type="button" data-m="self_pay" role="radio"><b><i class="dot"></i>Paying myself</b><span>Shops compete on price</span></button>
       </div>
     </div>
     <div class="c-sec">
@@ -466,14 +577,11 @@ body[data-view="live"] #start{display:none}
     </div>
   </section>
   <div class="hero-how">
-      <ol class="how">
-        <li><span class="n">01</span><div><b>Your agent inspects the photos</b><span>It writes a damage report: every panel, what it likely needs, how bad it is.</span></div></li>
-        <li><span class="n">02</span><div><b>Each shop's agent inspects them too</b><span>Every shop builds its own estimate in its own style. Nobody copies your agent's list.</span></div></li>
-        <li><span class="n">03</span><div><b>Your agent questions the gaps</b><span>If one shop found damage the others missed, it asks them to explain.</span></div></li>
-        <li><span class="n">04</span><div><b>One best-and-final ask per shop</b><span>Each shop gets one chance to beat the leader. Anything beyond a shop agent's limits goes to that shop's owner to approve, counter or decline.</span></div></li>
-        <li><span class="n">05</span><div><b>You pick</b><span>A ranked list with a plain-language reason. Nothing is booked until you confirm.</span></div></li>
-      </ol>
-      <p class="how-note"><b>Drive Auto Body's agent</b> works from its owner's own past estimates, so it scopes a job the way Gio would.</p>
+    <ol class="flow" aria-label="How it works">
+      <li><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.6l1.4-2h7l1.4 2h1.6A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span><b>Snap</b><span>3–8 photos</span></li>
+      <li><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V13M10 20V8M16 20v-5M20 4l-3 3M17 4h3v3"/></svg></span><b>Shops compete</b><span>your agent haggles</span></li>
+      <li><span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 12.4l2.7 2.7L16.2 9"/></svg></span><b>You pick</b><span>nothing booked till you tap</span></li>
+    </ol>
   </div>
 </main>
 
@@ -500,10 +608,11 @@ body[data-view="live"] #start{display:none}
         <div id="decision"></div>
         <p class="toast" id="toast" role="alert"></p>
       </section>
-      <section id="negoWrap" class="hide"><div class="sec-h"><h2>Negotiation</h2><span class="k">One ask per shop</span></div><div id="nego"></div></section>
+      <section id="boardWrap" class="hide" aria-label="Offers"><div id="board"></div></section>
       <section id="damageWrap"><div id="damage"></div></section>
+      <section id="negoWrap" class="hide"><div class="sec-h"><h2>Negotiation</h2><span class="k">One ask per shop</span></div><div id="nego"></div></section>
       <section>
-        <div class="sec-h"><h2>The shops</h2><p id="lanesSub">Each shop's agent looks at your photos on its own.</p></div>
+        <div class="sec-h"><h2>The shops</h2><p id="lanesSub">Same photos, independent estimates.</p></div>
         <div class="lanes" id="lanes"></div>
       </section>
       <section id="mxWrap" class="hide">
@@ -514,7 +623,7 @@ body[data-view="live"] #start{display:none}
     </div>
     <aside class="aside">
       <section class="room" aria-label="The room">
-        <div class="room-h"><h2><span class="live-dot" id="liveDot"></span>The room</h2><span id="roomCount">0 messages</span></div>
+        <div class="room-h"><h2><span class="live-dot" id="liveDot"></span>The room</h2><button class="feed-all hide" id="feedAll" type="button" aria-controls="feed">Show all</button><span id="roomCount">0 messages</span></div>
         <div class="feed" id="feed" aria-live="polite"><div class="empty">Messages between your agent and the shops show up here.</div></div>
       </section>
     </aside>
@@ -570,6 +679,9 @@ const ICON = {
   arrow: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg>',
   gift: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12v7H4zM3 7h14v3H3zM10 7v10M10 7c-1-3-5-3-4 0M10 7c1-3 5-3 4 0"/></svg>',
   info: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 9v5M10 6.3v.2"/></svg>',
+  cal: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg>',
+  clock: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 2"/></svg>',
+  shield: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.8l6 2.4v4.3c0 3.7-2.6 6.4-6 7.7-3.4-1.3-6-4-6-7.7V5.2z"/></svg>',
   done: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6.5 10.3l2.3 2.3 4.7-5"/></svg>',
 };
 
@@ -617,7 +729,7 @@ function renderThumbs(){
   const n = S.photos.filter((p) => p.url).length;
   $("drop").classList.toggle("compact", S.photos.length > 0);
   $("dropTitle").textContent = S.photos.length ? (S.photos.length >= MAX_PHOTOS ? `${MAX_PHOTOS} photos added (the max)` : "Add more photos") : "Drop photos here, or tap to add";
-  $("dropSub").textContent = S.photos.length ? `${n} of ${MAX_PHOTOS} ready · location data stripped` : "Up to 8. Wide shots plus close-ups work best. Photos are shrunk on your device and location data is stripped before sending.";
+  $("dropSub").textContent = S.photos.length ? `${n} of ${MAX_PHOTOS} ready · location data stripped` : "Up to 8 · wide + close-up · location data stripped";
 }
 // "4 minutes" / "40 seconds": used for rate-limit messages and the button cooldown.
 function waitText(sec){ sec = Math.max(1, Math.ceil(Number(sec) || 0)); if (sec < 60) return `${sec} second${sec === 1 ? "" : "s"}`; const m = Math.ceil(sec / 60); return `${m} minute${m === 1 ? "" : "s"}`; }
@@ -756,6 +868,7 @@ let galleryIdx = 0;
 const expanded = new Set();
 const askAt = {};
 let roomCount = 0;
+const FEED_N = 6; // the room shows the latest few events; "Show all" opens the rest
 
 function roomUrl(id){
   const base = ROOM ? (id ? "/room/" + id : "/room") : (id ? "/?r=" + id : "/");
@@ -768,8 +881,9 @@ function resetLive(){
   for (const k of Object.keys(askAt)) delete askAt[k];
   $("feed").innerHTML = '<div class="empty">Messages between your agent and the shops show up here.</div>';
   $("roomCount").textContent = "0 messages";
-  ["decision","nego","damage","lanes","mx","guards","steps","toast"].forEach((id) => { $(id).innerHTML = ""; });
-  ["decisionWrap","negoWrap","mxWrap"].forEach((id) => $(id).classList.add("hide"));
+  $("feed").classList.remove("all"); $("feedAll").classList.add("hide"); $("feedAll").textContent = "Show all";
+  ["decision","board","nego","damage","lanes","mx","guards","steps","toast"].forEach((id) => { $(id).innerHTML = ""; });
+  ["decisionWrap","boardWrap","negoWrap","mxWrap"].forEach((id) => $(id).classList.add("hide"));
   $("reqMeta").innerHTML = ""; $("narrH").textContent = "Opening your room"; $("narrP").textContent = "Your agent is getting set up."; $("stepNow").textContent = "";
 }
 function openRequest(id){
@@ -859,21 +973,21 @@ function photosOf(r){
 const stopped = (r) => r.status === "inspection_unavailable";
 const listJoin = (xs) => xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`;
 function narrate(r, phase){
-  if (stopped(r)) return ["Your agent couldn't <em>inspect</em> these photos", "AI photo inspection is unavailable right now, so no shop was contacted. Try again in a minute."];
+  if (stopped(r)) return ["Your agent couldn't <em>inspect</em> these photos", "Inspection is down right now, so no shop was contacted. Try again in a minute."];
   const pend = (r.approvals || []).filter((a) => a.status === "pending");
   const n = (r.shops || []).length, quoted = Object.keys(r.latest || {}).length;
   if (pend.length && phase !== "ready" && phase !== "booked"){
-    if (pend.length === 1) return [`Waiting on <em>${esc(ownerOf(r, pend[0].shopId))}</em>`, `${esc(shopName(r, pend[0].shopId))}'s agent can't go that far on its own, so it asked the owner. Your agent is holding its place.`];
-    return [`Waiting on <em>${pend.length} shop owners</em>`, `${esc(listJoin(pend.map((a) => shopName(r, a.shopId))))} can't go that far on their own, so each asked its owner. Your agent is holding every offer.`];
+    if (pend.length === 1) return [`Waiting on <em>${esc(ownerOf(r, pend[0].shopId))}</em>`, `${esc(shopName(r, pend[0].shopId))}'s agent hit its limit and pinged the owner.`];
+    return [`Waiting on <em>${pend.length} shop owners</em>`, `${esc(listJoin(pend.map((a) => shopName(r, a.shopId))))} hit their limits and pinged their owners.`];
   }
   switch (phase){
-    case "inspecting": return ["Your agent is <em>inspecting</em> your photos", "It's marking every damaged panel and what it likely needs."];
-    case "quoting": return [quoted ? `${quoted} of ${n} estimates are in` : "The shops are <em>building estimates</em>", `${n} shops are looking at the same photos. Each one decides for itself what needs fixing.`];
-    case "clarifying": return ["Your agent is <em>checking the gaps</em>", "Where one shop found damage the others didn't, it asks them to explain before comparing prices."];
-    case "negotiating": return ["Your agent is <em>negotiating</em>", `One best-and-final ask to each shop: beat the current leader on ${esc(prioLabel(r.mode, r.priority).toLowerCase())}. Owners answer anything beyond their agent's limits.`];
-    case "ranking": return ["Comparing <em>every offer</em>", `Ranked by what you said matters most: ${esc(prioLabel(r.mode, r.priority).toLowerCase())}.`];
-    case "ready": return ["Your offers are <em>ready</em>", "Your agent made a pick. Nothing is booked until you confirm."];
-    case "booked": { const b = r.booking; return [`You're booked with <em>${esc(b ? shopName(r, b.shopId) : "the shop")}</em>`, "The shop confirms the final details when you drop the car off."]; }
+    case "inspecting": return ["Your agent is <em>inspecting</em> your photos", "Marking every damaged panel."];
+    case "quoting": return [quoted ? `${quoted} of ${n} estimates are in` : "The shops are <em>building estimates</em>", `${n} shops, same photos, separate estimates.`];
+    case "clarifying": return ["Your agent is <em>checking the gaps</em>", "Asking shops about damage others found."];
+    case "negotiating": return ["Your agent is <em>negotiating</em>", `One best-and-final ask per shop on ${esc(prioLabel(r.mode, r.priority).toLowerCase())}.`];
+    case "ranking": return ["Comparing <em>every offer</em>", `Ranked by ${esc(prioLabel(r.mode, r.priority).toLowerCase())}.`];
+    case "ready": return ["Your offers are <em>ready</em>", "Nothing is booked until you confirm."];
+    case "booked": { const b = r.booking; return [`You're booked with <em>${esc(b ? shopName(r, b.shopId) : "the shop")}</em>`, "Final details at drop-off."]; }
   }
   return ["Opening your room", ""];
 }
@@ -906,16 +1020,20 @@ function renderDamage(r, phase){
   let right;
   if (dr && (dr.items || []).length){
     const byAgent = dr.by === "agent";
-    right = `<span class="by"><i></i>${byAgent ? "Inspected by your agent" : "Damage report"}</span><h2>${dr.items.length} thing${dr.items.length === 1 ? "" : "s"} need${dr.items.length === 1 ? "s" : ""} work</h2>${dr.summary ? `<p class="sum">${esc(clean(dr.summary))}</p>` : ""}${dr.vehicleGuess ? `<p class="vg">Vehicle: ${esc(typeof dr.vehicleGuess === "string" ? dr.vehicleGuess : vehicleText(dr.vehicleGuess))}</p>` : ""}<ol class="flist">${dr.items.map((i, n) => `<li><span class="i">${String(n + 1).padStart(2, "0")}</span><div><div class="row"><b>${esc(i.label)}</b>${i.operation ? `<span class="tag">${esc(opLabel(i.operation))}</span>` : ""}${i.severity ? `<span class="tag ${sevClass(i.severity)}">${esc(sevText(i.severity))}</span>` : ""}</div>${i.note ? `<p>${esc(clean(i.note))}</p>` : ""}</div></li>`).join("")}</ol>`;
+    const SEV = ["sev-hi", "sev-md", "sev-lo"], cnt = SEV.map((c) => dr.items.filter((i) => sevClass(i.severity || sevFromOp(i.operation)) === c).length);
+    const sorted = dr.items.map((i, n) => ({ ...i, n, c: sevClass(i.severity || sevFromOp(i.operation)) })).sort((x, y) => SEV.indexOf(x.c) - SEV.indexOf(y.c) || x.n - y.n);
+    const sevBar = `<div class="sevbar" role="img" aria-label="${cnt[0]} severe, ${cnt[1]} moderate, ${cnt[2]} minor">${SEV.map((c, k) => cnt[k] ? `<span class="${c}" style="flex:${cnt[k]}"></span>` : "").join("")}</div><div class="sevkey">${["Severe","Moderate","Minor"].map((l, k) => cnt[k] ? `<span class="${SEV[k]}"><i></i>${cnt[k]} ${l.toLowerCase()}</span>` : "").join("")}</div>`;
+    const vg = dr.vehicleGuess ? (typeof dr.vehicleGuess === "string" ? dr.vehicleGuess : vehicleText(dr.vehicleGuess)) : "";
+    right = `<span class="by"><i></i>${byAgent ? "Inspected by your agent" : "Damage report"}${vg ? ` · ${esc(vg)}` : ""}</span><h2>${dr.items.length} thing${dr.items.length === 1 ? "" : "s"} need${dr.items.length === 1 ? "s" : ""} work</h2>${sevBar}<ul class="fchips">${sorted.map((i) => `<li class="${i.c}"${i.note ? ` title="${esc(clean(i.note))}"` : ""}><i></i><b>${esc(i.label)}</b>${i.operation ? `<span>${esc(opLabel(i.operation))}</span>` : ""}</li>`).join("")}</ul>${dr.summary ? `<p class="sum clamp">${esc(clean(dr.summary))}</p>` : ""}`;
   } else if (dr && dr.summary){
     right = `<span class="by"><i></i>Damage report</span><h2>Inspection note</h2><p class="sum">${esc(clean(dr.summary))}</p>`;
   } else if (stopped(r)) {
     right = `<span class="by"><i></i>Your agent</span><h2>Inspection unavailable</h2><p class="sum">The photos arrived, but the AI inspection couldn't run, so there's no damage report and no shop was contacted.</p><div style="margin-top:1rem"><button class="confirm" type="button" data-home="1">Start over</button></div>`;
   } else {
-    right = `<span class="by"><i></i>Your agent</span><h2>Inspecting your photos…</h2><p class="sum">Looking for every damaged panel, what it needs, and anything that's probably hiding behind it.</p><div style="display:flex;flex-direction:column;gap:.7rem;margin-top:1rem"><div class="skel" style="width:90%"></div><div class="skel" style="width:72%"></div><div class="skel" style="width:84%"></div><div class="skel" style="width:60%"></div></div>`;
+    right = `<span class="by"><i></i>Your agent</span><h2>Inspecting your photos…</h2><div style="display:flex;flex-direction:column;gap:.7rem;margin-top:1rem"><div class="skel" style="width:90%"></div><div class="skel" style="width:72%"></div><div class="skel" style="width:84%"></div><div class="skel" style="width:60%"></div></div>`;
   }
   const hs = hashesOf(r);
-  const fp = hs.length ? `<div class="fp"><b>Photo fingerprints (SHA-256)</b>${hs.map((h, i) => `<span>${i + 1} · ${esc(h.slice(0, 12))}</span>`).join("")}</div>` : "";
+  const fp = hs.length ? `<div class="fp"><b>SHA-256</b> ${hs.map((h, i) => `<span>${i + 1}·${esc(h.slice(0, 10))}</span>`).join("")}</div>` : "";
   setHTML("damage", `<div class="report${once("damage")}"><div class="viewer">${viewer}</div><div class="findings">${right}${fp}</div></div>`);
 }
 $("damage").addEventListener("click", (e) => { if (e.target.closest("[data-home]")) return goHome(); const b = e.target.closest("[data-g]"); if (!b || !last) return; galleryIdx = Number(b.dataset.g) || 0; renderDamage(last, phaseOf(last)); });
@@ -940,23 +1058,24 @@ function askRow(r, ask, multi){
   const decider = byRule ? `${name}'s rules` : owner;
   const OUT = { approved: [`${decider} approved`, "good"], countered: [`${decider} countered`, "good"], denied: [`${decider} said no`, "no"], expired: ["No answer in time", ""], held: ["Held its offer", ""], revised: ["Agent matched it", "good"] };
   const [stTxt, stCls] = ownerWait ? [`Waiting on ${owner}`, "wait"] : OUT[out] || (pending ? [`Waiting on ${name}`, "wait"] : ["Answered", ""]);
-  const steps = [`<li><span class="d you">YOU</span><span><b>Your agent asked ${esc(name)}</b> for ${ins ? `${money(target)} toward your deductible` : money(target)}.</span></li>`];
-  if (ap) steps.push(`<li><span class="d shop">${esc(shopIni(r, s))}</span><span><b>${esc(name)}'s agent</b> couldn't go that far on its own, so it ${byRule ? "checked the shop's rules" : `asked ${esc(owner)}`}.</span></li>`);
-  if (ownerWait) steps.push(`<li><span class="d wait">…</span><span><b>Waiting on ${esc(owner)}.</b> The request is on their phone with your photos.</span></li>`);
-  else if (ap){
-    const verb = ap.status === "approved" ? "approved it" : ap.status === "countered" ? `countered${ap.counter && (ins ? ap.counter.deductibleAssist : ap.counter.total) ? ` at ${money(ins ? ap.counter.deductibleAssist : ap.counter.total)}` : ""}` : ap.status === "denied" ? "declined" : "";
-    const via = /^(slack|telegram)$/i.test(ap.decidedVia || "") ? ` <span class="hold">via ${esc(ap.decidedVia.charAt(0).toUpperCase() + ap.decidedVia.slice(1))}</span>` : "";
-    steps.push(`<li><span class="d ${byRule ? "shop" : "owner"}">${byRule ? esc(shopIni(r, s)) : esc(ownerIni(r, s))}</span><span><b>${verb ? `${esc(decider)} ${esc(verb)}` : "No answer in time"}</b>${via}${ap.counter?.extra ? `. ${esc(clean(ap.counter.extra))}` : ""}.</span></li>`);
+  // Visual chain: YOU -> shop agent -> (owner or shop rules), each node marked by what happened.
+  const node = (cls, ini, lbl, st) => `<span class="cn"><span class="d ${cls}${st ? " " + st : ""}">${esc(ini)}</span><small>${esc(lbl)}</small></span>`;
+  const arrowN = `<span class="ca" aria-hidden="true"></span>`;
+  const chain = [node("you", "YOU", "Asked " + money(target), "")];
+  chain.push(node("shop", shopIni(r, s), ap ? "Over its limit" : out === "revised" ? "Matched it" : out ? (OUT[out]?.[0] || "Answered").replace(name + " ", "") : "Thinking", !ap && !out ? "wait" : ""));
+  if (ap){
+    const apSt = ap.status === "approved" || ap.status === "countered" ? "yes" : ap.status === "denied" ? "nope" : ownerWait ? "wait" : "";
+    const apTxt = ownerWait ? "Deciding…" : ap.status === "approved" ? "Approved" : ap.status === "countered" ? "Countered" : ap.status === "denied" ? "Declined" : "No answer";
+    const via = /^(slack|telegram)$/i.test(ap.decidedVia || "") ? " · " + ap.decidedVia.charAt(0).toUpperCase() + ap.decidedVia.slice(1) : "";
+    chain.push(node(byRule ? "shop" : "owner", byRule ? shopIni(r, s) : ownerIni(r, s), (byRule ? "Rules: " : "Owner: ") + apTxt + via, apSt));
   }
-  else if (out === "revised") steps.push(`<li><span class="d shop">${esc(shopIni(r, s))}</span><span><b>Within its limits</b>, so the shop's agent revised the offer on its own.</span></li>`);
-  else if (out) steps.push(`<li><span class="d shop">${esc(shopIni(r, s))}</span><span><b>${esc(OUT[out]?.[0] || "Answered")}</b>.</span></li>`);
   const bv = val(before), av = val(latest), moved = bv != null && av != null && bv !== av;
   const note = ins
-    ? (moved ? `Up ${money(av - bv)}. Paid by the shop, never billed to insurance.` : pending ? `Asked for ${money(target)}.` : `Held at ${money(av)}.`)
-    : (moved ? (av < bv ? `${money(bv - av)} off, negotiated by your agent.` : `Up ${money(av - bv)}.`) : pending ? `Asked for ${money(target)}.` : `Held at ${money(av)}.`);
-  const right = `<span class="state ${stCls}"><i></i>${esc(stTxt)}</span><span class="lbl">${ins ? "Toward your deductible" : `${esc(name)}'s price`}</span><div class="ba num">${moved ? `<s>${money(bv)}</s><span class="arrow">→</span>` : ""}<span>${money(av)}</span><small>${esc(note)}</small></div>`;
-  const head = `<span class="who"><span class="mark ${shopKey(s)}">${esc(shopIni(r, s))}</span><span class="k">Your agent → ${esc(name)}</span></span>`;
-  return { pending, ownerWait, html: `<div class="nego-in" data-ask="${esc(ask.id)}"><div class="nego-l">${head}<blockquote>“${esc(clean(ask.text))}”</blockquote><ol class="nego-steps">${steps.join("")}</ol></div><div class="nego-r">${right}</div></div>` };
+    ? (moved ? "Paid by the shop, not insurance" : pending ? `Asked ${money(target)}` : "Held")
+    : (moved ? (av < bv ? `${money(bv - av)} off` : `Up ${money(av - bv)}`) : pending ? `Asked ${money(target)}` : "Held");
+  const extra = ap?.counter?.extra ? `<p class="cx">${esc(clean(ap.counter.extra))}</p>` : "";
+  const html = `<div class="nrow" data-ask="${esc(ask.id)}"><div class="nwho"><span class="mark ${shopKey(s)}">${esc(shopIni(r, s))}</span><div><b>${esc(name)}</b><p class="nq" title="${esc(clean(ask.text))}">“${esc(clean(ask.text))}”</p></div></div><div class="chain">${chain.join(arrowN)}</div><div class="nba"><span class="lbl">${ins ? "Toward deductible" : "Price"}</span><div class="ba num">${moved ? `<s>${money(bv)}</s><span class="arrow">→</span>` : ""}<span class="${moved ? "up-good" : ""}">${money(av)}</span></div><small>${esc(note)}</small>${extra}<span class="state ${stCls}"><i></i>${esc(stTxt)}</span></div></div>`;
+  return { pending, ownerWait, html };
 }
 function renderNego(r){
   const asks = (r.asks || []).filter((a) => a && a.shopId);
@@ -972,8 +1091,7 @@ function renderNego(r){
   else if (shopsWaiting) phase = `Waiting on ${plural(shopsWaiting, "shop")}`;
   else { phase = asks.length === 1 ? "Answered" : `All ${asks.length} shops answered`; cls = "good"; }
   $("negoWrap").querySelector(".sec-h .k").textContent = asks.length > 1 ? `${asks.length} asks · one per shop` : "One ask per shop";
-  const intro = r.mode === "insurance" ? "Your agent asked each shop to do more toward your deductible." : "Your agent asked each shop for its best and final price.";
-  setHTML("nego", `<div class="nego${multi ? " multi" : ""}${once("nego")}"><div class="nego-top"><div><span class="k">Best and final</span><p>${esc(asks.length > 1 ? intro : intro.replace("each shop", "the shop"))}</p></div><span class="state ${cls}"><i></i>${esc(phase)}</span></div>${rows.map((x) => x.html).join("")}</div>`);
+  setHTML("nego", `<div class="nego${multi ? " multi" : ""}${once("nego")}"><div class="nego-top"><span class="k">Best and final · ${r.mode === "insurance" ? "more toward your deductible" : "lowest price"}</span><span class="state ${cls}"><i></i>${esc(phase)}</span></div>${rows.map((x) => x.html).join("")}</div>`);
 }
 
 // ---------- render: shop lanes ----------
@@ -1007,7 +1125,7 @@ function renderLanes(r, phase){
   const rk = Object.fromEntries((r.ranking || []).map((x, i) => [x.shopId, { ...x, pos: i }]));
   const cmp = Object.fromEntries((r.comparison || []).map((c) => [c.shopId, c]));
   const quotedAll = shops.every((s) => r.latest?.[s]);
-  setHTML("lanesSub", quotedAll ? (ins ? "Same photos, three independent estimates. Shops compete with incentives they pay for." : "Same photos, three independent estimates and prices.") : "Each shop's agent looks at your photos on its own.");
+  setHTML("lanesSub", quotedAll ? (ins ? "Same photos, independent estimates. Shops pay their own perks." : "Same photos, independent estimates.") : "Each shop inspects on its own.");
   const order = ready && (r.ranking || []).length ? [...shops].sort((x, y) => (rk[x]?.pos ?? 9) - (rk[y]?.pos ?? 9)) : shops;
   setHTML("lanes", order.map((s) => {
     const name = shopName(r, s), o = r.latest?.[s], a = A[s], list = r.offers?.[s] || [];
@@ -1023,13 +1141,13 @@ function renderLanes(r, phase){
       if (!ins){
         const f0 = first?.price?.total, d = f0 != null && o.price?.total != null ? o.price.total - f0 : 0;
         const was = d < 0 ? `<div class="was"><s class="num">${money(f0)}</s><span class="delta">${money(-d)} off</span></div>` : d > 0 ? `<div class="was"><span class="num">First quote ${money(f0)}</span><span class="delta up">+${money(d)} for items it missed</span></div>` : "";
-        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="price num">${money(o.price?.total)}</div>${was}${(o.incentives || []).length ? `<div class="incs" style="margin-top:.6rem">${o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("")}</div>` : ""}<div class="sub">Preliminary price${o.createdBy === "owner" ? `, approved by ${esc(ownerOf(r, s))}` : ""}. Final details confirmed at inspection.</div></div>`;
+        offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="price num">${money(o.price?.total)}</div>${was}${(o.incentives || []).length ? `<div class="incs" style="margin-top:.6rem">${o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("")}</div>` : ""}<div class="sub">Preliminary${o.createdBy === "owner" ? ` · approved by ${esc(ownerOf(r, s))}` : ""} · confirmed at inspection</div></div>`;
       } else {
         const firstA = assistOf(first), nowA = assistOf(o);
         offer = `<div class="offer${o.version > 1 ? once(`flash-${s}-${o.version}`).replace("enter", "flash") : ""}"><div class="incs">${(o.incentives || []).length ? o.incentives.map((i) => `<span class="inc">${ICON.gift}${esc(clean(i.label))}</span>`).join("") : `<span class="inc none">No incentives offered</span>`}</div>${nowA > firstA ? `<div class="was"><s class="num">${money(firstA)} toward deductible</s><span class="delta">+${money(nowA - firstA)}</span></div>` : ""}</div>`;
       }
     } else offer = `<div class="lstate work"><i></i>Pricing what it found…</div>`;
-    const facts = o ? `<dl class="facts"><dt>Drop-off</dt><dd>${esc(clean(o.slot))}</dd><dt>Turnaround</dt><dd>${esc(o.turnaroundDays)} days</dd><dt>Warranty</dt><dd>${esc(clean(o.warranty))}</dd></dl>` : "";
+    const facts = o ? `<div class="facts2"><span title="Drop-off">${ICON.cal}${esc(clean(o.slot))}</span><span title="Turnaround">${ICON.clock}${esc(o.turnaroundDays)} days</span><span title="Warranty">${ICON.shield}${esc(clean(o.warranty))}</span></div>` : "";
     const hist = ""; // history stays server-side; customers see findings, not Gio's stats
     let found = "";
     if (a?.items?.length){
@@ -1037,25 +1155,50 @@ function renderLanes(r, phase){
       const isUniq = (i) => !i.later && others.length > 0 && foundBy[i.id]?.size === 1;
       const rank = (i) => isUniq(i) ? 0 : i.later ? 2 : 1;
       const items = a.items.map((i, n) => ({ ...i, n })).sort((x, y) => rank(x) - rank(y) || x.n - y.n);
-      const LIM = 6, open = expanded.has(s), showN = open ? items.length : Math.min(LIM, items.length);
+      const LIM = 3, open = expanded.has(s), showN = open ? items.length : Math.min(LIM, items.length);
       const rows = items.slice(0, showN).map((i) => {
         const uniq = isUniq(i), extra = !uniq && !i.later && drIds.size && !drIds.has(i.id);
-        return `<li class="${uniq ? "uniq" : ""}"><div class="ft"><b>${esc(i.label)}</b>${i.operation ? `<span class="tag">${esc(opLabel(i.operation))}</span>` : ""}${i.partType ? `<span class="tag part">${esc(partLabel(i.partType))}</span>` : ""}${uniq ? `<span class="tag uniq">Others missed</span>` : i.later ? `<span class="tag later">Added when asked</span>` : extra ? `<span class="tag">Beyond the report</span>` : ""}</div>${i.reason ? `<p>${esc(clean(i.reason))}</p>` : ""}</li>`;
+        return `<li class="${uniq ? "uniq" : ""}"><div class="ft"><b>${esc(i.label)}</b>${i.operation ? `<span class="tag">${esc(opLabel(i.operation))}</span>` : ""}${i.partType ? `<span class="tag part">${esc(partLabel(i.partType))}</span>` : ""}${uniq ? `<span class="tag uniq">Others missed</span>` : i.later ? `<span class="tag later">Added when asked</span>` : extra ? `<span class="tag">Beyond the report</span>` : ""}</div>${open && i.reason ? `<p>${esc(clean(i.reason))}</p>` : ""}</li>`;
       }).join("");
       const nUniq = items.filter(isUniq).length;
       const missing = [...drIds].filter((id) => !items.some((i) => i.id === id));
       const asked = new Set((r.clarifications || []).filter((c) => c.shopId === s).map((c) => c.itemId));
       const disputed = (o?.disputed || []).filter((id) => !asked.has(id)).map((id) => labelOf(r, id));
       const req = (cmp[s]?.missingRequired || []).map((id) => labelOf(r, id));
-      found = `<div class="found"><h4><span class="ht">What it found</span><span>${items.length} item${items.length === 1 ? "" : "s"}${nUniq ? ` · ${nUniq} others missed` : ""}</span></h4><ul class="finds">${rows}</ul>${items.length > LIM ? `<button class="more" type="button" data-more="${esc(s)}">${open ? "Show fewer" : `Show all ${items.length}`}</button>` : ""}${req.length ? `<p class="gaps"><span class="tag miss">Missing</span> <b>${esc(req.join(", "))}</b>, needed for a complete repair.</p>` : ""}${disputed.length ? `<p class="gaps"><b>Disputes:</b> ${esc(disputed.join(", "))}. To be confirmed at inspection.</p>` : ""}${!req.length && missing.length && missing.length < drIds.size ? `<p class="gaps"><b>Left out:</b> ${esc(missing.map((id) => (dr.items.find((x) => x.id === id) || {}).label || labelOf(r, id)).join(", "))}.</p>` : ""}${a.notes ? `<p class="gaps">${esc(clean(a.notes))}</p>` : ""}</div>`;
+      found = `<div class="found"><h4><span class="ht">What it found</span><span>${items.length} item${items.length === 1 ? "" : "s"}${nUniq ? ` · ${nUniq} others missed` : ""}</span></h4><ul class="finds">${rows}</ul>${items.length > LIM || items.some((i) => i.reason) ? `<button class="more" type="button" data-more="${esc(s)}" aria-expanded="${open}">${open ? "Show less" : items.length > LIM ? `Show all ${items.length}` : "Show reasons"}</button>` : ""}${req.length ? `<p class="gaps"><span class="tag miss">Missing</span> <b>${esc(req.join(", "))}</b>, needed for a complete repair.</p>` : ""}${open && disputed.length ? `<p class="gaps"><b>Disputes:</b> ${esc(disputed.join(", "))}. To be confirmed at inspection.</p>` : ""}${open && !req.length && missing.length && missing.length < drIds.size ? `<p class="gaps"><b>Left out:</b> ${esc(missing.map((id) => (dr.items.find((x) => x.id === id) || {}).label || labelOf(r, id)).join(", "))}.</p>` : ""}${open && a.notes ? `<p class="gaps">${esc(clean(a.notes))}</p>` : ""}</div>`;
     }
     const cl = (r.clarifications || []).filter((c) => c.shopId === s);
     const CL = { open: ["Waiting", "tag"], added: ["Added", "tag ok"], disputed: ["Disputed", "tag disp"], timeout: ["No answer", "tag"] };
-    const clars = cl.length ? `<div class="clar"><b>Your agent asked about ${cl.length} item${cl.length === 1 ? "" : "s"} another shop found</b><ul>${cl.map((c) => { const [t, k] = CL[c.status] || [c.status, "tag"]; return `<li><span>${esc(labelOf(r, c.itemId))}</span><span class="${k}">${esc(t)}</span></li>`; }).join("")}</ul>${cl.some((c) => c.status === "disputed") ? `<p class="gaps" style="margin-top:.4rem">Disputed items get confirmed at inspection.</p>` : ""}</div>` : "";
+    const clars = cl.length ? `<div class="clar"><b>Asked about ${cl.length} item${cl.length === 1 ? "" : "s"} others found</b><ul>${cl.map((c) => { const [t, k] = CL[c.status] || [c.status, "tag"]; return `<li><span>${esc(labelOf(r, c.itemId))}</span><span class="${k}">${esc(t)}</span></li>`; }).join("")}</ul></div>` : "";
     return `<article class="lane${rec ? " rec" : ""}${booked ? " booked" : ""}${once("lane-" + s)}">${booked ? `<span class="ribbon">Booked</span>` : rec ? `<span class="ribbon">Your agent's pick</span>` : ""}${head}${offer}${facts}${hist}${found}${clars}</article>`;
   }).join(""));
 }
 $("lanes").addEventListener("click", (e) => { const b = e.target.closest("[data-more]"); if (!b || !last) return; const s = b.dataset.more; expanded.has(s) ? expanded.delete(s) : expanded.add(s); renderLanes(last, phaseOf(last)); });
+
+// ---------- render: offer board (the scoreboard: one bold row per shop) ----------
+function renderBoard(r, phase){
+  const shops = r.shops || [];
+  if (!shops.length || stopped(r)){ $("boardWrap").classList.add("hide"); setHTML("board", ""); return; }
+  $("boardWrap").classList.remove("hide");
+  const ins = r.mode === "insurance", ready = r.status === "ready_for_confirmation" || !!r.booking;
+  const val = (o) => ins ? incTotal(o) : o?.price?.total;
+  const quoted = shops.filter((s) => r.latest?.[s] && val(r.latest[s]) != null);
+  const rec = ready ? (r.ranking || []).find((x) => x.recommended)?.shopId : null;
+  let lead = rec || null;
+  if (!lead && quoted.length > 1) lead = quoted.reduce((b, s) => (ins ? val(r.latest[s]) > val(r.latest[b]) : val(r.latest[s]) < val(r.latest[b])) ? s : b, quoted[0]);
+  const rows = shops.map((s) => {
+    const o = r.latest?.[s], list = r.offers?.[s] || [], first = list[0];
+    const [st, stc] = laneState(r, s, phase);
+    const v = o ? val(o) : null, v0 = first ? val(first) : null, d = v != null && v0 != null ? v - v0 : 0;
+    const good = ins ? d > 0 : d < 0;
+    const delta = d ? `<span class="bd ${good ? "" : "up"}">${ins ? (d > 0 ? "+" : "−") : (d < 0 ? "−" : "+")}${money(Math.abs(d))}</span>` : "";
+    const sub = o ? (ins ? ((o.incentives || []).map((i) => clean(i.label)).slice(0, 2).join(" + ") || "No extras yet") : (o.turnaroundDays ? `${o.turnaroundDays}-day repair` : "")) : "";
+    const big = o ? `<span class="bn num${o.version > 1 ? once(`bflash-${s}-${o.version}`).replace("enter", "flash") : ""}">${money(v)}</span>${delta}` : `<span class="skel bsk"></span>`;
+    const tag = s === r.booking?.shopId ? `<span class="btag">Booked</span>` : s === lead ? `<span class="btag">${rec ? "Your agent's pick" : "Leading"}</span>` : "";
+    return `<li class="${s === lead ? "lead" : ""}"><span class="mark ${shopKey(s)}">${esc(shopIni(r, s))}</span><div class="bm"><b>${esc(shopName(r, s))}</b>${tag}<span class="lstate ${stc}"><i></i>${esc(st)}</span></div><div class="bv">${big}${sub ? `<small>${esc(sub)}</small>` : ""}</div></li>`;
+  });
+  setHTML("board", `<div class="board${once("board")}"><div class="board-h"><span class="k">${ins ? "Shop-paid extras" : "Price"}</span><span class="k">${quoted.length} of ${shops.length} in</span></div><ol>${rows.join("")}</ol></div>`);
+}
 
 // ---------- render: who found what ----------
 function renderMatrix(r){
@@ -1142,9 +1285,12 @@ function appendEvents(events){
   }
   feed.insertAdjacentHTML("beforeend", html);
   $("roomCount").textContent = `${roomCount} message${roomCount === 1 ? "" : "s"}`;
+  const fa = $("feedAll"); fa.classList.toggle("hide", roomCount <= FEED_N);
+  if (!feed.classList.contains("all")) fa.textContent = `Show all ${roomCount}`;
   if (nearBottom || events.length === roomCount) feed.scrollTop = feed.scrollHeight;
 }
 $("feed").addEventListener("click", (e) => { const t = e.target.closest(".txt"); if (t) t.classList.toggle("open"); });
+$("feedAll").addEventListener("click", () => { const f = $("feed"), on = f.classList.toggle("all"); $("feedAll").textContent = on ? "Latest only" : `Show all ${roomCount}`; $("feedAll").setAttribute("aria-expanded", on ? "true" : "false"); f.scrollTop = on ? 0 : f.scrollHeight; });
 
 // ---------- render orchestration ----------
 function safe(fn){ try { fn(); } catch (e) { console.error(e); } }
@@ -1152,6 +1298,7 @@ function render(r){
   const phase = phaseOf(r);
   safe(() => renderStage(r, phase));
   safe(() => renderDecision(r));
+  safe(() => renderBoard(r, phase));
   safe(() => renderNego(r));
   safe(() => renderDamage(r, phase));
   safe(() => renderLanes(r, phase));
