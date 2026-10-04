@@ -2,6 +2,10 @@
 
 **Snap the damage. Your AI agent gets the body shops competing.**
 
+![Haggler](media/haggler-thumbnail.png)
+
+**Demo video (64 s, a real live run, sped up):** [media/haggler-demo.mp4](media/haggler-demo.mp4) · **Live demo:** https://drop-slides-endorsed-uses.trycloudflare.com
+
 Built at the AI Commerce Gallery hackathon (ZooWork × AI Valley, San Francisco, October 3, 2026).
 
 A driver uploads photos of their car damage and sends an AI agent to shop the repair. Every body shop's own
