@@ -4,7 +4,7 @@
 
 ![Haggler](media/haggler-thumbnail.png)
 
-**Demo video (64 s, a real live run, sped up):** [media/haggler-demo.mp4](media/haggler-demo.mp4) · **Live demo:** https://drop-slides-endorsed-uses.trycloudflare.com
+**Demo video (64 s, a real live run, sped up):** [YouTube](https://youtu.be/es1nxIAUWlI) · [mp4 in this repo](media/haggler-demo.mp4) · **Live demo:** https://drop-slides-endorsed-uses.trycloudflare.com
 
 Built at the AI Commerce Gallery hackathon (ZooWork × AI Valley, San Francisco, October 3, 2026).
 
